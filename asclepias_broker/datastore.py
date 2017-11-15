@@ -2,7 +2,6 @@
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, ForeignKey, Integer, Enum
-# from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
@@ -47,9 +46,9 @@ class RelationshipType(Base):
     """
     __tablename__ = 'relationship_types'
     id = Column(Integer, primary_key=True)
-    scholix_relationship = Enum("IsReferencedBy", "References", "IsSupplementTo",
-                                "IsSupplementedBy", "IsRelatedTo")
-    original_relationship_name = Enum("IsCitedBy", "Cites", "IsSupplementTo",
+    scholix_relationship = Column(Enum("IsReferencedBy", "References", "IsSupplementTo",
+                                "IsSupplementedBy", "IsRelatedTo"))
+    original_relationship_name = Column(Enum("IsCitedBy", "Cites", "IsSupplementTo",
                                       "IsSupplementedBy", "IsContinuedBy",
                                       "Continues", "HasMetadata",
                                       "IsMetadataFor" "IsNewVersionOf",
@@ -62,11 +61,12 @@ class RelationshipType(Base):
                                       "Reviews", "IsDerivedFrom", "IsSourceOf",
                                       "IsDescribedBy", "Describes",
                                       "HasVersion", "IsVersionOf",
-                                      "IsRequiredBy", "Requires")
-    original_relationship_schema = Enum("DataCite")
+                                      "IsRequiredBy", "Requires"))
+    original_relationship_schema = Column(Enum("DataCite"))
 
     def __repr__(self):
-        return (f'Organization: '
+        return (f'RelationshipType: '
+                f'id={self.id} '
                 f'scholix_relationship={self.scholix_relationship} '
                 f'original_relationship_name={self.original_relationship_name} '
                 f'original_relationship_schema={self.original_relationship_schema}')
@@ -98,6 +98,7 @@ class Object(Base):
 
     def __repr__(self):
         return (f'Object: '
+                f'id={self.id} '
                 f'identifier_id={self.identifier_id} '
                 f'type_id={self.type_id} '
                 f'publisher_id={self.publisher_id} '
@@ -109,12 +110,13 @@ class Relationship(Base):
     __tablename__ = 'relationships'
 
     id = Column(Integer, primary_key=True)
-    source_id = Column(String, ForeignKey('objects.id'))
-    target_id = Column(String, ForeignKey('objects.id'))
+    source_id = Column(String, ForeignKey('identifiers.id'))
+    target_id = Column(String, ForeignKey('identifiers.id'))
     relationship_type = Column(String, ForeignKey('relationship_types.id'))
 
     def __repr__(self):
         return (f'Relationship: '
+                f'id={self.id} '
                 f'source={self.source_id} '
                 f'relationship_type={self.relationship_type} '
                 f'target={self.target_id}')

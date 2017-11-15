@@ -1,7 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from .datastore import Organization, Identifier, Type, Object, Base
+from .datastore import (Organization, Identifier, Type, Object, Base,
+                        Relationship, RelationshipType)
 
 
 def get_or_create(session, model, **kwargs):
@@ -12,8 +13,10 @@ def get_or_create(session, model, **kwargs):
     else:
         instance = model(**kwargs)
         session.add(instance)
-        instance = session.query(model).filter_by(**kwargs).first()
-        return instance
+        instance2 = session.query(model).filter_by(**kwargs).first()
+        if instance is not instance2:
+            raise ValueError(f"Error creating instance: {instance}")
+        return instance2
 
 
 class SoftwareBroker(object):
@@ -49,14 +52,29 @@ class SoftwareBroker(object):
             self.session.commit()
 
     def relation_created(self, event):
-        pass
+
+        for payload in event['payload']:
+
+            relationship_type = get_or_create(self.session, RelationshipType, **payload['relationship_type'])
+            source = get_or_create(self.session, Identifier, **payload['source']['identifier'])
+            target = get_or_create(self.session, Identifier, **payload['target']['identifier'])
+
+            obj = Relationship(source_id=source.id,
+                               target_id=target.id,
+                               relationship_type=relationship_type.id)
+
+            self.session.add(relationship_type)
+            self.session.add(source)
+            self.session.add(target)
+            self.session.add(obj)
+            self.session.commit()
 
     def show_all(self):
-        for cls in [Organization, Identifier, Type, Object]:
+        print('')
+        for cls in [Organization, Identifier, Type, Object, RelationshipType, Relationship]:
             name = cls.__name__.upper() + 'S'
             print(name)
             print('-' * len(name))
             for obj in self.session.query(cls):
                 print(obj)
-            if cls is not Object:
-                print('')
+            print('')
