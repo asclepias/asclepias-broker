@@ -35,3 +35,6 @@ OBJECTs
 Object: identifier_id=10.5072/zenodo.11 type_id=1 publisher_id=1 publication_date=2017-10-12
 Object: identifier_id=10.5072/zenodo.10 type_id=1 publisher_id=1 publication_date=2017-10-12
 ```
+
+The code in this repository was funded by a grant from the Alfred P. Sloan
+Foundation to the American Astronomical Society (2016).
