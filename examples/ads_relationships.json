@@ -1,0 +1,5150 @@
+[
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016arXiv161208077M"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.573267"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531201",
+        "id": 2,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016arXiv161208077M"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.819449"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531201",
+        "id": 1,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016arXiv161003216L"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.53155"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531201",
+        "id": 3,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016arXiv161208077M"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.819452"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531201",
+        "id": 4,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016arXiv161208077M"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.819453"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531201",
+        "id": 5,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016arXiv161208077M"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.819451"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531201",
+        "id": 6,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017AJ....154...28B"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1205.004"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531201",
+        "id": 7,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ApJ...843...63F"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1202.015"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531201",
+        "id": 8,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016arXiv161208077M"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.819448"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531201",
+        "id": 9,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170607837L"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1105.003"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531201",
+        "id": 10,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ApJ...844....8S"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1502.021"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531201",
+        "id": 12,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016arXiv161208077M"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.819446"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531201",
+        "id": 13,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170700254M"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1108.009"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531201",
+        "id": 11,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170800003G"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1611.017"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531202",
+        "id": 14,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016Oecol.182..429D"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.47719"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531203",
+        "id": 15,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016arXiv161208077M"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.819454"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531204",
+        "id": 16,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016JOSS....1.....B"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.159091"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531204",
+        "id": 17,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.469.1330A"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1109.022"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531204",
+        "id": 18,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170706307H"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.832282"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531204",
+        "id": 19,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170703383B"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.27878"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531204",
+        "id": 20,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017GeoJI.210..833H"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.344623"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531205",
+        "id": 21,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2013Galax...1..210S"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1105.011"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531205",
+        "id": 22,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017JOSS....2.....L"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.47652"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531205",
+        "id": 23,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017PhRvD..95k4506M"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.10236"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531205",
+        "id": 24,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017NatSD...470059S"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.438337"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531206",
+        "id": 25,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ApJ...844...23P"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1408.015"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531206",
+        "id": 26,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170708256D"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1304.011"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531206",
+        "id": 28,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170610279K"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1501.010"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531206",
+        "id": 27,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.468.4625J"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1311.011"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531207",
+        "id": 29,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170703828S"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:9909.003"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531206",
+        "id": 30,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ApJ...843..140D"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1501.016"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531208",
+        "id": 31,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2015AnRSA...2..141S"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:9909.004"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531213",
+        "id": 32,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170704105A"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1402.026"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531214",
+        "id": 33,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017AJ....154...38H"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1507.010"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531214",
+        "id": 34,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017JOSS....2.....J"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.47274"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531215",
+        "id": 35,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170709913B"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.60484"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531216",
+        "id": 36,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170707725S"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1202.009"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531222",
+        "id": 37,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2015PLoSO..1028930T"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.15416"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531222",
+        "id": 38,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ApJ...843...98R"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.44765"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531223",
+        "id": 39,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170701615H"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.250258"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531226",
+        "id": 40,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170606147K"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1203.012"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531229",
+        "id": 41,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017A&A...603A.117S"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1106.002"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531236",
+        "id": 42,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.470..882W"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.400748"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531237",
+        "id": 43,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.468.3212L"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1305.002"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531237",
+        "id": 44,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016JOSS....1.....S"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.56714"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531237",
+        "id": 45,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017GMD....10.2801S"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.818632"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531237",
+        "id": 46,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017PhRvL.119b8004P"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.31286"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531241",
+        "id": 47,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170700491M"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.821870"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531241",
+        "id": 48,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170706920K"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.824264"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531260",
+        "id": 49,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170502350R"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.584133"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531260",
+        "id": 50,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170708256D"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1010.068"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531265",
+        "id": 51,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170608826D"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1208.017"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531265",
+        "id": 52,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.469.1246K"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1510.007"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531266",
+        "id": 53,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ApJ...843..138K"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1108.009"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531273",
+        "id": 54,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017NJPh...19f5006P"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1304.016"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531280",
+        "id": 55,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.470.4698A"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1502.012"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531318",
+        "id": 56,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017JCoPh.346..242L"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.31329"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531327",
+        "id": 57,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170701559L"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1702.002"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531327",
+        "id": 58,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170702204C"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.377047"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531328",
+        "id": 59,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170707249M"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.833727"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531328",
+        "id": 60,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017PApGe.174.2733S"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.48254"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531328",
+        "id": 61,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2015PLoSO..1017619K"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.13121"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531329",
+        "id": 62,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170704131R"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.27878"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531329",
+        "id": 63,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017A&A...603A..56C"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1309.003"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531329",
+        "id": 64,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016JOSS.2016...24F"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.53155"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531331",
+        "id": 65,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017JChPh.147c4905K"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.438138"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531331",
+        "id": 66,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.470.4941H"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1305.002"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531331",
+        "id": 67,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170706920K"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.499122"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531331",
+        "id": 68,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.468.4772S"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1210.031"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531333",
+        "id": 69,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170703395N"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.12157"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531334",
+        "id": 70,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.469.1849M"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.248351"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531348",
+        "id": 71,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170705165B"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.825459"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531357",
+        "id": 72,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016PLoSO..1158161B"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.35117"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531363",
+        "id": 73,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ApJ...844..134L"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1309.001"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531369",
+        "id": 74,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ESuD....5..369C"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.824205"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531370",
+        "id": 75,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.468.4077A"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1305.002"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531377",
+        "id": 76,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170700725B"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.823249"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531377",
+        "id": 77,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ApJ...844...98M"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1208.017"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531392",
+        "id": 78,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017JCAP...06..047Y"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1201.015"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531392",
+        "id": 79,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "IsIdenticalTo",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2013ascl.soft05002P"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1305.002"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531393",
+        "id": 80,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170704337N"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.60550"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531401",
+        "id": 81,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017NatSR...7.5406C"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.59293"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531402",
+        "id": 82,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017JGeod..91..995F"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.206114"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531408",
+        "id": 83,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2015SoEn..115..354A"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.13882"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531416",
+        "id": 84,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170707388Y"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.832977"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531417",
+        "id": 85,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017PLoSO..1281477V"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.50310"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531417",
+        "id": 86,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.469L..53G"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1408.015"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531423",
+        "id": 87,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170700462P"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.400486"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531424",
+        "id": 88,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017HESS...21.3125L"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.545779"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531431",
+        "id": 89,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017AJ....154...73R"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.573261"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531431",
+        "id": 90,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017NatCo...815943H"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.546698"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531450",
+        "id": 91,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ApJ...844L..15D"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1402.031"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531460",
+        "id": 92,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.468.3828U"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1402.034"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531460",
+        "id": 93,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017A&A...604A..23N"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1408.015"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531463",
+        "id": 94,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170706307H"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.801749"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531497",
+        "id": 95,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017PLoSO..1281463L"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.11377"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531511",
+        "id": 96,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170703537D"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1402.031"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531527",
+        "id": 97,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017SoEn..155..854A"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.13882"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531532",
+        "id": 98,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170706307H"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.211828"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531539",
+        "id": 99,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017PhRvL.118y1301A"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1506.002"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531541",
+        "id": 100,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170707530E"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.27878"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531543",
+        "id": 101,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017GMD....10.2495N"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.572395"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531556",
+        "id": 102,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017A&A...603A.119H"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1205.004"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531560",
+        "id": 103,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.468.2582W"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1010.077"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531560",
+        "id": 104,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170701518L"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1306.007"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531573",
+        "id": 105,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170608965W"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1207.005"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531601",
+        "id": 106,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017PhRvB..96b4504B"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.220867"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531603",
+        "id": 107,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170706627J"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1402.026"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531608",
+        "id": 108,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017JAP...121x5307S"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.59293"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531617",
+        "id": 109,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ApJ...844....4L"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.18579"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531624",
+        "id": 110,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017HESS...21.3307H"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.821559"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531637",
+        "id": 111,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ApJ...844....6Z"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1411.009"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531643",
+        "id": 112,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.468.2910B"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.11813"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531659",
+        "id": 113,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170700009B"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1502.007"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531665",
+        "id": 114,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ApJ...844...84H"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1609.024"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531666",
+        "id": 115,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ApJ...843....6J"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.572990"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531681",
+        "id": 116,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017NHESS..17..993B"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.29385"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531681",
+        "id": 117,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170707003F"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1408.015"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531686",
+        "id": 118,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.469...95C"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1608.018"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531694",
+        "id": 119,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170701615H"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.251456"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531717",
+        "id": 120,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170701937C"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1704.001"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531758",
+        "id": 121,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2015SoEn..115..354A"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.13348"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531765",
+        "id": 122,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.470.2034D"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.45906"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531766",
+        "id": 123,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017A&A...604A..16F"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1303.024"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531779",
+        "id": 124,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170800839B"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1603.004"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531786",
+        "id": 125,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170309710F"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.806847"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531795",
+        "id": 126,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017JOSS....2.....X"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.54844"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531803",
+        "id": 127,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016JOSS....1.....R"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.159604"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531816",
+        "id": 128,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170608980S"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1502.021"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531830",
+        "id": 129,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.470.1687B"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1210.002"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531837",
+        "id": 130,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.469.1054A"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1109.003"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531859",
+        "id": 131,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ApJ...844..134L"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1306.007"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531873",
+        "id": 132,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170708122S"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1208.017"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531888",
+        "id": 133,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016JOSS....1.....V"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.55270"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531927",
+        "id": 134,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170607837L"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.21703"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531949",
+        "id": 135,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016JOSS....1.....M"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.12825"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531985",
+        "id": 136,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.469..425W"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1407.005"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508531992",
+        "id": 137,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170703487T"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.60206"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532008",
+        "id": 138,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2015arXiv151104836L"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.11377"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532023",
+        "id": 139,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170705394B"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.248351"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532047",
+        "id": 140,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017PASA...34...16S"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1107.011"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532068",
+        "id": 141,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.468.4748C"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1208.017"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532075",
+        "id": 142,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170706474A"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.249479"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532092",
+        "id": 143,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ApJ...843....2H"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1204.007"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532105",
+        "id": 144,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017PhRvX...7b1044V"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1208.017"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532115",
+        "id": 145,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017HESS...21.3125L"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.60764"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532137",
+        "id": 146,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017ApJ...843...63F"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1109.001"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532166",
+        "id": 147,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2016JOSS....1.....H"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.58511"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532174",
+        "id": 148,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017JOSS....2.....V"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.61570"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532205",
+        "id": 149,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170709281H"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.581178"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532220",
+        "id": 150,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017arXiv170309716D"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1501.016"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532248",
+        "id": 151,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017NatSR...7.4060C"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5281/zenodo.167858"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532317",
+        "id": 152,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.470.4720B"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1603.013"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532331",
+        "id": 153,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.470.1673L"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1311.011"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532338",
+        "id": 154,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.469.2024S"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1407.018"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532345",
+        "id": 155,
+        "event_type": "relation_created"
+    },
+    {
+        "description": "ADS citation events",
+        "creator": "ADS",
+        "payload": [{
+            "relationship_type": {
+                "original_relationship_schema": "DataCite",
+                "original_relationship_name": "Cites",
+                "scholix_relationship": "references"
+            },
+            "source": {
+                "identifier": {
+                    "id_schema": "bibcode",
+                    "id_url": "http://adsabs.harvard.edu/abs/",
+                    "id": "2017MNRAS.468.4831K"
+                }
+            },
+            "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+            "target": {
+                "identifier": {
+                    "id_schema": "ASCL",
+                    "id_url": "http://ascl.net/",
+                    "id": "ascl:1305.002"
+                },
+                "type": {
+                    "name": "software"
+                }
+            }
+        }],
+        "source": "ADS.Discovery",
+        "time": "1508532360",
+        "id": 156,
+        "event_type": "relation_created"
+    }
+]

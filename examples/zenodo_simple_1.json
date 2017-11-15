@@ -1,0 +1,273 @@
+[
+    {
+        "event_type": "object_created",
+        "creator": "Zenodo",
+        "id": "0131fc94-e18e-495d-a57f-3684f21d383c",
+        "source": "Zenodo",
+        "time": "1507842551.13",
+        "payload": [{
+            "metadata_schema_url": "https://zenodo.org/schemas/records/record-v1.0.0.json",
+            "object": {
+                "publisher": {
+                    "name": "Zenodo"
+                },
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5072/zenodo.11"
+                },
+                "type": {
+                    "name": "literature",
+                    "sub_type_schema": "https://zenodo.org/schemas/records/record-v1.0.0.json#/resource_type/subtype",
+                    "sub_type": "publication-article"
+                },
+                "publication_date": "2017-10-12"
+            },
+            "object_publication_date": "2017-10-12",
+            "object_provider": {
+                "name": "Zenodo"
+            },
+            "metadata_schema": "Zenodo",
+            "metadata": {
+                "owners": [
+                    3
+                ],
+                "doi": "10.5072/zenodo.11",
+                "links": {
+                    "conceptbadge": "https://zenodo.org/badge/doi/10.5072/zenodo.10.svg",
+                    "doi": "https://doi.org/10.5072/zenodo.11",
+                    "badge": "https://zenodo.org/badge/doi/10.5072/zenodo.11.svg",
+                    "conceptdoi": "https://doi.org/10.5072/zenodo.10"
+                },
+                "conceptdoi": "10.5072/zenodo.10",
+                "created": null,
+                "updated": null,
+                "conceptrecid": "10",
+                "revision": null,
+                "id": 11,
+                "metadata": {
+                    "access_right_category": "success",
+                    "doi": "10.5072/zenodo.11",
+                    "description": "<p>Tes Record A</p>",
+                    "license": {
+                        "id": "cc-by-sa"
+                    },
+                    "title": "Record A",
+                    "relations": {
+                        "version": [{
+                            "count": 1,
+                            "index": 0,
+                            "is_last": true,
+                            "last_child": {
+                                "pid_type": "recid",
+                                "pid_value": "11"
+                            },
+                            "parent": {
+                                "pid_type": "recid",
+                                "pid_value": "10"
+                            }
+                        }]
+                    },
+                    "publication_date": "2017-10-12",
+                    "creators": [{
+                        "name": "Test user"
+                    }],
+                    "access_right": "open",
+                    "resource_type": {
+                        "subtype": "article",
+                        "type": "publication",
+                        "title": "Journal article"
+                    },
+                    "related_identifiers": [{
+                            "scheme": "doi",
+                            "relation": "cites",
+                            "identifier": "10.5072/zenodo.53155"
+                        },
+                        {
+                            "scheme": "doi",
+                            "relation": "cites",
+                            "identifier": "10.5072/zenodo.56799"
+                        },
+                        {
+                            "scheme": "doi",
+                            "relation": "isPartOf",
+                            "identifier": "10.5072/zenodo.10"
+                        }
+                    ]
+                }
+            }
+        }]
+    },
+    {
+        "event_type": "object_created",
+        "creator": "Zenodo",
+        "id": "6f5ce056-4229-4b32-b6e4-e65a16ada0b9",
+        "source": "Zenodo",
+        "time": "1507842551.13",
+        "payload": [{
+            "object": {
+                "publisher": {
+                    "name": "Zenodo"
+                },
+                "identifier": {
+                    "id_schema": "DOI",
+                    "id_url": "https://doi.org",
+                    "id": "10.5072/zenodo.10"
+                },
+                "type": {
+                    "name": "literature",
+                    "sub_type_schema": "https://zenodo.org/schemas/records/record-v1.0.0.json#/resource_type/subtype",
+                    "sub_type": "publication-article"
+                },
+                "publication_date": "2017-10-12"
+            },
+            "object_publication_date": "2017-10-12",
+            "object_provider": {
+                "name": "Zenodo"
+            }
+        }]
+    },
+    {
+        "event_type": "relation_created",
+        "creator": "Zenodo",
+        "id": "35c82ba8-589c-4af1-9752-cf3ab15895da",
+        "source": "Zenodo",
+        "time": "1507842551.13",
+        "payload": [{
+                "relationship_type": {
+                    "original_relationship_schema": "DataCite",
+                    "original_relationship_name": "IsIdenticalTo",
+                    "scholix_relationship": "IsRelatedTo"
+                },
+                "relation_provider": {
+                    "name": "Zenodo"
+                },
+                "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+                "target": {
+                    "identifier": {
+                        "id_schema": "URL",
+                        "id": "https://zenodo.org/record/11"
+                    }
+                },
+                "source": {
+                    "publisher": {
+                        "name": "Zenodo"
+                    },
+                    "identifier": {
+                        "id_schema": "DOI",
+                        "id_url": "https://doi.org",
+                        "id": "10.5072/zenodo.11"
+                    },
+                    "type": {
+                        "name": "literature",
+                        "sub_type_schema": "https://zenodo.org/schemas/records/record-v1.0.0.json#/resource_type/subtype",
+                        "sub_type": "publication-article"
+                    },
+                    "publication_date": "2017-10-12"
+                }
+            },
+            {
+                "relationship_type": {
+                    "original_relationship_schema": "DataCite",
+                    "original_relationship_name": "IsPartOf",
+                    "scholix_relationship": "IsRelatedTo"
+                },
+                "relation_provider": {
+                    "name": "Zenodo"
+                },
+                "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+                "target": {
+                    "identifier": {
+                        "id_schema": "DOI",
+                        "id_url": "https://doi.org",
+                        "id": "10.5072/zenodo.10"
+                    }
+                },
+                "source": {
+                    "publisher": {
+                        "name": "Zenodo"
+                    },
+                    "identifier": {
+                        "id_schema": "DOI",
+                        "id_url": "https://doi.org",
+                        "id": "10.5072/zenodo.11"
+                    },
+                    "type": {
+                        "name": "literature",
+                        "sub_type_schema": "https://zenodo.org/schemas/records/record-v1.0.0.json#/resource_type/subtype",
+                        "sub_type": "publication-article"
+                    },
+                    "publication_date": "2017-10-12"
+                }
+            },
+            {
+                "relationship_type": {
+                    "original_relationship_schema": "DataCite",
+                    "original_relationship_name": "Cites",
+                    "scholix_relationship": "References"
+                },
+                "relation_provider": {
+                    "name": "Zenodo"
+                },
+                "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+                "target": {
+                    "identifier": {
+                        "id_schema": "DOI",
+                        "id_url": "https://doi.org",
+                        "id": "10.5072/zenodo.53155"
+                    }
+                },
+                "source": {
+                    "publisher": {
+                        "name": "Zenodo"
+                    },
+                    "identifier": {
+                        "id_schema": "DOI",
+                        "id_url": "https://doi.org",
+                        "id": "10.5072/zenodo.11"
+                    },
+                    "type": {
+                        "name": "literature",
+                        "sub_type_schema": "https://zenodo.org/schemas/records/record-v1.0.0.json#/resource_type/subtype",
+                        "sub_type": "publication-article"
+                    },
+                    "publication_date": "2017-10-12"
+                }
+            },
+            {
+                "relationship_type": {
+                    "original_relationship_schema": "DataCite",
+                    "original_relationship_name": "Cites",
+                    "scholix_relationship": "References"
+                },
+                "relation_provider": {
+                    "name": "Zenodo"
+                },
+                "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+                "target": {
+                    "identifier": {
+                        "id_schema": "DOI",
+                        "id_url": "https://doi.org",
+                        "id": "10.5072/zenodo.56799"
+                    }
+                },
+                "source": {
+                    "publisher": {
+                        "name": "Zenodo"
+                    },
+                    "identifier": {
+                        "id_schema": "DOI",
+                        "id_url": "https://doi.org",
+                        "id": "10.5072/zenodo.11"
+                    },
+                    "type": {
+                        "name": "literature",
+                        "sub_type_schema": "https://zenodo.org/schemas/records/record-v1.0.0.json#/resource_type/subtype",
+                        "sub_type": "publication-article"
+                    },
+                    "publication_date": "2017-10-12"
+                }
+            }
+        ]
+    }
+]

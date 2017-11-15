@@ -53,5 +53,10 @@ class SoftwareBroker(object):
 
     def show_all(self):
         for cls in [Organization, Identifier, Type, Object]:
+            name = cls.__name__.upper() + 's'
+            print(name)
+            print('-' * len(name))
             for obj in self.session.query(cls):
                 print(obj)
+            if cls is not Object:
+                print('')
