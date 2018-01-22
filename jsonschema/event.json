@@ -1,0 +1,58 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "https://raw.githubusercontent.com/asclepias/event-model/master/jsonschema/event.json",
+    "title": "Event message schema.",
+    "description": "Schema of the event message.",
+    "additionalProperties": false,
+    "type": "object",
+    "properties": {
+        "event_type": {
+            "type": "string",
+            "description": "Type of the event. Controlled vocabulary: 'relation_created' or 'relation_deleted'",
+            "enum": ["relation_created", "relation_deleted", "object_created", "object_updated", "object_deleted"]
+
+        },
+        "creator": {
+            "type": "string",
+            "description": "Name of the party, which emmited this event."
+        },
+        "source": {
+            "type": "string",
+            "description": "Name of the source, algorithm or procedure, which created this event."
+        },
+        "payload": {
+            "type": "array",
+            "description": "Payload information specific to the event_type. An array, containing one or more payloads of the structure matching with the event_type.",
+            "items": {
+                "oneOf": [
+                    {
+                        "$ref": "scholix_v3_software.json"
+                    },
+                    {
+                        "$ref": "object.json"
+                    }
+                ]
+            }
+        },
+        "id": {
+            "type": "string",
+            "description": "Globally unique identifier of the event (UUID version 4 as specified in RFC 4122)."
+        },
+        "time": {
+            "type": "string",
+            "description": "Time when the payload information was created."
+        },
+        "description": {
+            "type": "string",
+            "description": "Free-text description of the event."
+        }
+    },
+    "required": [
+      "event_type",
+      "creator",
+      "source",
+      "payload",
+      "id",
+      "time"
+    ]
+}

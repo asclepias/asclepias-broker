@@ -32,7 +32,7 @@ INPUT_ITEMS_SCHEMA = {
                 {'type': 'string', 'title': 'Relationship type',
                 'enum': ['References', 'IsReferencedBy', 'IsSupplementTo',
                         'IsSupplementedBy', 'IsIdenticalTo', 'Cites',
-                        'IsCitedBy']},
+                        'IsCitedBy', 'IsVersionOf', 'HasVersion']},
                 {'type': 'string', 'title': 'Target identifier'},
                 {'type': 'string', 'title': 'Publication Date'},
             ],
@@ -79,7 +79,8 @@ class Event:
     @classmethod
     def gen_relationship_type(cls, relationship_type):
         if relationship_type not in SCHOLIX_RELATIONS:
-            return {'Name': 'IsRelatedTo', 'SubType': relationship_type}
+            return {'Name': 'IsRelatedTo', 'SubType': relationship_type,
+                    'SubTypeSchema': 'DataCite'}
         return {'Name': relationship_type}
 
     @classmethod
@@ -123,7 +124,7 @@ class Event:
 
 def generate_payloads(infile):
     with open(infile, 'r') as fp:
-        events = json.load(fp)
+        input_items = json.load(fp)
     jsonschema.validate(input_items, INPUT_ITEMS_SCHEMA)
 
     res = []

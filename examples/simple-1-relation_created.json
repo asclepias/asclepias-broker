@@ -1,0 +1,160 @@
+[
+    {
+        "event_type": "relation_created",
+        "creator": "Zenodo",
+        "id": "35c82ba8-589c-4af1-9752-cf3ab15895da",
+        "source": "Zenodo",
+        "time": "2018-01-01T13:00:00Z",
+        "payload": [
+            {
+                "RelationshipType": {
+                    "Name": "IsRelatedTo",
+                    "SubType": "IsIdenticalTo",
+                    "SubTypeSchema": "DataCite"
+                },
+                "LinkProvider": [
+                    {
+                        "Name": "Zenodo",
+                        "Identifier": [
+                            {
+                                "ID": "https://zenodo.org",
+                                "IDScheme": "url",
+                                "IDURL": "https://zenodo.org"
+                            }
+                        ]
+                    }
+                ],
+                "Target": {
+                    "Identifier": {
+                        "IDScheme": "URL",
+                        "ID": "https://zenodo.org/record/11"
+                    },
+                    "Type": {
+                        "Name": "literature"
+                    }
+                },
+                "Source": {
+                    "Identifier": {
+                        "IDScheme": "doi",
+                        "IDURL": "https://doi.org",
+                        "ID": "10.5072/zenodo.11"
+                    },
+                    "Type": {
+                        "Name": "literature"
+                    }
+                }
+            },
+            {
+                "RelationshipType": {
+                    "Name": "IsRelatedTo"
+                },
+                "LinkProvider": {
+                    "Name": "Zenodo",
+                    "Identifier": [
+                        {
+                            "ID": "https://zenodo.org",
+                            "IDScheme": "url",
+                            "IDURL": "https://zenodo.org"
+                        }
+                    ]
+                },
+                "Target": {
+                    "Identifier": {
+                        "IDScheme": "doi",
+                        "IDURL": "https://doi.org",
+                        "ID": "10.5072/zenodo.10"
+                    },
+                    "Type": {
+                        "Name": "literature"
+                    }
+                },
+                "Source": {
+                    "Identifier": {
+                        "IDScheme": "doi",
+                        "IDURL": "https://doi.org",
+                        "ID": "10.5072/zenodo.11"
+                    },
+                    "Type": {
+                        "Name": "literature"
+                    }
+                }
+            },
+            {
+                "RelationshipType": {
+                    "SubTypeSchema": "DataCite",
+                    "SubType": "Cites",
+                    "Name": "References"
+                },
+                "LinkProvider": {
+                    "Name": "Zenodo",
+                    "Identifier": [
+                        {
+                            "ID": "https://zenodo.org",
+                            "IDScheme": "url",
+                            "IDURL": "https://zenodo.org"
+                        }
+                    ]
+                },
+                "Target": {
+                    "Identifier": {
+                        "IDScheme": "doi",
+                        "IDURL": "https://doi.org",
+                        "ID": "10.5072/zenodo.53155"
+                    },
+                    "Type": {
+                        "Name": "dataset"
+                    }
+                },
+                "Source": {
+                    "Identifier": {
+                        "IDScheme": "doi",
+                        "IDURL": "https://doi.org",
+                        "ID": "10.5072/zenodo.11"
+                    },
+                    "Type": {
+                        "Name": "literature"
+                    }
+                }
+            },
+            {
+                "RelationshipType": {
+                    "Name": "IsReferencedBy",
+                    "SubType": "IsCitedBy",
+                    "SubTypeSchema": "DataCite"
+                },
+                "LinkProvider": {
+                    "Name": "Zenodo",
+                    "Identifier": [
+                        {
+                            "ID": "https://zenodo.org",
+                            "IDScheme": "url",
+                            "IDURL": "https://zenodo.org"
+                        }
+                    ]
+                },
+                "Target": {
+                    "Identifier": {
+                        "IDScheme": "doi",
+                        "IDURL": "https://doi.org",
+                        "ID": "10.5072/zenodo.56799"
+                    },
+                    "Type": {
+                        "Name": "dataset",
+                        "SubTypeSchema": "https://zenodo.org/schemas/records/record-v1.0.0.json#/resource_type",
+                        "SubType": "software"
+                    }
+                },
+                "Source": {
+                    "Identifier": {
+                        "IDScheme": "doi",
+                        "IDURL": "https://doi.org",
+                        "ID": "10.5072/zenodo.11"
+                    },
+                    "Type": {
+                        "Name": "literature"
+                    }
+                }
+            }
+        ]
+    }
+]

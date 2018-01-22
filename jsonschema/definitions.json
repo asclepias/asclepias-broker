@@ -1,0 +1,94 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "https://raw.githubusercontent.com/asclepias/event-model/master/jsonschema/definitions.json",
+    "title": "Global definitions used by different payloads.",
+    "description": "Schema containing definitions of various objects which are re-used by payload types.",
+    "definitions": {
+        "identifier": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "General structure of the persistent identifiers.",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "E.g.: 10.5281/zenodo.123"
+                },
+                "id_schema": {
+                    "type": "string",
+                    "description": "E.g.: DOI"
+                },
+                "id_url": {
+                    "type": "string",
+                    "description": "E.g.: http://doi.org"
+                }
+            },
+            "required": [
+                "id",
+                "id_schema"
+            ]
+        },
+        "object_type": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "sub_type": {
+                    "type": "string"
+                },
+                "sub_type_schema": {
+                    "type": "string"
+                }
+            }
+        },
+        "relationship": {
+            "type": "object",
+            "properties": {
+                "scholix_relationship": {
+                    "type": "string",
+                    "description": "Currently-supported Scholix relations.",
+                    "enum": ["IsReferencedBy", "References", "IsSupplementTo", "IsSupplementedBy", "IsRelatedTo"]
+                },
+                "original_relationship_name": {
+                    "type": "string",
+                    "description": "All other relationship names. Supporting all metadata types of DataCite Metadata Schema 4.1",
+                    "enum": ["IsCitedBy", "Cites", "IsSupplementTo", "IsSupplementedBy", "IsContinuedBy", "Continues", "HasMetadata", "IsMetadataFor", "IsNewVersionOf", "IsPreviousVersionOf", "IsPartOf", "HasPart", "IsReferencedBy", "References", "IsDocumentedBy", "Documents", "IsCompiledBy", "Compiles", "IsVariantFormOf", "IsOriginalFormOf", "IsIdenticalTo", "IsReviewedBy", "Reviews", "IsDerivedFrom", "IsSourceOf", "IsDescribedBy", "Describes", "HasVersion", "IsVersionOf", "IsRequiredBy", "Requires"]
+
+                },
+                "original_relationship_schema": {
+                    "type": "string",
+                    "description": "Schema of the relation type. Currently DataCite only.",
+                    "enum": ["DataCite"]
+                }
+            }
+        },
+        "object": {
+            "properties": {
+                "identifier": {
+                    "$ref": "#definitions/identifier"
+                },
+                "type": {
+                    "$ref": "#definitions/object_type"
+                },
+                "publisher": {
+                    "$ref": "#definitions/organization"
+                },
+                "publication_date": {
+                    "type": "string",
+                    "description": "Object (PID) first publication date. Type dc:date."
+                }
+            }
+        },
+        "organization": {
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of the organization, which can be an event payload information provider, object publisher etc."
+                },
+                "identifier": {
+                    "$ref": "#definitions/identifier"
+                }
+            }
+        }
+    },
+    "type": "object"
+}
