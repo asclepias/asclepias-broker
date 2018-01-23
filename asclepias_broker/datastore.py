@@ -30,42 +30,50 @@ class Identifier(Base):
     scheme = Column(String)
 
     def __repr__(self):
-        return (f'Identifier: '
-                f'id={self.id} '
-                f'scheme={self.scheme} '
-                f'value={self.value}')
+        """String representation of the Identifier."""
+        return "<{self.scheme}: {self.value}>".format(self=self)
 
+    def _get_related(self, session, condition, relationship):
+        return session.query(Relationship).filter(
+            condition & (Relationship.relationship_type == relationship))
+
+    def _get_identities(self, session):
+        """Get the first-layer of 'Identical' Identifies."""
+        cond = ((Relationship.source == self) | (Relationship.target == self))
+        q = self._get_related(session, cond, RelationshipType.IsIdenticalTo)
+        siblings = set(sum([[item.source, item.target] for item in q], []))
+        if siblings:
+            return list(siblings)
+        else:
+            return [self, ]
 
     def get_identities(self, session):
-        q =  (
-            session.query(Relationship)
-            .filter(((Relationship.source == self) | (Relationship.target == self))
-                    & (Relationship.relationship_type == RelationshipType.IsIdenticalTo)))
-        siblings = sum([[item.source_id, item.target_id] for item in q], [])
-        if not siblings:
-            return [self, ]
-        return [session.query(Identifier).get(uuid) for uuid in set(siblings)]
+        """Get the fully-expanded list of 'Identical' Identifiers."""
+        ids = next_ids = set([self])
+        while next_ids:
+            grp = set(sum([item._get_identities(session) for item in next_ids], []))
+            next_ids = grp - ids
+            ids |= grp
+        return list(ids)
 
-    def get_parents(self, session, relation_type=RelationshipType.Cites):
-        q =  (
-            session.query(Relationship)
-            .filter((Relationship.target == self)
-                    & (Relationship.relationship_type == relation_type)))
-        parents = [item.source_id for item in q]
-        return [session.query(Identifier).get(uuid) for uuid in set(parents)]
+    def get_parents(self, session, rel_type, as_relation=False):
+        """Get all parents of given Identifier for given relationship type."""
+        q = self._get_related(session, (Relationship.target == self), rel_type)
+        if as_relation:
+            return q.all()
+        else:
+            return [item.source for item in q]
 
-
-    def get_children(self, session, relation_type=RelationshipType.Cites):
-        q =  (
-            session.query(Relationship)
-            .filter((Relationship.source == self)
-                    & (Relationship.relationship_type == relation_type)))
-        children = [item.target_id for item in q]
-        return [session.query(Identifier).get(uuid) for uuid in set(children)]
+    def get_children(self, session, rel_type, as_relation=False):
+        """Get all children of given Identifier for given relationship type."""
+        q = self._get_related(session, (Relationship.source == self), rel_type)
+        if as_relation:
+            return q.all()
+        else:
+            return [item.target for item in q]
 
 
 class Relationship(Base):
-
     __tablename__ = 'relationship'
 
     id = Column(UUIDType, default=uuid.uuid4, primary_key=True)
@@ -77,8 +85,4 @@ class Relationship(Base):
     target = relationship(Identifier, foreign_keys=[target_id], backref='targets')
 
     def __repr__(self):
-        return (f'Relationship: '
-                f'id={self.id} '
-                f'source={self.source.value} '
-                f'relationship_type={self.relationship_type} '
-                f'target={self.target.value}')
+        return "<{self.source.value} {self.relationship_type.name} {self.target.value}>".format(self=self)

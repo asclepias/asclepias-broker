@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from itertools import groupby
 
 from .datastore import (Identifier, Base, Relationship, RelationshipType)
 from .schema import from_scholix_relationship_type
@@ -68,9 +69,10 @@ class SoftwareBroker(object):
                 print(obj)
             print('')
         id_A = self.session.query(Identifier).filter_by(scheme='DOI', value='10.1234/A').one()
+        ids = id_A.get_identities(self.session)
         #citations = self.get_citations(id_A)
         full_c = self.get_citations(id_A, with_parents=True, with_siblings=True)
-        print(citations)
+        pprint(full_c)
 
 
     def get_citations(self, identifier, with_parents=False, with_siblings=False):
@@ -78,24 +80,22 @@ class SoftwareBroker(object):
         frontier = identifier.get_identities(self.session)
         # Expand with parents
         if with_parents:
-            iden_parents = sum([[i.id for i in iden.get_parents(self.session,
-                                                                RelationshipType.HasVersion)]
-                                                                for iden in frontier], [])
-            iden_parents = [self.session.query(Identifier).get(uuid) for uuid in set(iden_parents)]
-            iden_parents = sum([par.get_identities(self.session) for par in iden_parents], [])
+            iden_parents = set(sum([iden.get_parents(self.session,
+                                                     RelationshipType.HasVersion)
+                                    for iden in frontier], []))
+            iden_parents = set(sum([par.get_identities(self.session) for par in iden_parents], []))
             frontier += iden_parents
         # Expand with siblings
         if with_parents and with_siblings: # TODO, in order to support only siblings, skip frontier addition before
-            par_children = sum([[i.id for i in par.get_children(self.session,
-                                                                RelationshipType.HasVersion)]
-                                                                for par in iden_parents], [])
-            par_children = [self.session.query(Identifier).get(uuid) for uuid in set(par_children)]
-
-            par_children = sum([chil.get_identities(self.session) for chil in par_children], [])
+            par_children = set(sum([par.get_children(self.session,
+                                                     RelationshipType.HasVersion)
+                                    for par in iden_parents], []))
+            par_children = set(sum([chil.get_identities(self.session) for chil in par_children], []))
             frontier += par_children
-        frontier = [f.id for f in frontier]
-        frontier = [self.session.query(Identifier).get(uuid) for uuid in set(frontier)]
-        citations = sum([[i.id for i in iden.get_parents(self.session)] for iden in frontier], [])
-
-        citations = [self.session.query(Identifier).get(uuid) for uuid in set(citations)]
-        return citations
+        frontier = set(frontier)
+        # frontier contains all identifiers which directly cite the resource
+        citations = set(sum([iden.get_parents(self.session, RelationshipType.Cites, as_relation=True) for iden in frontier], []))
+        # Expand it to identical identifiers and group them if they repeat
+        expanded_sources = [c.source.get_identities(self.session) for c in citations]
+        zipped = sorted(zip(expanded_sources, citations), key=lambda x: [xi.value for xi in x[0]])
+        return [(k, list(vi for _, vi in v)) for k, v in groupby(zipped, key=lambda x: x[0])]
