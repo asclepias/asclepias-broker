@@ -5,40 +5,71 @@ from asclepias_broker.datastore import Identifier
 
 
 @pytest.mark.parametrize(
-    ('broker', 'result'), [
+    ('broker', 'result_sets'), [
         ([
-            ['C', '10.1234/A', 'Cites', '10.1234/B', '2018-01-01'],
+            ['C', 'A', 'Cites', 'B', '2018-01-01'],
          ],
-         {'10.1234/A'}),
+         [{'A'}, {'B'}]),
         ([
-            ['C', '10.1234/A', 'IsIdenticalTo', '10.1234/B', '2018-01-01'],
+            ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
          ],
-         {'10.1234/A', '10.1234/B'}),
+         [{'A', 'B'}]),
         ([
-            ['C', '10.1234/A', 'IsIdenticalTo', '10.1234/B', '2018-01-01'],
-            ['C', '10.1234/B', 'IsIdenticalTo', '10.1234/C', '2018-01-01'],
+            ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
+            ['C', 'B', 'IsIdenticalTo', 'C', '2018-01-01'],
          ],
-         {'10.1234/A', '10.1234/B', '10.1234/C'}),
-        # With irrelevant identifier relationships
+         [{'A', 'B', 'C'}]),
+        # Redundant relationships
         ([
-            ['C', '10.1234/A', 'IsIdenticalTo', '10.1234/B', '2018-01-01'],
-            ['C', '10.1234/B', 'IsIdenticalTo', '10.1234/C', '2018-01-01'],
-            ['C', '10.1234/X', 'Cites', '10.1234/Y', '2018-01-01'],
+            ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
+            ['C', 'B', 'IsIdenticalTo', 'C', '2018-01-01'],
+            ['C', 'C', 'IsIdenticalTo', 'A', '2018-01-01'],
          ],
-         {'10.1234/A', '10.1234/B', '10.1234/C'}),
+         [{'A', 'B', 'C'}]),
+        # Other relationships
+        ([
+            ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
+            ['C', 'B', 'IsIdenticalTo', 'C', '2018-01-01'],
+            ['C', 'X', 'Cites', 'B', '2018-01-01'],
+            ['C', 'A', 'Cites', 'Y', '2018-01-01'],
+         ],
+         [{'A', 'B', 'C'}, {'X'}, {'Y'}]),
+        # With other group of identifier relationships
+        ([
+            ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
+            ['C', 'B', 'IsIdenticalTo', 'C', '2018-01-01'],
+            ['C', 'X', 'Cites', 'Y', '2018-01-01'],
+         ],
+         [{'A', 'B', 'C'}, {'X'}, {'Y'}]),
         # With irrelevant 'IsIdenticalTo' identifier relationships
         ([
-            ['C', '10.1234/A', 'IsIdenticalTo', '10.1234/B', '2018-01-01'],
-            ['C', '10.1234/B', 'IsIdenticalTo', '10.1234/C', '2018-01-01'],
-            ['C', '10.1234/X', 'IsIdenticalTo', '10.1234/Y', '2018-01-01'],
+            ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
+            ['C', 'B', 'IsIdenticalTo', 'C', '2018-01-01'],
+            ['C', 'X', 'IsIdenticalTo', 'Y', '2018-01-01'],
          ],
-         {'10.1234/A', '10.1234/B', '10.1234/C'}),
+         [{'A', 'B', 'C'}, {'X', 'Y'}]),
+        ([
+            ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
+            ['C', 'B', 'IsIdenticalTo', 'C', '2018-01-01'],
+            ['C', 'X', 'IsIdenticalTo', 'Y', '2018-01-01'],
+            ['C', 'X', 'IsIdenticalTo', 'Z', '2018-01-01'],
+         ],
+         [{'A', 'B', 'C'}, {'X', 'Y', 'Z'}]),
+        ([
+            ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
+            ['C', 'B', 'IsIdenticalTo', 'C', '2018-01-01'],
+            ['C', 'X', 'IsIdenticalTo', 'Y', '2018-01-01'],
+            ['C', 'X', 'IsIdenticalTo', 'Z', '2018-01-01'],
+            ['C', 'Z', 'IsIdenticalTo', 'A', '2018-01-01'],
+         ],
+         [{'A', 'B', 'C', 'X', 'Y', 'Z'}]),
     ],
     indirect=['broker'])
-def test_identities(broker, result):
+def test_identities(broker, result_sets):
     # NOTE: We assume that only on identifier scheme being used so just using
     # identifier values is enough when comparing sets.
-    for v in result:
-        id_ = broker.session.query(Identifier).filter_by(value=v).one()
-        identities = set(i.value for i in id_.get_identities(broker.session))
-        assert identities == result
+    for rs in result_sets:
+        for v in rs:
+            id_ = broker.session.query(Identifier).filter_by(value=v).one()
+            ids = set(i.value for i in id_.get_identities(broker.session))
+            assert ids == rs
