@@ -4,12 +4,11 @@ import enum
 import uuid
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, ForeignKey, Integer, Enum, JSON
+from sqlalchemy import Column, String, ForeignKey, Integer, Enum, JSON, Boolean
 from sqlalchemy_utils.types import UUIDType, JSONType
 from sqlalchemy.orm import relationship
 
 Base = declarative_base()
-
 
 
 class RelationshipType(enum.Enum):
@@ -33,19 +32,24 @@ class Identifier(Base):
         """String representation of the Identifier."""
         return "<{self.scheme}: {self.value}>".format(self=self)
 
-    def _get_related(self, session, condition, relationship):
-        return session.query(Relationship).filter(
-            condition & (Relationship.relationship_type == relationship))
+    def _get_related(self, session, condition, relationship, with_deleted=False):
+        cond = condition & (Relationship.relationship_type == relationship)
+        if not with_deleted:
+            cond &= (Relationship.deleted == False)
+        return session.query(Relationship).filter(cond)
 
-    def _get_identities(self, session):
+    def _get_identities(self, session, as_relation=False):
         """Get the first-layer of 'Identical' Identifies."""
         cond = ((Relationship.source == self) | (Relationship.target == self))
         q = self._get_related(session, cond, RelationshipType.IsIdenticalTo)
-        siblings = set(sum([[item.source, item.target] for item in q], []))
-        if siblings:
-            return list(siblings)
+        if as_relation:
+            return q.all()
         else:
-            return [self, ]
+            siblings = set(sum([[item.source, item.target] for item in q], []))
+            if siblings:
+                return list(siblings)
+            else:
+                return [self, ]
 
     def get_identities(self, session):
         """Get the fully-expanded list of 'Identical' Identifiers."""
@@ -80,9 +84,10 @@ class Relationship(Base):
     source_id = Column(UUIDType, ForeignKey(Identifier.id))
     target_id = Column(UUIDType, ForeignKey(Identifier.id))
     relationship_type = Column(Enum(RelationshipType))
+    deleted = Column(Boolean, default=False)
 
     source = relationship(Identifier, foreign_keys=[source_id], backref='sources')
     target = relationship(Identifier, foreign_keys=[target_id], backref='targets')
 
     def __repr__(self):
-        return "<{self.source.value} {self.relationship_type.name} {self.target.value}>".format(self=self)
+        return "<{self.source.value} {self.relationship_type.name} {self.target.value}{deleted}>".format(self=self, deleted=" [D]" if self.deleted else "")

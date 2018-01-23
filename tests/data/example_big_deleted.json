@@ -1,0 +1,30 @@
+[
+    [
+        ["C", "A", "IsIdenticalTo", "Aid", "2018-01-01"],
+        ["C", "B", "Cites", "A", "2018-01-01"],
+        ["C", "C", "References", "A", "2018-01-01"],
+        ["C", "D", "References", "Aid", "2018-01-01"],
+        ["C", "D", "References", "A", "2018-01-01"],
+        ["C", "Ap", "HasVersion", "A", "2018-01-01"],
+        ["C", "Ap", "HasVersion", "A2", "2018-01-01"],
+        ["C", "E", "Cites", "Ap", "2018-01-01"],
+        ["C", "F", "Cites", "A2", "2018-01-01"],
+        ["C", "Aidp", "HasVersion", "Aid", "2018-01-01"],
+        ["C", "Aidp", "HasVersion", "A3", "2018-01-01"],
+        ["C", "G", "Cites", "Aidp", "2018-01-01"],
+        ["C", "H", "Cites", "A3", "2018-01-01"],
+        ["C", "Apid", "IsIdenticalTo", "Ap", "2018-01-01"],
+        ["C", "A2", "IsIdenticalTo", "A2id", "2018-01-01"],
+        ["C", "I", "Cites", "Apid", "2018-01-01"],
+        ["C", "J", "Cites", "A2id", "2018-01-01"],
+        ["C", "J2", "IsIdenticalTo", "J", "2018-01-01"],
+        ["C", "K", "Cites", "A3", "2018-01-01"],
+        ["C", "K", "IsIdenticalTo", "K1", "2018-01-01"],
+        ["C", "H", "IsIdenticalTo", "H1", "2018-01-01"],
+        ["C", "H1", "IsIdenticalTo", "K1", "2018-01-01"]
+    ],
+    [
+        ["D", "A", "IsIdenticalTo", "Aid", "2018-01-01"],
+        ["D", "Ap", "HasVersion", "A", "2018-01-01"]
+    ]
+]

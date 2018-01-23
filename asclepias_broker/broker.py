@@ -6,9 +6,12 @@ from .datastore import (Identifier, Base, Relationship, RelationshipType)
 from .schema import from_scholix_relationship_type
 
 
+def get(session, model, **kwargs):
+    return session.query(model).filter_by(**kwargs).first()
+
 def get_or_create(session, model, **kwargs):
     # https://stackoverflow.com/a/2587041/180783
-    instance = session.query(model).filter_by(**kwargs).first()
+    instance = get(session, model, **kwargs)
     if instance:
         return instance
     else:
@@ -54,10 +57,34 @@ class SoftwareBroker(object):
                       'relationship_type': relationship_type}
             relationship = get_or_create(self.session, Relationship, **kwargs)
 
-            self.session.add(source)
-            self.session.add(target)
-            self.session.add(relationship)
             self.session.commit()
+
+    def relation_deleted(self, event):
+        for payload in event['payload']:
+
+            rel_type  = payload['RelationshipType']
+            relationship_type, inversed = from_scholix_relationship_type(rel_type)
+
+            pljson = payload['Source']['Identifier']
+            kwargs = {'scheme': pljson['IDScheme'], 'value': pljson['ID']}
+            source = get(self.session, Identifier, **kwargs)
+
+            pljson = payload['Target']['Identifier']
+            kwargs = {'scheme': pljson['IDScheme'], 'value': pljson['ID']}
+            target = get(self.session, Identifier, **kwargs)
+            if inversed:
+                source, target = target, source
+
+            kwargs = {'source_id': source.id,
+                      'target_id': target.id,
+                      'relationship_type': relationship_type}
+            if source and target:
+                relationship = get(self.session, Relationship, **kwargs)
+            if relationship:
+                relationship.deleted = True
+                self.session.add(relationship)
+                self.session.commit()
+
 
     def show_all(self):
         print('')
@@ -68,29 +95,35 @@ class SoftwareBroker(object):
             for obj in self.session.query(cls):
                 print(obj)
             print('')
-        id_A = self.session.query(Identifier).filter_by(scheme='DOI', value='10.1234/A').one()
+        id_A = self.session.query(Identifier).filter_by(scheme='DOI', value='A').one()
         ids = id_A.get_identities(self.session)
-        #citations = self.get_citations(id_A)
-        full_c = self.get_citations(id_A, with_parents=True, with_siblings=True)
+        full_c = self.get_citations(id_A, with_parents=True, with_siblings=True, with_target_group=True)
+        from pprint import pprint
         pprint(full_c)
 
 
-    def get_citations(self, identifier, with_parents=False, with_siblings=False):
+    def get_citations(self, identifier, with_parents=False, with_siblings=False, with_target_group=False):
         # At the beginning, frontier is just identities
         frontier = identifier.get_identities(self.session)
+        frontier_rel = set()
         # Expand with parents
-        if with_parents:
-            iden_parents = set(sum([iden.get_parents(self.session,
-                                                     RelationshipType.HasVersion)
+        if with_parents or with_siblings:
+            parents_rel = set(sum([iden.get_parents(self.session,
+                                                     RelationshipType.HasVersion, as_relation=True)
                                     for iden in frontier], []))
-            iden_parents = set(sum([par.get_identities(self.session) for par in iden_parents], []))
-            frontier += iden_parents
+            iden_parents = [item.source for item in parents_rel]
+            iden_parents = set(sum([p.get_identities(self.session) for p in iden_parents], []))
+            if with_parents:
+                frontier_rel |= parents_rel
+                frontier += iden_parents
         # Expand with siblings
-        if with_parents and with_siblings: # TODO, in order to support only siblings, skip frontier addition before
-            par_children = set(sum([par.get_children(self.session,
-                                                     RelationshipType.HasVersion)
-                                    for par in iden_parents], []))
-            par_children = set(sum([chil.get_identities(self.session) for chil in par_children], []))
+        if with_siblings:
+            children_rel = set(sum([p.get_children(self.session,
+                                                     RelationshipType.HasVersion, as_relation=True)
+                                    for p in iden_parents], []))
+            frontier_rel |= children_rel
+            par_children = [item.target for item in children_rel]
+            par_children = set(sum([c.get_identities(self.session) for c in par_children], []))
             frontier += par_children
         frontier = set(frontier)
         # frontier contains all identifiers which directly cite the resource
@@ -98,4 +131,8 @@ class SoftwareBroker(object):
         # Expand it to identical identifiers and group them if they repeat
         expanded_sources = [c.source.get_identities(self.session) for c in citations]
         zipped = sorted(zip(expanded_sources, citations), key=lambda x: [xi.value for xi in x[0]])
-        return [(k, list(vi for _, vi in v)) for k, v in groupby(zipped, key=lambda x: x[0])]
+        aggregated_citations = [(k, list(vi for _, vi in v)) for k, v in groupby(zipped, key=lambda x: x[0])]
+        frontier_rel = list(frontier_rel) + list(set(sum([item._get_identities(self.session, as_relation=True) for item in frontier], [])))
+        if with_target_group:
+            aggregated_citations = [(list(frontier), frontier_rel)] + aggregated_citations
+        return aggregated_citations
