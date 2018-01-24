@@ -100,7 +100,6 @@
               "enum": [
                 "literature",
                 "dataset",
-                "software",
                 "unknown"
               ],
               "title": "Object's name",

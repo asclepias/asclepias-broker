@@ -26,7 +26,8 @@ def get_or_create(session, model, **kwargs):
 class SoftwareBroker(object):
 
     def __init__(self):
-        self.engine = create_engine('sqlite:///:memory:', echo=False)
+        #self.engine = create_engine('sqlite:///:memory:', echo=False)
+        self.engine = create_engine('postgresql://admin:postgres@localhost:5432/asclepias', echo=False)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
         Base.metadata.create_all(self.engine)
@@ -56,6 +57,8 @@ class SoftwareBroker(object):
                       'target_id': target.id,
                       'relationship_type': relationship_type}
             relationship = get_or_create(self.session, Relationship, **kwargs)
+            # If it existed, unmark the deletion
+            relationship.deleted = False
 
             self.session.commit()
 
@@ -97,19 +100,19 @@ class SoftwareBroker(object):
             print('')
         id_A = self.session.query(Identifier).filter_by(scheme='DOI', value='A').one()
         ids = id_A.get_identities(self.session)
-        full_c = self.get_citations(id_A, with_parents=True, with_siblings=True, with_target_group=True)
+        full_c = self.get_citations(id_A, with_parents=True, with_siblings=True, expand_target=True)
         from pprint import pprint
         pprint(full_c)
 
 
-    def get_citations(self, identifier, with_parents=False, with_siblings=False, with_target_group=False):
+    def get_citations(self, identifier, with_parents=False, with_siblings=False, expand_target=False):
         # At the beginning, frontier is just identities
         frontier = identifier.get_identities(self.session)
         frontier_rel = set()
         # Expand with parents
         if with_parents or with_siblings:
             parents_rel = set(sum([iden.get_parents(self.session,
-                                                     RelationshipType.HasVersion, as_relation=True)
+                                                    RelationshipType.HasVersion, as_relation=True)
                                     for iden in frontier], []))
             iden_parents = [item.source for item in parents_rel]
             iden_parents = set(sum([p.get_identities(self.session) for p in iden_parents], []))
@@ -119,7 +122,7 @@ class SoftwareBroker(object):
         # Expand with siblings
         if with_siblings:
             children_rel = set(sum([p.get_children(self.session,
-                                                     RelationshipType.HasVersion, as_relation=True)
+                                                   RelationshipType.HasVersion, as_relation=True)
                                     for p in iden_parents], []))
             frontier_rel |= children_rel
             par_children = [item.target for item in children_rel]
@@ -133,6 +136,6 @@ class SoftwareBroker(object):
         zipped = sorted(zip(expanded_sources, citations), key=lambda x: [xi.value for xi in x[0]])
         aggregated_citations = [(k, list(vi for _, vi in v)) for k, v in groupby(zipped, key=lambda x: x[0])]
         frontier_rel = list(frontier_rel) + list(set(sum([item._get_identities(self.session, as_relation=True) for item in frontier], [])))
-        if with_target_group:
+        if expand_target:
             aggregated_citations = [(list(frontier), frontier_rel)] + aggregated_citations
         return aggregated_citations
