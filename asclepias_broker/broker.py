@@ -25,9 +25,9 @@ def get_or_create(session, model, **kwargs):
 
 class SoftwareBroker(object):
 
-    def __init__(self):
-        self.engine = create_engine('sqlite:///:memory:', echo=False)
-        #self.engine = create_engine('postgresql://admin:postgres@localhost:5432/asclepias', echo=False)
+    def __init__(self, db_uri=None):
+        db_uri = db_uri or 'sqlite:///:memory:'
+        self.engine = create_engine(db_uri, echo=False)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
         Base.metadata.create_all(self.engine)

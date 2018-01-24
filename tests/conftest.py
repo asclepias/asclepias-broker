@@ -1,19 +1,26 @@
 import json
+import os
 from pathlib import Path
 
 import pytest
 
 from asclepias_broker.broker import SoftwareBroker
+from asclepias_broker.datastore import Base
 from helpers import generate_payloads
 
 
 @pytest.fixture(scope='function')
 def broker(request):
-    b = SoftwareBroker()
+    db_uri = os.environ.get('SQLALCHEMY_DATABASE_URI')
+    b = SoftwareBroker(db_uri)
     if request.param:
         for evt in generate_payloads(request.param):
             b.handle_event(evt)
     yield b
+
+    # Drop all tables
+    for tbl in reversed(Base.metadata.sorted_tables):
+        b.engine.execute(tbl.delete())
 
 
 #

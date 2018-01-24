@@ -2,9 +2,16 @@ from setuptools import setup
 
 from asclepias_broker import __version__
 
-tests_require = ['pytest', 'jsonschema']
-install_requires = ['sqlalchemy', 'sqlalchemy_utils', 'jsonschema', 'psycopg2', 'flask']
+tests_require = ['pytest']
+install_requires = [
+    'flask',
+    'jsonschema',
+    'psycopg2',
+    'sqlalchemy_utils',
+    'sqlalchemy',
+]
 extras_require = {
+    'postgres': ['psycopg2'],
     'tests': tests_require,
 }
 

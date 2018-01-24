@@ -1,10 +1,23 @@
 notifications:
   email: false
 sudo: false
+
 language: python
 python:
-- '3.6'
+  - '3.6'
+
+services:
+  - postgresql
+addons:
+  postgresql: '9.6'
+
+env:
+  - SQLALCHEMY_DATABASE_URI='sqlite:///asclepias.db' EXTRAS='[tests]'
+  - SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://postgres@localhost/asclepias' EXTRAS='[tests,postgres]'
+
+before_script:
+  - psql -c 'create database asclepias;' -U postgres
 install:
-- travis_retry pip install .[tests]
+  - travis_retry pip install .${EXTRAS}
 script:
-- py.test tests
+  - py.test tests
