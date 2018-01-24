@@ -3,7 +3,7 @@ from setuptools import setup
 from asclepias_broker import __version__
 
 tests_require = ['pytest', 'jsonschema']
-install_requires = ['sqlalchemy', 'sqlalchemy_utils', 'jsonschema']
+install_requires = ['sqlalchemy', 'sqlalchemy_utils', 'jsonschema', 'psycopg2', 'flask']
 extras_require = {
     'tests': tests_require,
 }
