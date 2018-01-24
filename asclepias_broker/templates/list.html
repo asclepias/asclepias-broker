@@ -1,0 +1,6 @@
+<b>Identifiers:</b>
+<ul>
+{% for pid in pids %}
+<li> <a href="{{ url_for('citations', pid_value=pid.value) }}">{{ pid.value }}</a> </li>
+{% endfor %}
+</ul>

@@ -26,8 +26,8 @@ def get_or_create(session, model, **kwargs):
 class SoftwareBroker(object):
 
     def __init__(self):
-        #self.engine = create_engine('sqlite:///:memory:', echo=False)
-        self.engine = create_engine('postgresql://admin:postgres@localhost:5432/asclepias', echo=False)
+        self.engine = create_engine('sqlite:///:memory:', echo=False)
+        #self.engine = create_engine('postgresql://admin:postgres@localhost:5432/asclepias', echo=False)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
         Base.metadata.create_all(self.engine)
@@ -98,7 +98,9 @@ class SoftwareBroker(object):
             for obj in self.session.query(cls):
                 print(obj)
             print('')
-        id_A = self.session.query(Identifier).filter_by(scheme='DOI', value='A').one()
+
+    def print_citations(self, pid_value):
+        id_A = self.session.query(Identifier).filter_by(scheme='DOI', value=pid_value).one()
         ids = id_A.get_identities(self.session)
         full_c = self.get_citations(id_A, with_parents=True, with_siblings=True, expand_target=True)
         from pprint import pprint

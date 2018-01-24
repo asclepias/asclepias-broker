@@ -1,0 +1,33 @@
+{% set t_ids, t_rels = target %}
+<b>Cited object:</b>
+  <b>Equivalent PIDs: </b>
+  {% for id in t_ids %}
+   {{id.value}},
+  {% endfor %}
+  <br />
+  <b>Equivalence relations: </b>
+  {% for rel in t_rels %}
+   {{rel}},
+  {% endfor %}
+<hr />
+<b>Object citations:</b>
+<ul>
+{% for c in citations %}
+  {% set ids, rels = c %}
+  <li>
+  PIDs: [
+    {% for id in ids %}
+     {{id.value}},
+    {% endfor %}
+  ]
+  <br />
+
+  Citing relations: [
+    {% for rel in rels %}
+     {{rel}},
+    {% endfor %}
+  ]
+
+  </li>
+{% endfor %}
+</ul>
