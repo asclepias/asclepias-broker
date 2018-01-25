@@ -6,6 +6,7 @@ import uuid
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, ForeignKey, Integer, Enum, JSON, Boolean
 from sqlalchemy_utils.types import UUIDType, JSONType
+from sqlalchemy.schema import UniqueConstraint, Index
 from sqlalchemy.orm import relationship
 
 Base = declarative_base()
@@ -79,6 +80,12 @@ class Identifier(Base):
 
 class Relationship(Base):
     __tablename__ = 'relationship'
+    __table_args__ = (
+        UniqueConstraint('source_id', 'target_id', 'relationship_type'),
+        Index('idx_source', 'source_id'),
+        Index('idx_target', 'target_id'),
+        Index('idx_relationship_type', 'relationship_type'),
+    )
 
     id = Column(UUIDType, default=uuid.uuid4, primary_key=True)
     source_id = Column(UUIDType, ForeignKey(Identifier.id))

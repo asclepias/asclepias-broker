@@ -1,12 +1,17 @@
 import sys
 import json
 from flask import Flask, request, abort, render_template
+from sqltap.wsgi import SQLTapMiddleware
 
 from asclepias_broker.broker import SoftwareBroker
 from asclepias_broker.datastore import Identifier, Relationship, RelationshipType
 
 app = Flask(__name__)
-broker = SoftwareBroker()
+app.wsgi_app = SQLTapMiddleware(app.wsgi_app)
+
+#engine_url = 'postgresql://admin:postgres@localhost:5432/asclepias'
+engine_url = None
+broker = SoftwareBroker(db_uri=engine_url)
 
 @app.route('/')
 def index():

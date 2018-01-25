@@ -10,7 +10,7 @@
    {{rel}},
   {% endfor %}
 <hr />
-<b>Object citations:</b>
+<b>Object citations ({{citations|length}}):</b>
 <ul>
 {% for c in citations %}
   {% set ids, rels = c %}

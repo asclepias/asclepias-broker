@@ -2,7 +2,7 @@ from setuptools import setup
 
 from asclepias_broker import __version__
 
-tests_require = ['pytest']
+tests_require = ['pytest', 'sqltap', ]
 install_requires = [
     'flask',
     'jsonschema',
@@ -11,12 +11,13 @@ install_requires = [
     'sqlalchemy',
 ]
 extras_require = {
-    'postgres': ['psycopg2'],
+    'postgres': ['psycopg2', ],
     'tests': tests_require,
 }
+extras_require['all'] = sum(v for k, v in extras_require.items(), [])
 
 setup(version=__version__,
-      url="https://github.com/astrofrog/asclepias-toy-broker",
+      url="https://github.com/asclepias/asclepias-broker",
       name="asclepias-broker",
       description='Prototype broker code for the Asclepias project',
       packages=['asclepias_broker'],
