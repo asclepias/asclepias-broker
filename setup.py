@@ -5,8 +5,9 @@ from asclepias_broker import __version__
 tests_require = ['pytest', 'sqltap', ]
 install_requires = [
     'flask',
+    'idutils',
     'jsonschema',
-    'psycopg2',
+    'marshmallow',
     'sqlalchemy_utils',
     'sqlalchemy',
     'arrow',
