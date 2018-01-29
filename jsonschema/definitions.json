@@ -40,27 +40,6 @@
                 }
             }
         },
-        "relationship": {
-            "type": "object",
-            "properties": {
-                "scholix_relationship": {
-                    "type": "string",
-                    "description": "Currently-supported Scholix relations.",
-                    "enum": ["IsReferencedBy", "References", "IsSupplementTo", "IsSupplementedBy", "IsRelatedTo"]
-                },
-                "original_relationship_name": {
-                    "type": "string",
-                    "description": "All other relationship names. Supporting all metadata types of DataCite Metadata Schema 4.1",
-                    "enum": ["IsCitedBy", "Cites", "IsSupplementTo", "IsSupplementedBy", "IsContinuedBy", "Continues", "HasMetadata", "IsMetadataFor", "IsNewVersionOf", "IsPreviousVersionOf", "IsPartOf", "HasPart", "IsReferencedBy", "References", "IsDocumentedBy", "Documents", "IsCompiledBy", "Compiles", "IsVariantFormOf", "IsOriginalFormOf", "IsIdenticalTo", "IsReviewedBy", "Reviews", "IsDerivedFrom", "IsSourceOf", "IsDescribedBy", "Describes", "HasVersion", "IsVersionOf", "IsRequiredBy", "Requires"]
-
-                },
-                "original_relationship_schema": {
-                    "type": "string",
-                    "description": "Schema of the relation type. Currently DataCite only.",
-                    "enum": ["DataCite"]
-                }
-            }
-        },
         "object": {
             "properties": {
                 "identifier": {

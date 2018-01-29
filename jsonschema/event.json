@@ -8,8 +8,8 @@
     "properties": {
         "event_type": {
             "type": "string",
-            "description": "Type of the event. Controlled vocabulary: 'relation_created' or 'relation_deleted'",
-            "enum": ["relation_created", "relation_deleted", "object_created", "object_updated", "object_deleted"]
+            "description": "Type of the event. Controlled vocabulary: 'relationship_created' or 'relationship_deleted'",
+            "enum": ["relationship_created", "relationship_deleted", "object_created", "object_updated", "object_deleted"]
 
         },
         "creator": {

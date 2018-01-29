@@ -2,7 +2,7 @@
 
 import enum
 
-from .datastore import RelationshipType, Identifier
+from .datastore import Relation, Identifier
 
 
 DATACITE_RELATION_MAP = {
@@ -29,11 +29,11 @@ DATACITE_RELATION_MAP = {
 INV_DATACITE_RELATION_MAP = dict(sum([[(vv, (k, inv)) for vv, inv in v] for k, v in DATACITE_RELATION_MAP.items()], []))
 
 
-def from_scholix_relationship_type(rel_type):
-    datacite_subtype = rel_type.get('SubType')
-    if datacite_subtype and rel_type.get('SubTypeSchema') == 'DataCite':
+def from_scholix_relation(scholix_relation):
+    datacite_subtype = scholix_relation.get('SubType')
+    if datacite_subtype and scholix_relation.get('SubTypeSchema') == 'DataCite':
         type_name = datacite_subtype
     else:
-        type_name = rel_type['Name']
+        type_name = scholix_relation['Name']
     rel_name, inversed = INV_DATACITE_RELATION_MAP.get(type_name, ('IsRelatedTo', False))
-    return getattr(RelationshipType, rel_name), inversed
+    return getattr(Relation, rel_name), inversed

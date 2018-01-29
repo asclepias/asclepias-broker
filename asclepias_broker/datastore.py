@@ -9,12 +9,12 @@ from sqlalchemy.types import DateTime
 from sqlalchemy_utils.types import UUIDType, JSONType
 from sqlalchemy_utils.models import Timestamp
 from sqlalchemy.schema import PrimaryKeyConstraint, UniqueConstraint, Index
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship as orm_relationship
 
 Base = declarative_base()
 
 
-class RelationshipType(enum.Enum):
+class Relation(enum.Enum):
     Cites = 1
     IsSupplementTo = 2
     HasVersion = 3
@@ -23,8 +23,8 @@ class RelationshipType(enum.Enum):
 
 
 class EventType(enum.Enum):
-    RelationCreated = 1
-    RelationDeleted = 2
+    RelationshipCreated = 1
+    RelationshipDeleted = 2
 
 
 class PayloadType(enum.Enum):
@@ -55,7 +55,7 @@ class Identifier(Base, Timestamp):
             value=self.value, scheme=self.scheme).one_or_none()
 
     def _get_related(self, session, condition, relationship, with_deleted=False):
-        cond = condition & (Relationship.relationship_type == relationship)
+        cond = condition & (Relationship.relation == relationship)
         if not with_deleted:
             cond &= (Relationship.deleted == False)
         return session.query(Relationship).filter(cond)
@@ -63,7 +63,7 @@ class Identifier(Base, Timestamp):
     def _get_identities(self, session, as_relation=False):
         """Get the first-layer of 'Identical' Identifies."""
         cond = ((Relationship.source == self) | (Relationship.target == self))
-        q = self._get_related(session, cond, RelationshipType.IsIdenticalTo)
+        q = self._get_related(session, cond, Relation.IsIdenticalTo)
         if as_relation:
             return q.all()
         else:
@@ -83,7 +83,7 @@ class Identifier(Base, Timestamp):
         return list(ids)
 
     def get_parents(self, session, rel_type, as_relation=False):
-        """Get all parents of given Identifier for given relationship type."""
+        """Get all parents of given Identifier for given relation."""
         q = self._get_related(session, (Relationship.target == self), rel_type)
         if as_relation:
             return q.all()
@@ -91,7 +91,7 @@ class Identifier(Base, Timestamp):
             return [item.source for item in q]
 
     def get_children(self, session, rel_type, as_relation=False):
-        """Get all children of given Identifier for given relationship type."""
+        """Get all children of given Identifier for given relation."""
         q = self._get_related(session, (Relationship.source == self), rel_type)
         if as_relation:
             return q.all()
@@ -102,23 +102,23 @@ class Identifier(Base, Timestamp):
 class Relationship(Base, Timestamp):
     __tablename__ = 'relationship'
     __table_args__ = (
-        UniqueConstraint('source_id', 'target_id', 'relationship_type'),
+        UniqueConstraint('source_id', 'target_id', 'relation'),
         Index('idx_source', 'source_id'),
         Index('idx_target', 'target_id'),
-        Index('idx_relationship_type', 'relationship_type'),
+        Index('idx_relation', 'relation'),
     )
 
     id = Column(UUIDType, default=uuid.uuid4, primary_key=True)
     source_id = Column(UUIDType, ForeignKey(Identifier.id))
     target_id = Column(UUIDType, ForeignKey(Identifier.id))
-    relationship_type = Column(Enum(RelationshipType))
+    relation = Column(Enum(Relation))
     deleted = Column(Boolean, default=False)
 
-    source = relationship(Identifier, foreign_keys=[source_id], backref='sources')
-    target = relationship(Identifier, foreign_keys=[target_id], backref='targets')
+    source = orm_relationship(Identifier, foreign_keys=[source_id], backref='sources')
+    target = orm_relationship(Identifier, foreign_keys=[target_id], backref='targets')
 
     def __repr__(self):
-        return "<{self.source.value} {self.relationship_type.name} {self.target.value}{deleted}>".format(self=self, deleted=" [D]" if self.deleted else "")
+        return "<{self.source.value} {self.relation.name} {self.target.value}{deleted}>".format(self=self, deleted=" [D]" if self.deleted else "")
 
 
 class Event(Base, Timestamp):

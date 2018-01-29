@@ -8,22 +8,22 @@ import jsonschema
 #
 # Events generation helpers
 #
-EVENT_TYPE_MAP = {'C': 'relation_created', 'D': 'relation_deleted'}
-SCHOLIX_RELATIONS = {'references', 'isReferencedBy', 'isSupplementTo',
-                     'isSupplementedBy'}
-RELATIONSHIP_TYPES_ENUM = [
+EVENT_TYPE_MAP = {'C': 'relationship_created', 'D': 'relationship_deleted'}
+SCHOLIX_RELATIONS = {'References', 'IsReferencedBy', 'IsSupplementTo',
+                     'IsSupplementedBy'}
+RELATIONS_ENUM = [
     'References', 'IsReferencedBy', 'IsSupplementTo', 'IsSupplementedBy',
     'IsIdenticalTo', 'Cites', 'IsCitedBy', 'IsVersionOf', 'HasVersion']
 
 INPUT_ITEMS_SCHEMA = {
     'definitions': {
-        'Relation': {
+        'Relationship': {
             'type': 'array',
             'items': [
                 {'type': 'string', 'title': 'Event type', 'enum': ['C', 'D']},
                 {'type': 'string', 'title': 'Source identifier'},
-                {'type': 'string', 'title': 'Relationship type',
-                 'enum': RELATIONSHIP_TYPES_ENUM},
+                {'type': 'string', 'title': 'Relation',
+                 'enum': RELATIONS_ENUM},
                 {'type': 'string', 'title': 'Target identifier'},
                 {'type': 'string', 'title': 'Publication Date'},
             ],
@@ -33,8 +33,8 @@ INPUT_ITEMS_SCHEMA = {
     'items': {
         'oneOf': [
             # Allow nested, multi-payload events
-            {'type': 'array', 'items': {'$ref': '#/definitions/Relation'}},
-            {'$ref': '#/definitions/Relation'},
+            {'type': 'array', 'items': {'$ref': '#/definitions/Relationship'}},
+            {'$ref': '#/definitions/Relationship'},
         ],
     }
 }
@@ -47,7 +47,7 @@ class Event:
         self.id = kwargs.get('id', str(uuid.uuid4()))
         self.time = kwargs.get('time', str(int(time.time())))
         self.payloads = kwargs.get('payloads', [])
-        self.event_type = kwargs.get('event_type', 'relation_created')
+        self.event_type = kwargs.get('event_type', 'relationship_created')
         self.creator = kwargs.get('creator', 'ACME Inc.')
         self.source = kwargs.get('source', 'Test')
 
@@ -63,17 +63,17 @@ class Event:
             'Type': type_ or {'Name': 'unknown'},
         }
 
-    def _gen_relationship_type(self, relationship_type):
-        if relationship_type not in SCHOLIX_RELATIONS:
-            return {'Name': 'IsRelatedTo', 'SubType': relationship_type,
+    def _gen_relation(self, relation):
+        if relation not in SCHOLIX_RELATIONS:
+            return {'Name': 'IsRelatedTo', 'SubType': relation,
                     'SubTypeSchema': 'DataCite'}
-        return {'Name': relationship_type}
+        return {'Name': relation}
 
-    def add_payload(self, source, relation_type, target, publication_date,
+    def add_payload(self, source, relation, target, publication_date,
                     provider=None):
         self.payloads.append({
             'Source': self._gen_object(source),
-            'RelationshipType': self._gen_relationship_type(relation_type),
+            'RelationshipType': self._gen_relation(relation),
             'Target': self._gen_object(target),
             'LinkPublicationDate': publication_date,
             'LinkProvider': [provider or {'Name': 'Link Provider Ltd.'}]

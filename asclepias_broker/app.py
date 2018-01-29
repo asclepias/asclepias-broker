@@ -4,7 +4,7 @@ from flask import Flask, request, abort, render_template, current_app
 from sqltap.wsgi import SQLTapMiddleware
 
 from asclepias_broker.broker import SoftwareBroker
-from asclepias_broker.datastore import Identifier, Relationship, RelationshipType
+from asclepias_broker.datastore import Identifier, Relationship, Relation
 
 app = Flask(__name__)
 app.wsgi_app = SQLTapMiddleware(app.wsgi_app)
