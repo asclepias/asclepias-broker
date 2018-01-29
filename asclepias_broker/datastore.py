@@ -32,6 +32,11 @@ class PayloadType(enum.Enum):
     Identifier = 2
 
 
+class GroupType(enum.Enum):
+    Identity = 1
+    Version = 2
+
+
 class Identifier(Base, Timestamp):
     """A persistent Identifier."""
 
@@ -152,3 +157,34 @@ class ObjectEvent(Base, Timestamp):
     def __repr__(self):
         """String representation of the Identifier."""
         return "<{self.event_id}: {self.object_uuid}>".format(self=self)
+
+
+class Group(Base, Timestamp):
+    id = Column(UUIDType, primary_key=True)
+    type = Column(Enum(GroupType))
+
+class GroupRelationship(Base, Timestamp):
+    id = Column(UUIDType, primary_key=True)
+    type = Column(Enum(GroupType))
+    relation = Column(Enum(Relation))
+    source_id = Column(UUIDType, ForeignKey(Group.id))
+    target_id = Column(UUIDType, ForeignKey(Group.id))
+    # TODO:
+    # We don't store 'deleted' as in the relation as most likely don't need
+    # that as 'ground truth' in precomputed groups anyway
+
+class Identifier2Group(Base, Timestamp):
+    identifier = Column(UUIDType, ForeignKey(Identifier.id))
+    group = Column(UUIDType, ForeignKey(Group.id))
+
+class Relationship2GroupRelationship(Base, Timestamp):
+    relationship = Column(UUIDType, ForeignKey(Relationship.id))
+    group_relationship = Column(UUIDType, ForeignKey(GroupRelationship.id))
+
+class GroupM2M(Base, Timestamp):
+    group = Column(UUIDType, ForeignKey(Group.id))
+    subgroup = Column(UUIDType, ForeignKey(Group.id))
+
+class GroupRelationshipM2M(Base, Timestamp):
+    group_relationship = Column(UUIDType, ForeignKey(GroupRelationship.id))
+    subrelationship = Column(UUIDType, ForeignKey(GroupRelationship.id))
