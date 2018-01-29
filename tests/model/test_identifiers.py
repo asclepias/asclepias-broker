@@ -16,6 +16,11 @@ from asclepias_broker.datastore import Identifier
          [{'A', 'B'}]),
         ([
             ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
+            ['D', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
+         ],
+         [{'A'}, {'B'}]),
+        ([
+            ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
             ['C', 'B', 'IsIdenticalTo', 'C', '2018-01-01'],
          ],
          [{'A', 'B', 'C'}]),
@@ -63,6 +68,15 @@ from asclepias_broker.datastore import Identifier
             ['C', 'Z', 'IsIdenticalTo', 'A', '2018-01-01'],
          ],
          [{'A', 'B', 'C', 'X', 'Y', 'Z'}]),
+        ([
+            ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
+            ['C', 'B', 'IsIdenticalTo', 'C', '2018-01-01'],
+            ['C', 'X', 'IsIdenticalTo', 'Y', '2018-01-01'],
+            ['C', 'X', 'IsIdenticalTo', 'Z', '2018-01-01'],
+            ['C', 'Z', 'IsIdenticalTo', 'A', '2018-01-01'],
+            ['D', 'Z', 'IsIdenticalTo', 'A', '2018-01-01'],
+         ],
+         [{'A', 'B', 'C'}, {'X', 'Y', 'Z'}]),
     ],
     indirect=['broker'])
 def test_identities(broker, result_sets):

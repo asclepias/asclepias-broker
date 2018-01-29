@@ -9,12 +9,13 @@ install_requires = [
     'psycopg2',
     'sqlalchemy_utils',
     'sqlalchemy',
+    'arrow',
 ]
 extras_require = {
     'postgres': ['psycopg2', ],
     'tests': tests_require,
 }
-extras_require['all'] = sum(v for k, v in extras_require.items(), [])
+extras_require['all'] = sum((v for k, v in extras_require.items()), [])
 
 setup(version=__version__,
       url="https://github.com/asclepias/asclepias-broker",

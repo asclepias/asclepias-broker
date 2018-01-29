@@ -1,6 +1,6 @@
 import sys
 import json
-from flask import Flask, request, abort, render_template
+from flask import Flask, request, abort, render_template, current_app
 from sqltap.wsgi import SQLTapMiddleware
 
 from asclepias_broker.broker import SoftwareBroker
@@ -9,9 +9,11 @@ from asclepias_broker.datastore import Identifier, Relationship, RelationshipTyp
 app = Flask(__name__)
 app.wsgi_app = SQLTapMiddleware(app.wsgi_app)
 
-#engine_url = 'postgresql://admin:postgres@localhost:5432/asclepias'
-engine_url = None
+engine_url = 'postgresql://admin:postgres@localhost:5432/asclepias'
+#engine_url = None
+#engine_url = 'postgresql://admin:postgres@localhost:5432/asclepias2'
 broker = SoftwareBroker(db_uri=engine_url)
+app.broker = broker
 
 @app.route('/')
 def index():
@@ -19,7 +21,8 @@ def index():
 
 @app.route('/receive/', methods=['POST', ])
 def event_receiver():
-    pass
+    app.broker.handle_event(request.json)
+    return "OK", 200
 
 
 @app.route('/load/')
@@ -35,6 +38,7 @@ def load_events():
 def listpids():
     pids = broker.session.query(Identifier)
     return render_template('list.html', pids=pids)
+
 
 @app.route('/citations/<path:pid_value>/')
 def citations(pid_value):

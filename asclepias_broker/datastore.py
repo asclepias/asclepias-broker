@@ -5,8 +5,10 @@ import uuid
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, ForeignKey, Integer, Enum, JSON, Boolean
+from sqlalchemy.types import DateTime
 from sqlalchemy_utils.types import UUIDType, JSONType
-from sqlalchemy.schema import UniqueConstraint, Index
+from sqlalchemy_utils.models import Timestamp
+from sqlalchemy.schema import PrimaryKeyConstraint, UniqueConstraint, Index
 from sqlalchemy.orm import relationship
 
 Base = declarative_base()
@@ -20,11 +22,25 @@ class RelationshipType(enum.Enum):
     IsRelatedTo = 5
 
 
-class Identifier(Base):
+class EventType(enum.Enum):
+    RelationCreated = 1
+    RelationDeleted = 2
+
+
+class PayloadType(enum.Enum):
+    Relationship = 1
+    Identifier = 2
+
+
+class Identifier(Base, Timestamp):
     """A persistent Identifier."""
 
     __tablename__ = 'identifier'
-    # TODO Maybe separate ID and UUID into two columns for better indexing
+    __table_args__ = (
+        UniqueConstraint('value', 'scheme'),
+        Index('idx_value', 'value'),
+        Index('idx_scheme', 'scheme'),
+    )
     id = Column(UUIDType, default=uuid.uuid4, primary_key=True)
     value = Column(String)
     scheme = Column(String)
@@ -32,6 +48,11 @@ class Identifier(Base):
     def __repr__(self):
         """String representation of the Identifier."""
         return "<{self.scheme}: {self.value}>".format(self=self)
+
+    def get(self, session):
+        """Get the identifier from the database."""
+        return session.query(self.__class__).filter_by(
+            value=self.value, scheme=self.scheme).one_or_none()
 
     def _get_related(self, session, condition, relationship, with_deleted=False):
         cond = condition & (Relationship.relationship_type == relationship)
@@ -78,7 +99,7 @@ class Identifier(Base):
             return [item.target for item in q]
 
 
-class Relationship(Base):
+class Relationship(Base, Timestamp):
     __tablename__ = 'relationship'
     __table_args__ = (
         UniqueConstraint('source_id', 'target_id', 'relationship_type'),
@@ -98,3 +119,36 @@ class Relationship(Base):
 
     def __repr__(self):
         return "<{self.source.value} {self.relationship_type.name} {self.target.value}{deleted}>".format(self=self, deleted=" [D]" if self.deleted else "")
+
+
+class Event(Base, Timestamp):
+    __tablename__ = 'event'
+
+    id = Column(UUIDType, primary_key=True)
+    description = Column(String, nullable=True)
+    event_type = Column(Enum(EventType))
+    creator = Column(String)
+    source = Column(String)
+    payload = Column(JSONType)
+    time = Column(DateTime)
+
+    def __repr__(self):
+        """String representation of the Identifier."""
+        return "<{self.id}: {self.time}>".format(self=self)
+
+
+class ObjectEvent(Base, Timestamp):
+    __tablename__ = 'objectevent'
+    __table_args__ = (
+        PrimaryKeyConstraint('event_id', 'object_uuid', 'payload_type',
+                             'payload_index', name='pk_objectevent'),
+    )
+
+    event_id = Column(UUIDType, ForeignKey(Event.id))
+    object_uuid = Column(UUIDType)
+    payload_type = Column(Enum(PayloadType))
+    payload_index = Column(Integer)
+
+    def __repr__(self):
+        """String representation of the Identifier."""
+        return "<{self.event_id}: {self.object_uuid}>".format(self=self)

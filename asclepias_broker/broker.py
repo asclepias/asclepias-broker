@@ -1,26 +1,33 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy_utils.functions import create_database, database_exists
 from itertools import groupby
+from copy import deepcopy
+import arrow
+import json
+import uuid
 
-from .datastore import (Identifier, Base, Relationship, RelationshipType)
+from .datastore import Identifier, Base, Relationship, RelationshipType, \
+    Event, ObjectEvent, EventType, PayloadType
 from .schema import from_scholix_relationship_type
 
 
 def get(session, model, **kwargs):
     return session.query(model).filter_by(**kwargs).first()
 
+
+def create(session, model, **kwargs):
+    instance = model(**kwargs)
+    session.add(instance)
+    return instance
+
+
 def get_or_create(session, model, **kwargs):
-    # https://stackoverflow.com/a/2587041/180783
     instance = get(session, model, **kwargs)
     if instance:
         return instance
     else:
-        instance = model(**kwargs)
-        session.add(instance)
-        instance2 = session.query(model).filter_by(**kwargs).first()
-        if instance is not instance2:
-            raise ValueError(f"Error creating instance: {instance}")
-        return instance2
+        return create(session, model, **kwargs)
 
 
 class SoftwareBroker(object):
@@ -36,30 +43,82 @@ class SoftwareBroker(object):
         handler = getattr(self, event['event_type'])
         handler(event)
 
+    def create_event(self, event):
+        event_kwargs = deepcopy(event)
+        ev_type_map = {
+            'relation_created': EventType.RelationCreated,
+            'relation_deleted': EventType.RelationDeleted,
+        }
+        event_kwargs['event_type'] = ev_type_map[event['event_type']]
+        event_kwargs['payload'] = event
+        event_kwargs['time'] = arrow.get(event_kwargs['time']).datetime
+        event_obj = get(self.session, Event, id=event['id'])
+        if not event_obj:
+            event_obj = create(self.session, Event, **event_kwargs)
+        return event_obj
+
+    def create_relation_object_events(self, event, relationship, payload_idx):
+        # Create the Relation entry
+        rel_obj = get_or_create(self.session, ObjectEvent, event_id=event.id,
+            object_uuid=relationship.id,
+            payload_type=PayloadType.Relationship,
+            payload_index=payload_idx)
+
+        # Create entries for source and target
+        src_obj = get_or_create(self.session, ObjectEvent, event_id=event.id,
+            object_uuid=relationship.source.id,
+            payload_type=PayloadType.Identifier, payload_index=payload_idx)
+        tar_obj = get_or_create(self.session, ObjectEvent, event_id=event.id,
+            object_uuid=relationship.target.id,
+            payload_type=PayloadType.Identifier, payload_index=payload_idx)
+        return rel_obj, src_obj, tar_obj
+
+
     def relation_created(self, event):
-        for payload in event['payload']:
+        event_obj = self.create_event(event)
+        for payload_idx, payload in enumerate(event['payload']):
 
             # TODO Do in one transaction
             rel_type  = payload['RelationshipType']
             relationship_type, inversed = from_scholix_relationship_type(rel_type)
 
             pljson = payload['Source']['Identifier']
-            kwargs = {'scheme': pljson['IDScheme'], 'value': pljson['ID']}
-            source = get_or_create(self.session, Identifier, **kwargs)
+            kwargs = {
+                'scheme': pljson['IDScheme'],
+                'value': pljson['ID'],
+            }
+            source = get(self.session, Identifier, **kwargs)
+            if not source:
+                kwargs['id'] = uuid.uuid4()
+                source = create(self.session, Identifier, **kwargs)
 
             pljson = payload['Target']['Identifier']
-            kwargs = {'scheme': pljson['IDScheme'], 'value': pljson['ID']}
-            target = get_or_create(self.session, Identifier, **kwargs)
+            kwargs = {
+                'scheme': pljson['IDScheme'],
+                'value': pljson['ID'],
+            }
+            target = get(self.session, Identifier, **kwargs)
+            if not target:
+                kwargs['id'] = uuid.uuid4()
+                target = create(self.session, Identifier, **kwargs)
+
             if inversed:
                 source, target = target, source
 
-            kwargs = {'source_id': source.id,
-                      'target_id': target.id,
-                      'relationship_type': relationship_type}
-            relationship = get_or_create(self.session, Relationship, **kwargs)
-            # If it existed, unmark the deletion
-            relationship.deleted = False
+            kwargs = {
+                'source_id': source.id,
+                'target_id': target.id,
+                'relationship_type': relationship_type,
+            }
+            relationship = get(self.session, Relationship, **kwargs)
+            if not relationship:
+                kwargs['id'] = uuid.uuid4()
+                relationship = create(self.session, Relationship, **kwargs)
+            else:
+                # If it existed, unmark the deletion
+                relationship.deleted = False
 
+            self.create_relation_object_events(event_obj, relationship, payload_idx)
             self.session.commit()
 
     def relation_deleted(self, event):
@@ -88,16 +147,16 @@ class SoftwareBroker(object):
                 self.session.add(relationship)
                 self.session.commit()
 
-
     def show_all(self):
-        print('')
-        for cls in [Identifier, Relationship]:
-            name = cls.__name__.upper() + 'S'
-            print(name)
-            print('-' * len(name))
+        lines = []
+        for cls in [Identifier, Relationship, Event, ObjectEvent]:
+            name = cls.__name__.upper()
+            lines.append(name)
+            lines.append('-' * len(name))
             for obj in self.session.query(cls):
-                print(obj)
-            print('')
+                lines.append(str(obj))
+            lines.append("")
+        return "\n".join(lines)
 
     def print_citations(self, pid_value):
         id_A = self.session.query(Identifier).filter_by(scheme='DOI', value=pid_value).one()
