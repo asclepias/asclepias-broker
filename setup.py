@@ -5,6 +5,7 @@ from asclepias_broker import __version__
 tests_require = ['pytest', 'pytest-cov', 'sqltap', ]
 install_requires = [
     'flask',
+    'flask-shell-ipython',
     'idutils',
     'jsonschema',
     'marshmallow',
