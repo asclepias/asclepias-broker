@@ -2,7 +2,7 @@ from setuptools import setup
 
 from asclepias_broker import __version__
 
-tests_require = ['pytest', 'sqltap', ]
+tests_require = ['pytest', 'pytest-cov', 'sqltap', ]
 install_requires = [
     'flask',
     'idutils',
