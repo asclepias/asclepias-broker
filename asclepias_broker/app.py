@@ -10,8 +10,18 @@ app = Flask(__name__)
 app.wsgi_app = SQLTapMiddleware(app.wsgi_app)
 
 engine_url = 'postgresql://admin:postgres@localhost:5432/asclepias'
-#engine_url = None
-#engine_url = 'postgresql://admin:postgres@localhost:5432/asclepias2'
+# engine_url = None
+# engine_url = 'postgresql://admin:postgres@localhost:5432/asclepias2'
+
+# recreate = True
+recreate = False
+if recreate:
+    from sqlalchemy_utils import drop_database, create_database, database_exists
+    if database_exists(engine_url):
+        drop_database(engine_url)
+    create_database(engine_url)
+
+
 broker = SoftwareBroker(db_uri=engine_url)
 app.broker = broker
 
@@ -43,7 +53,7 @@ def listpids():
 @app.route('/citations/<path:pid_value>/')
 def citations(pid_value):
     identifier = broker.session.query(Identifier).filter_by(
-        scheme='DOI', value=pid_value).first()
+        scheme='doi', value=pid_value).first()
     if not identifier:
         return abort(404)
     else:

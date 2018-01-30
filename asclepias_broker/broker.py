@@ -1,15 +1,11 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy_utils.functions import create_database, database_exists
 from itertools import groupby
-from copy import deepcopy
-import arrow
-import json
-import uuid
 
-from .datastore import Identifier, Base, Relationship, Relation, \
-    Event, ObjectEvent, EventType, PayloadType
-from .schema import from_scholix_relation
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
+
+from .datastore import (Base, Event, Identifier, ObjectEvent, PayloadType,
+                        Relation, Relationship)
+from .schemas.loaders import EventSchema, RelationshipSchema
 
 
 def get(session, model, **kwargs):
@@ -35,26 +31,22 @@ class SoftwareBroker(object):
     def __init__(self, db_uri=None):
         db_uri = db_uri or 'sqlite:///:memory:'
         self.engine = create_engine(db_uri, echo=False)
-        Session = sessionmaker(bind=self.engine)
+        Session = scoped_session(sessionmaker(bind=self.engine))
         self.session = Session()
         Base.metadata.create_all(self.engine)
 
     def handle_event(self, event):
         handler = getattr(self, event['event_type'])
-        handler(event)
+        with self.session.begin_nested():
+            handler(event)
+        self.session.commit()
 
     def create_event(self, event):
-        event_kwargs = deepcopy(event)
-        ev_type_map = {
-            'relationship_created': EventType.RelationshipCreated,
-            'relationship_deleted': EventType.RelationshipDeleted,
-        }
-        event_kwargs['event_type'] = ev_type_map[event['event_type']]
-        event_kwargs['payload'] = event
-        event_kwargs['time'] = arrow.get(event_kwargs['time']).datetime
-        event_obj = get(self.session, Event, id=event['id'])
-        if not event_obj:
-            event_obj = create(self.session, Event, **event_kwargs)
+        # TODO: Skip existing events?
+        # TODO: Check `errors`
+        event_obj, errors = EventSchema(
+            session=self.session, check_existing=True).load(event)
+        self.session.add(event_obj)
         return event_obj
 
     def create_relation_object_events(self, event, relationship, payload_idx):
@@ -73,79 +65,23 @@ class SoftwareBroker(object):
             payload_type=PayloadType.Identifier, payload_index=payload_idx)
         return rel_obj, src_obj, tar_obj
 
-
     def relationship_created(self, event):
-        event_obj = self.create_event(event)
-        for payload_idx, payload in enumerate(event['payload']):
-
-            # TODO Do in one transaction
-            rel_type  = payload['RelationshipType']
-            relation, inversed = from_scholix_relation(rel_type)
-
-            pljson = payload['Source']['Identifier']
-            kwargs = {
-                'scheme': pljson['IDScheme'],
-                'value': pljson['ID'],
-            }
-            source = get(self.session, Identifier, **kwargs)
-            if not source:
-                kwargs['id'] = uuid.uuid4()
-                source = create(self.session, Identifier, **kwargs)
-
-            pljson = payload['Target']['Identifier']
-            kwargs = {
-                'scheme': pljson['IDScheme'],
-                'value': pljson['ID'],
-            }
-            target = get(self.session, Identifier, **kwargs)
-            if not target:
-                kwargs['id'] = uuid.uuid4()
-                target = create(self.session, Identifier, **kwargs)
-
-            if inversed:
-                source, target = target, source
-
-            kwargs = {
-                'source_id': source.id,
-                'target_id': target.id,
-                'relation': relation,
-            }
-            relationship = get(self.session, Relationship, **kwargs)
-            if not relationship:
-                kwargs['id'] = uuid.uuid4()
-                relationship = create(self.session, Relationship, **kwargs)
-            else:
-                # If it existed, unmark the deletion
-                relationship.deleted = False
-
-            self.create_relation_object_events(event_obj, relationship, payload_idx)
-            self.session.commit()
+        self._handle_relationship_event(event)
 
     def relationship_deleted(self, event):
-        for payload in event['payload']:
+        self._handle_relationship_event(event, delete=True)
 
-            rel_type  = payload['RelationshipType']
-            relation, inversed = from_scholix_relation(rel_type)
-
-            pljson = payload['Source']['Identifier']
-            kwargs = {'scheme': pljson['IDScheme'], 'value': pljson['ID']}
-            source = get(self.session, Identifier, **kwargs)
-
-            pljson = payload['Target']['Identifier']
-            kwargs = {'scheme': pljson['IDScheme'], 'value': pljson['ID']}
-            target = get(self.session, Identifier, **kwargs)
-            if inversed:
-                source, target = target, source
-
-            kwargs = {'source_id': source.id,
-                      'target_id': target.id,
-                      'relation': relation}
-            if source and target:
-                relationship = get(self.session, Relationship, **kwargs)
-            if relationship:
-                relationship.deleted = True
+    # TODO: Test if this generalization works as expected
+    def _handle_relationship_event(self, event, delete=False):
+        event_obj = self.create_event(event)
+        for payload_idx, payload in enumerate(event['payload']):
+            with self.session.begin_nested():
+                relationship, errors = RelationshipSchema(
+                    session=self.session, check_existing=True).load(payload)
+                if relationship.id:
+                    relationship.deleted = delete
                 self.session.add(relationship)
-                self.session.commit()
+                self.create_relation_object_events(event_obj, relationship, payload_idx)
 
     def show_all(self):
         lines = []

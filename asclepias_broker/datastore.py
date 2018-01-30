@@ -54,10 +54,11 @@ class Identifier(Base, Timestamp):
         """String representation of the Identifier."""
         return "<{self.scheme}: {self.value}>".format(self=self)
 
-    def get(self, session):
+    @classmethod
+    def get(cls, session, value=None, scheme=None, **kwargs):
         """Get the identifier from the database."""
-        return session.query(self.__class__).filter_by(
-            value=self.value, scheme=self.scheme).one_or_none()
+        return session.query(cls).filter_by(
+            value=value, scheme=scheme).one_or_none()
 
     def _get_related(self, session, condition, relationship, with_deleted=False):
         cond = condition & (Relationship.relation == relationship)
@@ -122,6 +123,12 @@ class Relationship(Base, Timestamp):
     source = orm_relationship(Identifier, foreign_keys=[source_id], backref='sources')
     target = orm_relationship(Identifier, foreign_keys=[target_id], backref='targets')
 
+    @classmethod
+    def get(cls, session, source, target, relation, **kwargs):
+        return session.query(cls).filter_by(
+            source_id=source.id, target_id=target.id,
+            relation=relation).one_or_none()
+
     def __repr__(self):
         return "<{self.source.value} {self.relation.name} {self.target.value}{deleted}>".format(self=self, deleted=" [D]" if self.deleted else "")
 
@@ -136,6 +143,10 @@ class Event(Base, Timestamp):
     source = Column(String)
     payload = Column(JSONType)
     time = Column(DateTime)
+
+    @classmethod
+    def get(cls, session, id=None, **kwargs):
+        return session.query(cls).filter_by(id=id).one_or_none()
 
     def __repr__(self):
         """String representation of the Identifier."""
@@ -159,32 +170,32 @@ class ObjectEvent(Base, Timestamp):
         return "<{self.event_id}: {self.object_uuid}>".format(self=self)
 
 
-class Group(Base, Timestamp):
-    id = Column(UUIDType, primary_key=True)
-    type = Column(Enum(GroupType))
+# class Group(Base, Timestamp):
+#     id = Column(UUIDType, primary_key=True)
+#     type = Column(Enum(GroupType))
 
-class GroupRelationship(Base, Timestamp):
-    id = Column(UUIDType, primary_key=True)
-    type = Column(Enum(GroupType))
-    relation = Column(Enum(Relation))
-    source_id = Column(UUIDType, ForeignKey(Group.id))
-    target_id = Column(UUIDType, ForeignKey(Group.id))
-    # TODO:
-    # We don't store 'deleted' as in the relation as most likely don't need
-    # that as 'ground truth' in precomputed groups anyway
+# class GroupRelationship(Base, Timestamp):
+#     id = Column(UUIDType, primary_key=True)
+#     type = Column(Enum(GroupType))
+#     relation = Column(Enum(Relation))
+#     source_id = Column(UUIDType, ForeignKey(Group.id))
+#     target_id = Column(UUIDType, ForeignKey(Group.id))
+#     # TODO:
+#     # We don't store 'deleted' as in the relation as most likely don't need
+#     # that as 'ground truth' in precomputed groups anyway
 
-class Identifier2Group(Base, Timestamp):
-    identifier = Column(UUIDType, ForeignKey(Identifier.id))
-    group = Column(UUIDType, ForeignKey(Group.id))
+# class Identifier2Group(Base, Timestamp):
+#     identifier = Column(UUIDType, ForeignKey(Identifier.id))
+#     group = Column(UUIDType, ForeignKey(Group.id))
 
-class Relationship2GroupRelationship(Base, Timestamp):
-    relationship = Column(UUIDType, ForeignKey(Relationship.id))
-    group_relationship = Column(UUIDType, ForeignKey(GroupRelationship.id))
+# class Relationship2GroupRelationship(Base, Timestamp):
+#     relationship = Column(UUIDType, ForeignKey(Relationship.id))
+#     group_relationship = Column(UUIDType, ForeignKey(GroupRelationship.id))
 
-class GroupM2M(Base, Timestamp):
-    group = Column(UUIDType, ForeignKey(Group.id))
-    subgroup = Column(UUIDType, ForeignKey(Group.id))
+# class GroupM2M(Base, Timestamp):
+#     group = Column(UUIDType, ForeignKey(Group.id))
+#     subgroup = Column(UUIDType, ForeignKey(Group.id))
 
-class GroupRelationshipM2M(Base, Timestamp):
-    group_relationship = Column(UUIDType, ForeignKey(GroupRelationship.id))
-    subrelationship = Column(UUIDType, ForeignKey(GroupRelationship.id))
+# class GroupRelationshipM2M(Base, Timestamp):
+#     group_relationship = Column(UUIDType, ForeignKey(GroupRelationship.id))
+#     subrelationship = Column(UUIDType, ForeignKey(GroupRelationship.id))

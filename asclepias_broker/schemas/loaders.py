@@ -1,11 +1,14 @@
 """Marshmallow loaders."""
 
+import arrow
 import idutils
-from marshmallow import pre_load, Schema, fields, missing, post_load, validates_schema
+from marshmallow import (Schema, fields, missing, post_load, pre_load,
+                         validates_schema)
 from marshmallow.exceptions import ValidationError
 from marshmallow.validate import OneOf
 
-from ..datastore import Identifier, Relationship, Relation
+from ..datastore import Event, EventType, Identifier, Relation, Relationship
+from .utils import to_model
 
 DATACITE_RELATION_MAP = {
     'Cites': [
@@ -44,13 +47,10 @@ def from_scholix_relationship_type(rel_type):
     return getattr(Relation, rel_name), inversed
 
 
+@to_model(Identifier)
 class IdentifierSchema(Schema):
 
-    @pre_load
-    def remove_envelope(self, obj):
-        return obj.get('Identifier', obj)
-
-    value = fields.String(required=True, load_from='ID')
+    value = fields.Str(required=True, load_from='ID')
     scheme = fields.Function(
         deserialize=lambda s: s.lower(), required=True, load_from='IDScheme')
 
@@ -62,11 +62,8 @@ class IdentifierSchema(Schema):
         if schemes and scheme not in schemes:
             raise ValidationError('Invalid scheme', 'IDScheme')
 
-    @post_load
-    def to_model(self, data):
-        return Identifier(**data)
 
-
+@to_model(Relationship)
 class RelationshipSchema(Schema):
 
     relation = fields.Method(
@@ -74,30 +71,49 @@ class RelationshipSchema(Schema):
     source = fields.Nested(IdentifierSchema, load_from='Source')
     target = fields.Nested(IdentifierSchema, load_from='Target')
 
+    @pre_load
+    def remove_object_envelope(self, obj):
+        for k in ('Source', 'Target'):
+            obj[k] = obj[k]['Identifier']
+        return obj
+
     def load_relation(self, data):
         rel_name, self._inversed = from_scholix_relationship_type(data)
         return rel_name
 
     @post_load
-    def to_model(self, data):
+    def inverse(self, data):
         if self._inversed:
             data['source'], data['target'] = data['target'], data['source']
-        return Relationship(**data)
+        return data
 
 
+@to_model(Event)
 class EventSchema(Schema):
 
-    EVENT_TYPES = {'relation_created', 'relation_deleted'}
+    EVENT_TYPE_MAP = {
+        'relationship_created': EventType.RelationshipCreated,
+        'relationship_deleted': EventType.RelationshipDeleted,
+    }
 
     id = fields.UUID(required=True)
-    event_type = fields.String(required=True, validate=OneOf(EVENT_TYPES))
-    description = fields.String()
-    creator = fields.String(required=True)
-    source = fields.String(required=True)
-    payload = fields.Nested(RelationshipSchema, many=True)
-    time = fields.String(required=True, validate=str.isdigit)
+    event_type = fields.Method(
+        deserialize='get_event_type', required=True, validate=OneOf(EventType))
+    description = fields.Str()
+    creator = fields.Str(required=True)
+    source = fields.Str(required=True)
+    payload = fields.Method(deserialize='get_payload', required=True)
+    time = fields.Method(deserialize='get_time', required=True)
 
-    # TODO: Add event model...
-    # @post_load
-    # def to_model(self, data):
-    #     # return Event(**data)
+    @pre_load
+    def store_original_payload(self, data):
+        self.context['original_payload'] = data
+
+    def get_event_type(self, obj):
+        return self.EVENT_TYPE_MAP.get(obj, missing)
+
+    def get_time(self, obj):
+        return arrow.get(obj).datetime
+
+    def get_payload(self, obj):
+        return self.context['original_payload']
