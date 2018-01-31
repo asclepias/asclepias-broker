@@ -6,6 +6,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from .datastore import (Base, Event, Identifier, ObjectEvent, PayloadType,
                         Relation, Relationship)
 from .schemas.loaders import EventSchema, RelationshipSchema
+from .tasks import update_groups
 
 
 def get(session, model, **kwargs):
@@ -81,8 +82,14 @@ class SoftwareBroker(object):
                 if relationship.id:
                     relationship.deleted = delete
                 self.session.add(relationship)
+                # We need ORM relationship with IDs, since Event has
+                # 'weak' (non-FK) relations to the objects, hence we need
+                # to know the ID upfront
                 relationship = relationship.fetch_or_create_id(self.session)
                 self.create_relation_object_events(event_obj, relationship, payload_idx)
+
+                # TODO: This should be a task after the ingestion commit
+                update_groups(self.session, relationship)
 
     def show_all(self):
         lines = []
