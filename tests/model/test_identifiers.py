@@ -3,9 +3,11 @@ import pytest
 
 from asclepias_broker.datastore import Identifier
 
+from helpers import generate_payloads
+
 
 @pytest.mark.parametrize(
-    ('broker', 'result_sets'), [
+    ('events', 'result_sets'), [
         ([
             ['C', 'A', 'Cites', 'B', '2018-01-01'],
          ],
@@ -77,11 +79,14 @@ from asclepias_broker.datastore import Identifier
             ['D', 'Z', 'IsIdenticalTo', 'A', '2018-01-01'],
          ],
          [{'A', 'B', 'C'}, {'X', 'Y', 'Z'}]),
-    ],
-    indirect=['broker'])
-def test_identities(broker, result_sets):
+    ], scope='function'
+    )
+def test_identities(broker, events, result_sets):
     # NOTE: We assume that only on identifier scheme being used so just using
     # identifier values is enough when comparing sets.
+    for ev in generate_payloads(events):
+        broker.handle_event(ev)
+
     for rs in result_sets:
         for v in rs:
             id_ = broker.session.query(Identifier).filter_by(value=v).one()

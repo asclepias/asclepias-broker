@@ -12,7 +12,8 @@ addons:
   postgresql: '9.6'
 
 env:
-  - SQLALCHEMY_DATABASE_URI='sqlite:///asclepias.db' EXTRAS='[tests]'
+# TODO: SQLite has issues with cascading
+# - SQLALCHEMY_DATABASE_URI='sqlite:///asclepias.db' EXTRAS='[tests]'
   - SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://postgres@localhost/asclepias' EXTRAS='[tests,postgres]'
 
 before_script:

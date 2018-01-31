@@ -42,9 +42,9 @@ class Identifier(Base, Timestamp):
 
     __tablename__ = 'identifier'
     __table_args__ = (
-        UniqueConstraint('value', 'scheme'),
-        Index('idx_value', 'value'),
-        Index('idx_scheme', 'scheme'),
+        UniqueConstraint('value', 'scheme', name='uq_identifier_value_scheme'),
+        Index('ix_identifier_value', 'value'),
+        Index('ix_identifier_scheme', 'scheme'),
     )
     id = Column(UUIDType, default=uuid.uuid4, primary_key=True)
     value = Column(String)
@@ -117,20 +117,28 @@ class Identifier(Base, Timestamp):
 class Relationship(Base, Timestamp):
     __tablename__ = 'relationship'
     __table_args__ = (
-        UniqueConstraint('source_id', 'target_id', 'relation'),
-        Index('idx_source', 'source_id'),
-        Index('idx_target', 'target_id'),
-        Index('idx_relation', 'relation'),
+        UniqueConstraint('source_id', 'target_id', 'relation',
+            name='uq_relationship_source_target_relation'),
+        Index('ix_relationship_source', 'source_id'),
+        Index('ix_relationship_target', 'target_id'),
+        Index('ix_relationship_relation', 'relation'),
     )
 
     id = Column(UUIDType, default=uuid.uuid4, primary_key=True)
-    source_id = Column(UUIDType, ForeignKey(Identifier.id))
-    target_id = Column(UUIDType, ForeignKey(Identifier.id))
+    source_id = Column(UUIDType,
+                       ForeignKey(Identifier.id, onupdate='CASCADE',
+                                  ondelete='CASCADE'),
+                       nullable=False)
+    target_id = Column(UUIDType, ForeignKey(Identifier.id, onupdate='CASCADE',
+                                            ondelete='CASCADE'),
+                       nullable=False)
     relation = Column(Enum(Relation))
     deleted = Column(Boolean, default=False)
 
-    source = orm_relationship(Identifier, foreign_keys=[source_id], backref='sources')
-    target = orm_relationship(Identifier, foreign_keys=[target_id], backref='targets')
+    source = orm_relationship(Identifier, foreign_keys=[source_id],
+                              backref='sources')
+    target = orm_relationship(Identifier, foreign_keys=[target_id],
+                              backref='targets')
 
     @classmethod
     def get(cls, session, source, target, relation, **kwargs):
@@ -181,42 +189,141 @@ class ObjectEvent(Base, Timestamp):
                              'payload_index', name='pk_objectevent'),
     )
 
-    event_id = Column(UUIDType, ForeignKey(Event.id))
-    object_uuid = Column(UUIDType)
-    payload_type = Column(Enum(PayloadType))
-    payload_index = Column(Integer)
+    event_id = Column(UUIDType, ForeignKey(Event.id), nullable=False)
+    object_uuid = Column(UUIDType, nullable=False)
+    payload_type = Column(Enum(PayloadType), nullable=False)
+    payload_index = Column(Integer, nullable=False)
 
     def __repr__(self):
         """String representation of the Identifier."""
         return "<{self.event_id}: {self.object_uuid}>".format(self=self)
 
 
-# class Group(Base, Timestamp):
-#     id = Column(UUIDType, primary_key=True)
-#     type = Column(Enum(GroupType))
+class Group(Base, Timestamp):
+    __tablename__ = 'group'
 
-# class GroupRelationship(Base, Timestamp):
-#     id = Column(UUIDType, primary_key=True)
-#     type = Column(Enum(GroupType))
-#     relation = Column(Enum(Relation))
-#     source_id = Column(UUIDType, ForeignKey(Group.id))
-#     target_id = Column(UUIDType, ForeignKey(Group.id))
-#     # TODO:
-#     # We don't store 'deleted' as in the relation as most likely don't need
-#     # that as 'ground truth' in precomputed groups anyway
+    id = Column(UUIDType, default=uuid.uuid4, primary_key=True)
+    type = Column(Enum(GroupType), nullable=False)
 
-# class Identifier2Group(Base, Timestamp):
-#     identifier = Column(UUIDType, ForeignKey(Identifier.id))
-#     group = Column(UUIDType, ForeignKey(Group.id))
+    def __repr__(self):
+        """String representation of the Identifier."""
+        return "<{self.id}: {self.type.name}>".format(self=self)
 
-# class Relationship2GroupRelationship(Base, Timestamp):
-#     relationship = Column(UUIDType, ForeignKey(Relationship.id))
-#     group_relationship = Column(UUIDType, ForeignKey(GroupRelationship.id))
+class GroupRelationship(Base, Timestamp):
+    __tablename__ = 'grouprelationship'
+    __table_args__ = (
+        UniqueConstraint('source_id', 'target_id', 'relation',
+            name='uq_grouprelationship_source_target_relation'),
+        Index('ix_grouprelationship_source', 'source_id'),
+        Index('ix_grouprelationship_target', 'target_id'),
+        Index('ix_grouprelationship_relation', 'relation'),
+    )
 
-# class GroupM2M(Base, Timestamp):
-#     group = Column(UUIDType, ForeignKey(Group.id))
-#     subgroup = Column(UUIDType, ForeignKey(Group.id))
+    id = Column(UUIDType, default=uuid.uuid4, primary_key=True)
+    type = Column(Enum(GroupType), nullable=False)
+    relation = Column(Enum(Relation), nullable=False)
+    source_id = Column(UUIDType, ForeignKey(Group.id, ondelete='CASCADE',
+                                            onupdate='CASCADE'),
+                       nullable=False)
+    target_id = Column(UUIDType, ForeignKey(Group.id, ondelete='CASCADE',
+                                            onupdate='CASCADE'),
+                       nullable=False)
 
-# class GroupRelationshipM2M(Base, Timestamp):
-#     group_relationship = Column(UUIDType, ForeignKey(GroupRelationship.id))
-#     subrelationship = Column(UUIDType, ForeignKey(GroupRelationship.id))
+    # DB relationships
+    source = orm_relationship(Group, foreign_keys=[source_id],
+        backref='sources')
+    target = orm_relationship(Group, foreign_keys=[target_id],
+        backref='targets')
+    # TODO:
+    # We don't store 'deleted' as in the relation as most likely don't need
+    # that as 'ground truth' in precomputed groups anyway
+
+    def __repr__(self):
+        return "<{self.source} {self.relation.name} {self.target}>".format(self=self)
+
+class Identifier2Group(Base, Timestamp):
+    __tablename__ = 'identifier2group'
+    __table_args__ = (
+        PrimaryKeyConstraint('identifier_id', 'group_id',
+            name='pk_identifier2group'),
+    )
+    identifier_id = Column(UUIDType, ForeignKey(Identifier.id,
+                                                ondelete='CASCADE',
+                                                onupdate='CASCADE'),
+                           nullable=False)
+    group_id = Column(UUIDType, ForeignKey(Group.id, ondelete='CASCADE',
+                                           onupdate='CASCADE'),
+                      nullable=False)
+
+    # DB relationships
+    identifier = orm_relationship(Identifier, foreign_keys=[identifier_id],
+                                  backref='id2groups')
+    group = orm_relationship(Group, foreign_keys=[group_id],
+                             backref='id2groups')
+
+
+class Relationship2GroupRelationship(Base, Timestamp):
+    __tablename__ = 'relationship2grouprelationship'
+    __table_args__ = (
+        PrimaryKeyConstraint('relationship_id', 'group_relationship_id',
+            name='pk_relationship2grouprelationship'),
+    )
+    relationship_id = Column(UUIDType,
+                             ForeignKey(Relationship.id, onupdate='CASCADE',
+                                        ondelete='CASCADE'),
+                             nullable=False)
+    group_relationship_id = Column(UUIDType,
+                                   ForeignKey(GroupRelationship.id,
+                                              onupdate='CASCADE',
+                                              ondelete='CASCADE'),
+                                   nullable=False)
+
+    # DB relationships
+    relationship = orm_relationship(Relationship,
+                                    foreign_keys=[relationship_id])
+    group_relationship = orm_relationship(GroupRelationship,
+                                          foreign_keys=[group_relationship_id])
+    def __repr__(self):
+        return "<{self.group_relationship}: {self.relationship}>".format(self=self)
+
+class GroupM2M(Base, Timestamp):
+    __tablename__ = 'groupm2m'
+    __table_args__ = (
+        PrimaryKeyConstraint('group_id', 'subgroup_id',
+            name='pk_groupm2m'),
+    )
+    group_id = Column(UUIDType, ForeignKey(Group.id, onupdate='CASCADE',
+                                           ondelete='CASCADE'),
+                      nullable=False)
+    subgroup_id = Column(UUIDType, ForeignKey(Group.id, onupdate='CASCADE',
+                                              ondelete='CASCADE'),
+                         nullable=False)
+
+    group = orm_relationship(Group, foreign_keys=[group_id])
+    subgroup = orm_relationship(Group, foreign_keys=[subgroup_id])
+
+    def __repr__(self):
+        return "<{self.group}: {self.subgroup}>".format(self=self)
+
+class GroupRelationshipM2M(Base, Timestamp):
+    __tablename__ = 'grouprelationshipm2m'
+    __table_args__ = (
+        PrimaryKeyConstraint('relationship_id', 'subrelationship_id',
+            name='pk_grouprelationshipm2m'),
+    )
+    relationship_id = Column(UUIDType, ForeignKey(GroupRelationship.id,
+                                                  onupdate="CASCADE",
+                                                  ondelete="CASCADE"),
+                             nullable=False)
+    subrelationship_id = Column(UUIDType, ForeignKey(GroupRelationship.id,
+                                                     onupdate="CASCADE",
+                                                     ondelete="CASCADE"),
+                                nullable=False)
+
+    relationship = orm_relationship(GroupRelationship,
+                                    foreign_keys=[relationship_id])
+    subrelationship = orm_relationship(GroupRelationship,
+                                       foreign_keys=[subrelationship_id])
+
+    def __repr__(self):
+        return "<{self.relationship}: {self.subrelationship}>".format(self=self)

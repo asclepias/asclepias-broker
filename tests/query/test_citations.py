@@ -4,6 +4,8 @@ import pytest
 from asclepias_broker.datastore import Identifier
 from collections import OrderedDict
 
+from helpers import generate_payloads
+
 
 TEST_CASES = OrderedDict({
     'no_citations': (
@@ -108,10 +110,11 @@ def spread_test_cases_dict(d):
 
 
 @pytest.mark.parametrize(
-    ('test_case', 'broker', 'results'),
-    spread_test_cases_dict(TEST_CASES),
-    indirect=['broker'])
-def test_simple_citations(test_case, broker, results):
+    ('test_case', 'events', 'results'),
+    spread_test_cases_dict(TEST_CASES))
+def test_simple_citations(broker, test_case, events, results):
+    for ev in generate_payloads(events):
+        broker.handle_event(ev)
     for cited_id_value, (citation_result, relation_result) in results.items():
         cited_id = (broker.session.query(Identifier)
                     .filter_by(value=cited_id_value).one())

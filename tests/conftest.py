@@ -8,20 +8,18 @@ from asclepias_broker.broker import SoftwareBroker
 from asclepias_broker.datastore import Base
 from helpers import generate_payloads
 
+from sqlalchemy_utils.functions import create_database, database_exists, drop_database
 
-@pytest.fixture(scope='function')
-def broker(request):
+
+@pytest.fixture()
+def broker():
     db_uri = os.environ.get('SQLALCHEMY_DATABASE_URI')
-    broker = SoftwareBroker(db_uri)
-    if request.param:
-        for evt in generate_payloads(request.param):
-            broker.handle_event(evt)
-    yield broker
+    broker_ = SoftwareBroker(db_uri)
+    yield broker_
 
-    # Drop all tables
-    for tbl in reversed(Base.metadata.sorted_tables):
-        broker.engine.execute(tbl.delete())
-
+    # Close all open sessions sand drop all tables
+    broker_.session.close_all()
+    Base.metadata.drop_all(broker_.engine)
 
 #
 # JSON schema and test data loading fixtures
