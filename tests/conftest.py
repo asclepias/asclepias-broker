@@ -12,15 +12,15 @@ from helpers import generate_payloads
 @pytest.fixture(scope='function')
 def broker(request):
     db_uri = os.environ.get('SQLALCHEMY_DATABASE_URI')
-    b = SoftwareBroker(db_uri)
+    broker = SoftwareBroker(db_uri)
     if request.param:
         for evt in generate_payloads(request.param):
-            b.handle_event(evt)
-    yield b
+            broker.handle_event(evt)
+    yield broker
 
     # Drop all tables
     for tbl in reversed(Base.metadata.sorted_tables):
-        b.engine.execute(tbl.delete())
+        broker.engine.execute(tbl.delete())
 
 
 #
@@ -43,7 +43,7 @@ def base_dir(test_dir):
 
 @pytest.fixture
 def schema_dir(base_dir):
-    return base_dir / 'jsonschema'
+    return base_dir / 'asclepias_broker' / 'jsonschema'
 
 
 @pytest.fixture

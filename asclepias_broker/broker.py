@@ -81,6 +81,7 @@ class SoftwareBroker(object):
                 if relationship.id:
                     relationship.deleted = delete
                 self.session.add(relationship)
+                relationship = relationship.fetch_or_create_id(self.session)
                 self.create_relation_object_events(event_obj, relationship, payload_idx)
 
     def show_all(self):

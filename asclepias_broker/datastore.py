@@ -60,6 +60,15 @@ class Identifier(Base, Timestamp):
         return session.query(cls).filter_by(
             value=value, scheme=scheme).one_or_none()
 
+    def fetch_or_create_id(self, session):
+        if not self.id:
+            obj = self.get(session, self.value, self.scheme)
+            if obj:
+                self = obj
+            else:
+                self.id = uuid.uuid4()
+        return self
+
     def _get_related(self, session, condition, relationship, with_deleted=False):
         cond = condition & (Relationship.relation == relationship)
         if not with_deleted:
@@ -128,6 +137,18 @@ class Relationship(Base, Timestamp):
         return session.query(cls).filter_by(
             source_id=source.id, target_id=target.id,
             relation=relation).one_or_none()
+
+    def fetch_or_create_id(self, session):
+        self.source = self.source.fetch_or_create_id(session)
+        self.target = self.target.fetch_or_create_id(session)
+
+        if not self.id:
+            obj = self.get(session, self.source, self.target, self.relation)
+            if obj:
+                self = obj
+            else:
+                self.id = uuid.uuid4()
+        return self
 
     def __repr__(self):
         return "<{self.source.value} {self.relation.name} {self.target.value}{deleted}>".format(self=self, deleted=" [D]" if self.deleted else "")
