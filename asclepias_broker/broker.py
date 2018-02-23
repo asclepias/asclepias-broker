@@ -5,6 +5,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from .datastore import (Base, Event, Identifier, ObjectEvent, PayloadType,
                         Relation, Relationship)
+
 from .schemas.loaders import EventSchema, RelationshipSchema
 from .tasks import update_groups
 

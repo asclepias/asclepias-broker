@@ -4,6 +4,7 @@ sudo: false
 
 language: python
 python:
+  - '3.5'
   - '3.6'
 
 services:
@@ -19,6 +20,6 @@ env:
 before_script:
   - psql -c 'create database asclepias;' -U postgres
 install:
-  - travis_retry pip install .${EXTRAS}
+  - travis_retry pip install -e .${EXTRAS}
 script:
   - py.test tests
