@@ -113,6 +113,7 @@ def spread_test_cases_dict(d):
     ('test_case', 'events', 'results'),
     spread_test_cases_dict(TEST_CASES))
 def test_simple_citations(broker, test_case, events, results):
+    """Test simple citation queries."""
     for ev in generate_payloads(events):
         broker.handle_event(ev)
     for cited_id_value, (citation_result, relation_result) in results.items():

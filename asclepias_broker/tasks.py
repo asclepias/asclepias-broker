@@ -5,6 +5,7 @@ from .datastore import Relation, Group, GroupType, Identifier2Group, \
     GroupRelationshipM2M, Identifier
 import uuid
 from sqlalchemy.orm import aliased
+from typing import Tuple
 
 
 def merge_group_relationships(session, group_a, group_b, merged_group,
@@ -171,6 +172,7 @@ def delete_duplicate_relationship_m2m(session, group_a, group_b,
                 right_gr,
                 left_grouping_fk == right_grouping_fk)
         )
+        # TODO: Delete in a query
         for rel_a, rel_b in duplicate_relations:
             session.delete(rel_a)
 
@@ -221,6 +223,9 @@ def merge_identity_groups(session, group_a: Group, group_b: Group):
     Merges the groups together into one group, taking care of migrating
     all group relationships and M2M objects.
     """
+    # Nothing to do if groups are already merged
+    if group_a == group_b:
+        return
     if not (group_a.type == group_b.type == GroupType.Identity):
         raise ValueError("Can only merge Identity groups.")
 
@@ -251,18 +256,20 @@ def merge_identity_groups(session, group_a: Group, group_b: Group):
      .update({GroupM2M.subgroup_id: merged_group.id},
              synchronize_session='fetch'))
 
-    session.delete(group_a)
-    session.delete(group_b)
+    session.query(Group).filter(Group.id.in_([group_a.id, group_b.id])).delete(
+        synchronize_session='fetch')
     # After merging identity groups, we need to merge the version groups
 
 
 def merge_version_groups(session, group_a: Group, group_b: Group):
     """Merge two Version groups into one."""
+    # Nothing to do if groups are already merged
     if group_a == group_b:
         return
     if group_a.type != group_b.type:
         raise ValueError("Cannot merge groups of different type.")
     if group_a.type == GroupType.Identity:
+        # Merging Identity groups is done separately
         raise ValueError("Cannot merge groups of type 'Identity'.")
 
     merged_group = Group(type=group_a.type, id=uuid.uuid4())
@@ -282,16 +289,14 @@ def merge_version_groups(session, group_a: Group, group_b: Group):
      .update({GroupM2M.subgroup_id: merged_group.id},
              synchronize_session='fetch'))
 
-    session.delete(group_a)
-    session.delete(group_b)
+    session.query(Group).filter(Group.id.in_([group_a.id, group_b.id])).delete(
+        synchronize_session='fetch')
     return merged_group
 
 
-def get_or_create_groups(session, identifier: Identifier):
-    """Get Identity and Version groups for an identifier.
-
-    If groups do not exist, creates them. Returns a pair of group belongings.
-    """
+def get_or_create_groups(
+        session, identifier: Identifier) -> Tuple[Group, Group]:
+    """Given an Identifier, fetch or create its Identity and Version groups."""
     id2g = session.query(Identifier2Group).filter(
         Identifier2Group.identifier==identifier).one_or_none()
     if not id2g:
@@ -309,134 +314,55 @@ def get_or_create_groups(session, identifier: Identifier):
         session.add(group)
         g2g = GroupM2M(group=group, subgroup=id2g.group)
         session.add(g2g)
-    return id2g, g2g
+    return id2g.group, g2g.group
 
 
-def add_identifier_to_group(session, identifier, group=None):
-    """If 'group' is None creates a new Group object."""
-    if not group:
-        group = Group(type=GroupType.Identity, id=uuid.uuid4())
-        session.add(group)
-    id2g = Identifier2Group(identifier=identifier, group=group)
-    session.add(id2g)
-    return id2g
+def add_group_relationship(session, relationship, src_id_grp, tar_id_grp,
+                           src_ver_grp, tar_ver_grp):
+    """Add a group relationship between corresponding groups."""
+    # Add GroupRelationship between Identity groups
+    id_grp_rel = GroupRelationship(source=src_id_grp, target=tar_id_grp,
+                                   relation=relationship.relation,
+                                   type=GroupType.Identity)
+    session.add(id_grp_rel)
+    rel2grp_rel = Relationship2GroupRelationship(
+        relationship=relationship, group_relationship=id_grp_rel)
+    session.add(rel2grp_rel)
 
-
-def add_group_to_group(session, subgroup, supergroup=None, supergroup_type=None):
-    if not supergroup:
-        # TODO: can probably skip id=uuid.uuid4()
-        supergroup = Group(type=supergroup_type, id=uuid.uuid4())
-        session.add(supergroup)
-    groupm2m = GroupM2M(group=supergroup, subgroup=subgroup)
-    session.add(groupm2m)
-    return groupm2m
-
-
-def add_id_group_relationship(session, relationship):
-    src_grp = session.query(Group).join(
-        Identifier2Group, Identifier2Group.group_id == Group.id).filter(
-        Identifier2Group.identifier_id == relationship.source_id).one_or_none()
-    tar_grp = session.query(Group).join(
-        Identifier2Group, Identifier2Group.group_id == Group.id).filter(
-        Identifier2Group.identifier_id == relationship.target_id).one_or_none()
-    if not src_grp:
-        src_grp = add_identifier_to_group(session, relationship.source).group
-    if not tar_grp:
-        tar_grp = add_identifier_to_group(session, relationship.target).group
-    kwargs = dict(source=src_grp, target=tar_grp,
-                  relation=relationship.relation,
-                  type=GroupType.Identity)
-    grp_rel = session.query(GroupRelationship).filter_by(**kwargs).one_or_none()
-    if not grp_rel:
-        grp_rel = GroupRelationship(**kwargs)
-        session.add(grp_rel)
-    return grp_rel
-
-
-def add_supergroup_relationship(session, relationship, supergroup_type):
-    src_sup_grp = session.query(Group).join(
-        GroupM2M, GroupM2M.group_id == Group.id).filter(
-        Group.type == supergroup_type,
-        GroupM2M.subgroup_id == relationship.source_id).one_or_none()
-    tar_sup_grp = session.query(Group).join(
-        GroupM2M, GroupM2M.group_id == Group.id).filter(
-        Group.type == supergroup_type,
-        GroupM2M.subgroup_id == relationship.target_id).one_or_none()
-
-    if not src_sup_grp:
-        src_sup_g2g = add_group_to_group(session, relationship.source,
-                                         supergroup_type=supergroup_type)
-    if not tar_sup_grp:
-        tar_sup_g2g = add_group_to_group(session, relationship.target,
-                                         supergroup_type=supergroup_type)
-
-
-def add_group_relationship(session, relationship):
-    # GropuRelationship between Identity groups
-    id_rel = add_id_group_relationship(session, relationship)
-    ver_rel = add_supergroup_relationship(session, id_rel, GroupType.Version)
-    return ver_rel
-
-
-def add_identity(session, relationship):
-    src_grp = session.query(Group).join(
-        Identifier2Group, Identifier2Group.group_id == Group.id).filter(
-        Identifier2Group.identifier_id == relationship.source_id).one_or_none()
-
-    tar_grp = session.query(Group).join(
-        Identifier2Group, Identifier2Group.group_id == Group.id).filter(
-        Identifier2Group.identifier_id == relationship.target_id).one_or_none()
-    if src_grp and tar_grp:
-        grp = merge_identity_groups(session, src_grp, tar_grp)
-    elif src_grp:
-        tar2g = add_identifier_to_group(
-            session, relationship.target, group=src_grp)
-        grp = tar2g.group
-    elif tar_grp:
-        src2g = add_identifier_to_group(
-            session, relationship.source, group=tar_grp)
-        grp = src2g.group
-    else:
-        grp = Group(type=GroupType.Identity)
-        src2g = add_identifier_to_group(session, relationship.source, group=grp)
-        tar2g = add_identifier_to_group(session, relationship.target, group=grp)
-    return grp
-
-
-def add_version(session, relationship):
-    id_grp_rel = add_id_group_relationship(session, relationship)
-
-    src_ver_grp = session.query(Group).join(
-        GroupM2M, GroupM2M.group_id == Group.id).filter(
-        Group.type == GroupType.Version,
-        GroupM2M.subgroup_id == id_grp_rel.source_id).one_or_none()
-    tar_ver_grp = session.query(Group).join(
-        GroupM2M, GroupM2M.group_id == Group.id).filter(
-        Group.type == GroupType.Version,
-        GroupM2M.subgroup_id == id_grp_rel.target_id).one_or_none()
-    if src_ver_grp and tar_ver_grp:
-        grp = merge_version_groups(session, src_ver_grp, tar_ver_grp)
-    elif src_ver_grp:
-        tar_g2g = add_group_to_group(
-            session, id_grp_rel.source, supergroup=src_ver_grp)
-        grp = tar_g2g.group
-    elif tar_ver_grp:
-        src_g2g = add_group_to_group(
-            session, id_grp_rel.target, supergroup=tar_ver_grp)
-        grp = src_g2g.group
-    else:
-        grp = Group(type=GroupType.Version)
-        add_group_to_group(session, grp, id_grp_rel.source)
-        add_group_to_group(session, grp, id_grp_rel.target)
-    return grp
+    # Add GroupRelationship between Version groups
+    ver_grp_rel = GroupRelationship(source=src_ver_grp, target=tar_ver_grp,
+                                    relation=relationship.relation,
+                                    type=GroupType.Version)
+    session.add(ver_grp_rel)
+    g2g_rel = GroupRelationshipM2M(relationship=ver_grp_rel,
+                                   subrelationship=id_grp_rel)
+    session.add(g2g_rel)
 
 
 def update_groups(session, relationship, delete=False):
-    return
-    # TODO
+    """Update groups and related M2M objects for given relationship."""
+    src_idg, src_vg = get_or_create_groups(session, relationship.source)
+    tar_idg, tar_vg = get_or_create_groups(session, relationship.target)
+
     if relationship.relation == Relation.IsIdenticalTo:
-        return add_identity(session, relationship)
+        merge_identity_groups(session, src_idg, tar_idg)
     elif relationship.relation == Relation.HasVersion:
-        return add_version(session, relationship)
+        merge_version_groups(session, src_vg, tar_vg)
     else: # Relation.Cites, Relation.IsSupplementTo, Relation.IsRelatedTo
-        return add_group_relationship(session, relationship)
+        grp_rel = (
+            session.query(GroupRelationship)
+            .filter(GroupRelationship.source == src_idg,
+                    GroupRelationship.target == tar_idg,
+                    GroupRelationship.relation == relationship.relation)
+            .one_or_none()
+        )
+        # If GroupRelationship exists, simply add the Relationship M2M entry
+        if grp_rel:
+            obj = Relationship2GroupRelationship(
+                relationship=relationship,
+                group_relationship=grp_rel)
+            session.add(obj)
+        # Otherwise, add the group relationship with propagation
+        else:
+            add_group_relationship(session, relationship, src_idg, tar_idg,
+                                   src_vg, tar_vg)

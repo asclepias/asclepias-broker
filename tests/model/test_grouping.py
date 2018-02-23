@@ -70,35 +70,37 @@ def test_get_or_create_groups(broker):
     assert not s.query(Group).count()
     assert not s.query(GroupM2M).count()
     assert not s.query(Identifier2Group).count()
-    id2g, g2g = get_or_create_groups(s, id1)
+    id_g, ver_g = get_or_create_groups(s, id1)
     s.commit()
 
-    def _check_groups(identifier, id2g, g2g):
+    def _check_groups(identifier, id_g, ver_g):
         assert s.query(Group).count() == 2
         assert s.query(GroupM2M).count() == 1
         assert s.query(Identifier2Group).count() == 1
-        idgroup = s.query(Group).filter_by(type=GroupType.Identity).one()
-        ver_group = s.query(Group).filter_by(type=GroupType.Version).one()
+        assert s.query(Group).filter_by(type=GroupType.Identity).one() == id_g
+        assert s.query(Group).filter_by(type=GroupType.Version).one() == ver_g
+        id2g = s.query(Identifier2Group).one()
+        g2g = s.query(GroupM2M).one()
         assert id2g.identifier == identifier
-        assert id2g.group == idgroup
-        assert g2g.group == ver_group
-        assert g2g.subgroup == idgroup
+        assert id2g.group == id_g
+        assert g2g.group == ver_g
+        assert g2g.subgroup == id_g
 
-    _check_groups(id1, id2g, g2g)
+    _check_groups(id1, id_g, ver_g)
 
     # Fetch the ID again and try to create groups again
     id2 = Identifier.get(s, 'A', 'doi')
     assert id2
-    id2g, g2g = get_or_create_groups(s, id1)
+    id_g, ver_g = get_or_create_groups(s, id1)
     s.commit()
 
     # Make sure nothing changed
-    _check_groups(id2, id2g, g2g)
+    _check_groups(id2, id_g, ver_g)
 
     # Add a new, separate identifier
     id3 = Identifier(value='B', scheme='doi')
     s.add(id3)
-    id2g, g2g = get_or_create_groups(s, id3)
+    id_g, ver_g = get_or_create_groups(s, id3)
 
     assert s.query(Group).count() == 4
     assert s.query(GroupM2M).count() == 2

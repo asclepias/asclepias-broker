@@ -79,7 +79,7 @@ from helpers import generate_payloads
             ['D', 'Z', 'IsIdenticalTo', 'A', '2018-01-01'],
          ],
          [{'A', 'B', 'C'}, {'X', 'Y', 'Z'}]),
-    ], scope='function'
+    ]
     )
 def test_identities(broker, events, result_sets):
     # NOTE: We assume that only on identifier scheme being used so just using

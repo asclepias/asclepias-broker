@@ -143,13 +143,13 @@ def create_objects_from_relations(session, relationships):
         rel_obj.append(r)
         s_id_gr, s_ver_gr = groups[identifiers.index(src)]
         t_id_gr, t_ver_gr = groups[identifiers.index(tar)]
-        id_gr_rel = GroupRelationship(source=s_id_gr.group,
-            target=t_id_gr.group, relation=rel, type=GroupType.Identity)
+        id_gr_rel = GroupRelationship(source=s_id_gr,
+            target=t_id_gr, relation=rel, type=GroupType.Identity)
         session.add(Relationship2GroupRelationship(relationship=r,
             group_relationship=id_gr_rel))
         session.add(id_gr_rel)
-        ver_gr_rel = GroupRelationship(source=s_ver_gr.group,
-            target=t_ver_gr.group, relation=rel, type=GroupType.Version)
+        ver_gr_rel = GroupRelationship(source=s_ver_gr,
+            target=t_ver_gr, relation=rel, type=GroupType.Version)
         session.add(GroupRelationshipM2M(relationship=ver_gr_rel,
                                          subrelationship=id_gr_rel))
         session.add(ver_gr_rel)
