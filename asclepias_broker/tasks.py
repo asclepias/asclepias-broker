@@ -317,6 +317,17 @@ def get_or_create_groups(
     return id2g.group, g2g.group
 
 
+def get_group_from_id(session, identifier_value, id_type='doi',
+                      group_type=GroupType.Identity):
+    """Resolve from 'A' to Identity Group of A or to a Version Group of A."""
+    id_ = Identifier.get(session, identifier_value, id_type)
+    id_grp = id_.id2groups[0].group
+    if group_type == GroupType.Identity:
+        return id_grp
+    else:
+        return session.query(GroupM2M).filter_by(subgroup=id_grp).one().group
+
+
 def add_group_relationship(session, relationship, src_id_grp, tar_id_grp,
                            src_ver_grp, tar_ver_grp):
     """Add a group relationship between corresponding groups."""

@@ -4,10 +4,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from .datastore import (Base, Event, Identifier, ObjectEvent, PayloadType,
-                        Relation, Relationship)
+                        Relation, Relationship, Group, GroupRelationship,
+                        GroupType)
 
 from .schemas.loaders import EventSchema, RelationshipSchema
-from .tasks import update_groups
+from .tasks import update_groups, get_group_from_id
 
 
 def get(session, model, **kwargs):
@@ -145,3 +146,12 @@ class SoftwareBroker(object):
         if expand_target:
             aggregated_citations = [(list(frontier), frontier_rel)] + aggregated_citations
         return aggregated_citations
+
+
+    def get_citations2(self, identifier, grouping_type=GroupType.Identity):
+        grp = get_group_from_id(self.session, identifier,
+                                group_type=grouping_type)
+        res = self.session.query(GroupRelationship).filter(
+            GroupRelationship.target==grp, GroupRelationship.relation == Relation.Cites)
+        import ipdb; ipdb.set_trace()
+        pass

@@ -7,8 +7,9 @@ from collections import OrderedDict
 from helpers import generate_payloads
 
 
-TEST_CASES = OrderedDict({
-    'no_citations': (
+TEST_CASES = [
+    (
+        'no_citations',
         [
             ['C', 'A', 'IsSupplementTo', 'B', '2018-01-01'],
         ],
@@ -17,7 +18,8 @@ TEST_CASES = OrderedDict({
             'B': [set(), set()],
         }
     ),
-    'one_identity': (
+    (
+        'one_identity',
         [
             ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
         ],
@@ -26,7 +28,8 @@ TEST_CASES = OrderedDict({
             'B': [set(), set()],
         }
     ),
-    'two_identities': (
+    (
+        'two_identities',
         [
             ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
             ['C', 'B', 'IsIdenticalTo', 'C', '2018-01-01'],
@@ -37,7 +40,8 @@ TEST_CASES = OrderedDict({
             'C': [set(), set()],
         }
     ),
-    'one_citation': (
+    (
+        'one_citation',
         [
             ['C', 'A', 'Cites', 'B', '2018-01-01'],
         ],
@@ -46,7 +50,8 @@ TEST_CASES = OrderedDict({
             'B': [{'A'}, {('A', 'B')}],
         }
     ),
-    'two_citations': (
+    (
+        'two_citations',
         [
             ['C', 'A', 'Cites', 'B', '2018-01-01'],
             ['C', 'C', 'Cites', 'B', '2018-01-01'],
@@ -57,7 +62,8 @@ TEST_CASES = OrderedDict({
             'C': [set(), set()],
         }
     ),
-    'one_indirect_citation': (
+    (
+        'one_indirect_citation',
         [
             ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
             ['C', 'C', 'Cites', 'B', '2018-01-01'],
@@ -68,7 +74,8 @@ TEST_CASES = OrderedDict({
             'C': [set(), set()],
         }
     ),
-    'two_indirect_citations': (
+    (
+        'two_indirect_citations',
         [
             ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
             ['C', 'C', 'IsIdenticalTo', 'A', '2018-01-01'],
@@ -83,7 +90,8 @@ TEST_CASES = OrderedDict({
             'Y': [set(), set()],
         }
     ),
-    'two_indirect_identical_citations': (
+    (
+        'two_indirect_identical_citations',
         [
             ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
             ['C', 'C', 'IsIdenticalTo', 'A', '2018-01-01'],
@@ -101,18 +109,11 @@ TEST_CASES = OrderedDict({
             'Y': [set(), set()],
         }
     ),
-})
+]
 
 
-def spread_test_cases_dict(d):
-    return [(name, case_data[0], case_data[1])
-            for name, case_data in d.items()]
-
-
-@pytest.mark.parametrize(
-    ('test_case', 'events', 'results'),
-    spread_test_cases_dict(TEST_CASES))
-def test_simple_citations(broker, test_case, events, results):
+@pytest.mark.parametrize(('test_case_name', 'events', 'results'), TEST_CASES)
+def test_simple_citations(broker, test_case_name, events, results):
     """Test simple citation queries."""
     for ev in generate_payloads(events):
         broker.handle_event(ev)
@@ -126,3 +127,23 @@ def test_simple_citations(broker, test_case, events, results):
             relations |= {(r.source.value, r.target.value) for r in relation}
         assert citations == citation_result
         assert relations == relation_result
+
+
+TEST_CASES = [
+    (
+        'one_citation',
+        [
+            ['C', 'A', 'Cites', 'B', '2018-01-01'],
+        ],
+        {
+            'A': [set(), set()],
+            'B': [{'A'}, {('A', 'B')}],
+        }
+    ),
+]
+@pytest.mark.parametrize(('test_case_name', 'events', 'results'), TEST_CASES)
+def test_grouping_query(broker, test_case_name, events, results):
+    for ev in generate_payloads(events):
+        broker.handle_event(ev)
+    for cited_id_value, _ in results.items():
+        ret = broker.get_citations2(cited_id_value)
