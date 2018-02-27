@@ -96,7 +96,7 @@ class RelationshipSchema(Schema):
     @post_load
     def inverse(self, data):
         if self._inversed:
-            data['source'], data['target'] = data['target'], data['source']
+            data['Source'], data['Target'] = data['Target'], data['Source']
         return data
 
 
@@ -104,18 +104,21 @@ class RelationshipSchema(Schema):
 class EventSchema(Schema):
 
     EVENT_TYPE_MAP = {
-        'relationship_created': EventType.RelationshipCreated,
-        'relationship_deleted': EventType.RelationshipDeleted,
+        'RelationshipCreated': EventType.RelationshipCreated,
+        'RelationshipDeleted': EventType.RelationshipDeleted,
     }
 
-    id = fields.UUID(required=True)
+    id = fields.UUID(required=True, load_from='ID')
     event_type = fields.Method(
-        deserialize='get_event_type', required=True, validate=OneOf(EventType))
-    description = fields.Str()
-    creator = fields.Str(required=True)
-    source = fields.Str(required=True)
-    payload = fields.Method(deserialize='get_payload', required=True)
-    time = fields.Method(deserialize='get_time', required=True)
+        deserialize='get_event_type', required=True, validate=OneOf(EventType),
+        load_from='EventType')
+    description = fields.Str(load_from='Description')
+    creator = fields.Str(required=True, load_from='Creator')
+    source = fields.Str(required=True, load_from='Source')
+    payload = fields.Method(deserialize='get_payload', required=True,
+        load_from='Payload')
+    time = fields.Method(deserialize='get_time', required=True,
+        load_from='Time')
 
     @pre_load
     def store_original_payload(self, data):

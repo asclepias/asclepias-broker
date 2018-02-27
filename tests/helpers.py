@@ -13,7 +13,7 @@ import jsonschema
 #
 # Events generation helpers
 #
-EVENT_TYPE_MAP = {'C': 'relationship_created', 'D': 'relationship_deleted'}
+EVENT_TYPE_MAP = {'C': 'RelationshipCreated', 'D': 'RelationshipDeleted'}
 SCHOLIX_RELATIONS = {'References', 'IsReferencedBy', 'IsSupplementTo',
                      'IsSupplementedBy'}
 RELATIONS_ENUM = [
@@ -51,8 +51,8 @@ class Event:
     def __init__(self, **kwargs):
         self.id = kwargs.get('id', str(uuid.uuid4()))
         self.time = kwargs.get('time', str(int(time.time())))
-        self.payloads = kwargs.get('payloads', [])
-        self.event_type = kwargs.get('event_type', 'relationship_created')
+        self.payloads = kwargs.get('payload', [])
+        self.event_type = kwargs.get('event_type', 'RelationshipCreated')
         self.creator = kwargs.get('creator', 'ACME Inc.')
         self.source = kwargs.get('source', 'Test')
 
@@ -88,12 +88,12 @@ class Event:
     @property
     def event(self):
         return {
-            'id': self.id,
-            'event_type': self.event_type,
-            'time': self.time,
-            'creator': self.creator,
-            'source': self.source,
-            'payload': self.payloads,
+            'ID': self.id,
+            'EventType': self.event_type,
+            'Time': self.time,
+            'Creator': self.creator,
+            'Source': self.source,
+            'Payload': self.payloads,
         }
 
 

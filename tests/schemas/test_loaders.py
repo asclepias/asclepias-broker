@@ -62,12 +62,12 @@ def rel_obj(source, relation, target):
 
 def ev_dict(type_, time, payload):
     return {
-        'id': '00000000-0000-0000-0000-000000000000',
-        'event_type': type_,
-        'payload': payload,
-        'creator': 'Test creator',
-        'source': 'Test source',
-        'time': time,
+        'ID': '00000000-0000-0000-0000-000000000000',
+        'EventType': type_,
+        'Payload': payload,
+        'Creator': 'Test creator',
+        'Source': 'Test source',
+        'Time': time,
     }
 
 
@@ -119,19 +119,19 @@ def test_relationship_schema(in_rel, out_rel, out_error):
 
 @pytest.mark.parametrize(('in_ev', 'out_ev', 'out_error'), [
     (
-        ('relationship_created', '1517270400', {'test': 'payload'}),
+        ('RelationshipCreated', '1517270400', {'test': 'payload'}),
         (EventType.RelationshipCreated, (2018, 1, 30)),
         {},
     ),
     (
-        ('relationship_deleted', '1517270400', {'test': 'payload'}),
+        ('RelationshipDeleted', '1517270400', {'test': 'payload'}),
         (EventType.RelationshipDeleted, (2018, 1, 30)),
         {},
     ),
     (
         ('invalid_event_type', '1517270400', {'test': 'payload'}),
         None,
-        {'event_type': ['Not a valid choice.']},
+        {'EventType': ['Not a valid choice.']},
     ),
 ])
 def test_event_schema(in_ev, out_ev, out_error):

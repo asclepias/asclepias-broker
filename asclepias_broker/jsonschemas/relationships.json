@@ -1,68 +1,71 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "id": "https://raw.githubusercontent.com/asclepias/event-model/master/jsonschema/event.json",
-    "title": "List of relationships.",
-    "description": "Schema of the JSON reponse for relationship queries.",
-    "additionalProperties": false,
-    "type": "object",
-    "properties": {
-        "identifier": {
-            "$ref": "definitions.json#definitions/identifier",
-            "description": "Identifier of the queried object."
-        },
-        "groupby": {
-            "type": "string",
-            "description": "Type of grouping that was done to resolve this list of relationships.",
-            "enum": ["Identity", "Version"],
-            "default": "Identity"
-        },
-        "relation": {
-            "type": "string",
-            "description": "Relation that was queried for.",
-            "enum": ["IsCitedBy", "Cites", "IsSupplementTo", "IsSupplementedBy"]
-        },
-        "relationships": {
-            "type": "array",
-            "description": "List of relationships for given identifier and relation",
-            "items": {
-                "properties": {
-                    "identifiers": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "definitions.json#definitions/identifier"
-                        }
-                    },
-                    "metadata": {
-                        "type": "object",
-                        "properties": {
-                            "title": {
-                                "type": "string",
-                                "description": "Title of the object."
-                            },
-                            "creators": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "publication_date": {
-                        "type": "string",
-                        "description": "Publication date of this relationship."
-                    },
-                    "providers": {
-                        "type": "array",
-                        "description": "Providers which reported this relationship.",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        }
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "https://raw.githubusercontent.com/asclepias/event-model/master/jsonschema/event.json",
+  "title": "List of relationships.",
+  "description": "Schema of the JSON reponse for relationship queries.",
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "Identifier": {
+      "$ref": "scholix-v3.json#definitions/IdentifierType",
+      "description": "Identifier of the queried object."
     },
-    "required": [
-      "identifier",
-      "groupby",
-      "relation",
-      "relationships"
-    ]
+    "GroupBy": {
+      "type": "string",
+      "description": "Type of grouping that was done to resolve this list of relationships.",
+      "enum": ["Identity", "Version"],
+      "default": "Identity"
+    },
+    "Relation": {
+      "type": "string",
+      "description": "Relation that was queried for.",
+      "enum": ["IsCitedBy", "Cites", "IsSupplementTo", "IsSupplementedBy"]
+    },
+    "Objects": {
+      "type": "array",
+      "description": "List of Objects for given identifier and relation",
+      "items": {
+        "properties": {
+          "Identifiers": {
+            "type": "array",
+            "items": {
+              "$ref": "scholix-v3.json#definitions/IdentifierType"
+            }
+          },
+          "Metadata": {
+            "type": "object",
+            "properties": {
+              "Title": {
+                  "type": "string",
+                  "description": "Title of the object."
+              },
+              "Creators": {
+                "type": "array",
+                "items": {
+                  "$ref": "scholix-v3.json#/definitions/PersonOrOrgType"
+                }
+              }
+            }
+          },
+          "LinkPublicationDate": {
+            "title": "Link publication date",
+            "$ref": "scholix-v3.json#/definitions/DateType"
+          },
+          "LinkProviders": {
+            "type": "array",
+            "description": "The source of this Link Information Package",
+            "items": {
+              "$ref": "scholix-v3.json#/definitions/PersonOrOrgType"
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "Identifier",
+    "GroupBy",
+    "Relation",
+    "Objects"
+  ]
 }

@@ -40,7 +40,12 @@ class SoftwareBroker(object):
         Base.metadata.create_all(self.engine)
 
     def handle_event(self, event):
-        handler = getattr(self, event['event_type'])
+        event_type = event['EventType']
+        handlers = {
+            "RelationshipCreated": self.relationship_created,
+            "RelationshipDeleted": self.relationship_deleted,
+        }
+        handler = handlers[event_type]
         with self.session.begin_nested():
             handler(event)
         self.session.commit()
@@ -78,7 +83,7 @@ class SoftwareBroker(object):
     # TODO: Test if this generalization works as expected
     def _handle_relationship_event(self, event, delete=False):
         event_obj = self.create_event(event)
-        for payload_idx, payload in enumerate(event['payload']):
+        for payload_idx, payload in enumerate(event['Payload']):
             with self.session.begin_nested():
                 relationship, errors = RelationshipSchema(
                     session=self.session, check_existing=True).load(payload)
