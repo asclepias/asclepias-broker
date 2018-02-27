@@ -9,6 +9,7 @@ from marshmallow.validate import OneOf
 
 from ..datastore import Event, EventType, Identifier, Relation, Relationship
 from .utils import to_model
+from typing import Tuple
 
 DATACITE_RELATION_MAP = {
     'Cites': [
@@ -31,20 +32,31 @@ DATACITE_RELATION_MAP = {
         ('IsIdenticalTo', False),
     ]
 }
+
+# Inverse mapping:
+# <DataCiteRelation>: (<BrokerDBRelation>, Inverted?>)
+# E.g.:
+# 'IsVersionOf': ('HasVersion', True),
+# 'HasVersion': ('HasVersion', False),
 INV_DATACITE_RELATION_MAP = dict(
     sum([[(vv, (k, inv)) for vv, inv in v]
          for k, v in DATACITE_RELATION_MAP.items()], []))
 
 
-def from_scholix_relationship_type(rel_type):
-    datacite_subtype = rel_type.get('SubType')
-    if datacite_subtype and rel_type.get('SubTypeSchema') == 'DataCite':
-        type_name = datacite_subtype
+def from_datacite_relation(relation: str) -> Tuple[Relation, bool]:
+    relation, inversed = INV_DATACITE_RELATION_MAP.get(
+        relation, ('IsRelatedTo', False))
+    return getattr(Relation, relation), inversed
+
+
+def from_scholix_relationship_type(rel_obj: dict) -> Tuple[Relation, bool]:
+    # TODO: Rename this function to "from_scholix_relation"
+    datacite_subtype = rel_obj.get('SubType')
+    if datacite_subtype and rel_obj.get('SubTypeSchema') == 'DataCite':
+        relation = datacite_subtype
     else:
-        type_name = rel_type['Name']
-    rel_name, inversed = INV_DATACITE_RELATION_MAP.get(
-        type_name, ('IsRelatedTo', False))
-    return getattr(Relation, rel_name), inversed
+        relation = rel_obj['Name']
+    return from_datacite_relation(relation)
 
 
 @to_model(Identifier)

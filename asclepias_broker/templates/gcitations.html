@@ -1,0 +1,9 @@
+<body>
+{{target}}
+{{citations}}
+{% for gid, citlist in citations %}
+  {% for grouprel, group, id in citlist %}
+    {{ id }}
+  {% endfor %}
+{% endfor %}
+</body>

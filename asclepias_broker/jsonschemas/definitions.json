@@ -11,20 +11,20 @@
             "properties": {
                 "id": {
                     "type": "string",
-                    "description": "E.g.: 10.5281/zenodo.123"
+                    "description": "E.g.: '10.5281/zenodo.123'"
                 },
-                "id_schema": {
+                "id_scheme": {
                     "type": "string",
-                    "description": "E.g.: DOI"
+                    "description": "E.g.: 'doi'"
                 },
                 "id_url": {
                     "type": "string",
-                    "description": "E.g.: http://doi.org"
+                    "description": "E.g.: 'http://doi.org/zenodo.123'"
                 }
             },
             "required": [
                 "id",
-                "id_schema"
+                "id_scheme"
             ]
         },
         "object_type": {

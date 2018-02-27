@@ -136,7 +136,7 @@ TEST_CASES = [
             ['C', 'A', 'Cites', 'B', '2018-01-01'],
         ],
         {
-            'A': [set(), set()],
+            # 'A': [set(), set()],
             'B': [{'A'}, {('A', 'B')}],
         }
     ),
@@ -146,4 +146,4 @@ def test_grouping_query(broker, test_case_name, events, results):
     for ev in generate_payloads(events):
         broker.handle_event(ev)
     for cited_id_value, _ in results.items():
-        ret = broker.get_citations2(cited_id_value)
+        ret = broker.get_citations2(cited_id_value, 'IsCitedBy')

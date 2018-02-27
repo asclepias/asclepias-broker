@@ -5,9 +5,10 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from .datastore import (Base, Event, Identifier, ObjectEvent, PayloadType,
                         Relation, Relationship, Group, GroupRelationship,
-                        GroupType)
+                        Identifier2Group, GroupType)
+from .schemas.loaders import EventSchema, RelationshipSchema, \
+    from_datacite_relation
 
-from .schemas.loaders import EventSchema, RelationshipSchema
 from .tasks import update_groups, get_group_from_id
 
 
@@ -148,10 +149,27 @@ class SoftwareBroker(object):
         return aggregated_citations
 
 
-    def get_citations2(self, identifier, grouping_type=GroupType.Identity):
-        grp = get_group_from_id(self.session, identifier,
+    def get_citations2(self, identifier, relation: str, grouping_type=GroupType.Identity):
+
+        grp = get_group_from_id(self.session, identifier.value, identifier.scheme,
                                 group_type=grouping_type)
-        res = self.session.query(GroupRelationship).filter(
-            GroupRelationship.target==grp, GroupRelationship.relation == Relation.Cites)
-        import ipdb; ipdb.set_trace()
-        pass
+
+        relation, inverse = from_datacite_relation(relation)
+        object_fk = GroupRelationship.source_id
+        target_fk = GroupRelationship.target_id
+        if inverse:
+            object_fk, target_fk = target_fk, object_fk
+
+        res = (
+            self.session.query(GroupRelationship, Group, Identifier)  # TODO: +join by metadatas
+            .filter(object_fk == grp.id,
+                    GroupRelationship.relation == relation)
+            .join(Group, target_fk == Group.id)
+            .join(Identifier2Group, target_fk == Identifier2Group.group_id)
+            .join(Identifier, Identifier2Group.identifier_id == Identifier.id)
+            .order_by(Group.id)
+            .all()
+        )
+        from itertools import groupby
+        result = [(k, list(v)) for k, v in groupby(res, key=lambda x: x[1])]
+        return result
