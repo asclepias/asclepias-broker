@@ -248,6 +248,7 @@ class Group(Base, Timestamp):
         """String representation of the Identifier."""
         return "<{self.id}: {self.type.name}>".format(self=self)
 
+
 class GroupRelationship(Base, Timestamp):
     __tablename__ = 'grouprelationship'
     __table_args__ = (
@@ -285,6 +286,7 @@ class GroupRelationship(Base, Timestamp):
     #     secondary=lambda: Relationship2GroupRelationship,
     #     back_populates='group_relationships',
     #     viewonly=True)
+
 
 class Identifier2Group(Base, Timestamp):
     __tablename__ = 'identifier2group'
@@ -331,6 +333,7 @@ class Relationship2GroupRelationship(Base, Timestamp):
     def __repr__(self):
         return "<{self.group_relationship}: {self.relationship}>".format(self=self)
 
+
 class GroupM2M(Base, Timestamp):
     __tablename__ = 'groupm2m'
     __table_args__ = (
@@ -349,6 +352,7 @@ class GroupM2M(Base, Timestamp):
 
     def __repr__(self):
         return "<{self.group}: {self.subgroup}>".format(self=self)
+
 
 class GroupRelationshipM2M(Base, Timestamp):
     __tablename__ = 'grouprelationshipm2m'
