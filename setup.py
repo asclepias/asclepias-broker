@@ -4,10 +4,13 @@ from asclepias_broker import __version__
 
 tests_require = ['pytest', 'pytest-cov', 'sqltap', ]
 install_requires = [
+    'faker',
     'flask',
     'flask-shell-ipython',
     'idutils',
     'jsonschema',
+    'elasticsearch>=5.0.0,<6.0.0',
+    'elasticsearch-dsl>=5.0.0,<6.0.0',
     'marshmallow',
     'sqlalchemy_utils',
     'sqlalchemy',
