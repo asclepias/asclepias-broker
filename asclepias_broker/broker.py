@@ -9,7 +9,7 @@ from .datastore import (Base, Event, Identifier, ObjectEvent, PayloadType,
 from .schemas.loaders import EventSchema, RelationshipSchema, \
     from_datacite_relation
 
-from .tasks import update_groups, get_group_from_id
+from .tasks import update_groups, update_metadata, get_group_from_id
 
 
 def get(session, model, **kwargs):
@@ -98,6 +98,8 @@ class SoftwareBroker(object):
 
                 # TODO: This should be a task after the ingestion commit
                 update_groups(self.session, relationship)
+                # Update metadata
+                update_metadata(self.session, relationship, payload)
 
     def show_all(self):
         lines = []

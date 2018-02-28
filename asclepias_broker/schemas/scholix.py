@@ -1,10 +1,4 @@
-from marshmallow import Schema, fields, validate, pre_dump
-
-# TODO: Use context to provide missing metadata. Example
-# schema = RelationshipSchema()
-# schema.context['source_object'] = {'title': 'Whatever'}
-# schema.context['relation_type'] = {'type': 'literature', 'subtype': 'foo'}
-# ...
+from marshmallow import Schema, fields, pre_dump, validate
 
 SCHOLIX_RELATIONS = {'References', 'IsReferencedBy', 'IsSupplementTo',
                      'IsSupplementedBy'}
@@ -14,7 +8,7 @@ class IdentifierSchema(Schema):
 
     ID = fields.String(required=True, attribute='value')
     IDScheme = fields.String(required=True, attribute='scheme')
-    IDURL = fields.String()  # TODO: attribute=???
+    IDURL = fields.String()
 
 
 class PersonOrOrgSchema(Schema):
@@ -59,9 +53,14 @@ class RelationshipTypeSchema(Schema):
 
 class RelationshipSchema(Schema):
 
-    LinkPublicationDate = fields.Date()  # TODO: required=True
-    LinkProvider = fields.Nested(PersonOrOrgSchema, many=True)
+    LinkPublicationDate = fields.Date(
+        required=True, attribute='data.LinkPublicationDate')
+    LinkProvider = fields.Nested(
+        PersonOrOrgSchema, many=True, required=True,
+        attribute='data.LinkProvider')
     RelationshipType = fields.Nested(
         RelationshipTypeSchema, required=True, attribute='relation')
-    Source = fields.Nested(ObjectSchema, required=True, attribute='source')
-    Target = fields.Nested(ObjectSchema, required=True, attribute='target')
+    Source = fields.Nested(
+        ObjectSchema, required=True, attribute='source.data')
+    Target = fields.Nested(
+        ObjectSchema, required=True, attribute='target.data')

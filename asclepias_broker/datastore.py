@@ -2,14 +2,21 @@
 
 import enum
 import uuid
+from copy import deepcopy
 
+import jsonschema
+from sqlalchemy import JSON, Boolean, Column, Enum, ForeignKey, Integer, String
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, ForeignKey, Integer, Enum, JSON, Boolean
-from sqlalchemy.types import DateTime
-from sqlalchemy_utils.types import UUIDType, JSONType
-from sqlalchemy_utils.models import Timestamp
-from sqlalchemy.schema import PrimaryKeyConstraint, UniqueConstraint, Index
 from sqlalchemy.orm import relationship as orm_relationship
+from sqlalchemy.orm import backref
+from sqlalchemy.orm.attributes import flag_modified
+from sqlalchemy.schema import Index, PrimaryKeyConstraint, UniqueConstraint
+from sqlalchemy.types import DateTime
+from sqlalchemy_utils.models import Timestamp
+from sqlalchemy_utils.types import JSONType, UUIDType
+
+from .jsonschemas import SCHOLIX_SCHEMA
 
 Base = declarative_base()
 
@@ -113,6 +120,18 @@ class Identifier(Base, Timestamp):
         else:
             return [item.target for item in q]
 
+    # TODO: `@cached_property` maybe?
+    @property
+    def identity_group(self):
+        return next((id2g.group for id2g in self.id2groups
+                     if id2g.group.type == GroupType.Identity), None)
+
+    # TODO: `@cached_property` maybe?
+    @property
+    def data(self):
+        if self.identity_group and self.identity_group.data:
+            return self.identity_group.data.json
+
 
 class Relationship(Base, Timestamp):
     __tablename__ = 'relationship'
@@ -157,6 +176,20 @@ class Relationship(Base, Timestamp):
             else:
                 self.id = uuid.uuid4()
         return self
+
+    # @property
+    # def identity_group(self):
+    #     return session.query(GroupRelationship).filter_by(
+    #         source=self.source.identity_group,
+    #         target=self.target.identity_group,
+    #         relation=self.relation,
+    #         type=GroupType.Identity).one_or_none()
+
+    # # TODO: `@cached_property` maybe?
+    # @property
+    # def data(self):
+    #     if self.identity_group and self.identity_group.data:
+    #         return self.identity_group.data.json
 
     def __repr__(self):
         return "<{self.source.value} {self.relation.name} {self.target.value}{deleted}>".format(self=self, deleted=" [D]" if self.deleted else "")
@@ -205,6 +238,12 @@ class Group(Base, Timestamp):
     id = Column(UUIDType, default=uuid.uuid4, primary_key=True)
     type = Column(Enum(GroupType), nullable=False)
 
+    # identifiers = orm_relationship(
+    #     Identifier,
+    #     secondary=lambda: Identifier2Group,
+    #     back_populates='groups',
+    #     viewonly=True)
+
     def __repr__(self):
         """String representation of the Identifier."""
         return "<{self.id}: {self.type.name}>".format(self=self)
@@ -240,6 +279,12 @@ class GroupRelationship(Base, Timestamp):
 
     def __repr__(self):
         return "<{self.source} {self.relation.name} {self.target}>".format(self=self)
+
+    # relationships = orm_relationship(
+    #     Relationship,
+    #     secondary=lambda: Relationship2GroupRelationship,
+    #     back_populates='group_relationships',
+    #     viewonly=True)
 
 class Identifier2Group(Base, Timestamp):
     __tablename__ = 'identifier2group'
@@ -327,3 +372,103 @@ class GroupRelationshipM2M(Base, Timestamp):
 
     def __repr__(self):
         return "<{self.relationship}: {self.subrelationship}>".format(self=self)
+
+
+COMMON_SCHEMA_DEFINITIONS = SCHOLIX_SCHEMA['definitions']
+OBJECT_TYPE_SCHEMA = COMMON_SCHEMA_DEFINITIONS['ObjectType']
+OVERRIDABLE_KEYS = {'Type', 'Title', 'Creator', 'PublicationDate', 'Publisher'}
+
+
+class GroupMetadata(Base, Timestamp):
+    __tablename__ = 'groupmetadata'
+
+    # TODO: assert group.type == GroupType.Identity
+    group_id = Column(
+        UUIDType,
+        ForeignKey(Group.id, onupdate='CASCADE', ondelete='CASCADE'),
+        primary_key=True)
+    group = orm_relationship(
+        Group,
+        backref=backref('data', uselist=False),
+        single_parent=True,
+    )
+    json = Column(
+        JSON()
+        .with_variant(postgresql.JSONB(none_as_null=True), 'postgresql')
+        .with_variant(JSONType(), 'sqlite'),
+        default=dict,
+    )
+
+    # Identifier metadata
+    SCHEMA = {
+        '$schema': 'http://json-schema.org/draft-06/schema#',
+        'definitions': COMMON_SCHEMA_DEFINITIONS,
+        'additionalProperties': False,
+        'properties': {
+            k: v for k, v in OBJECT_TYPE_SCHEMA['properties'].items()
+            if k in OVERRIDABLE_KEYS
+        },
+    }
+
+    def update(self, payload, validate=True):
+        new_json = deepcopy(self.json or {})
+        for k in OVERRIDABLE_KEYS:
+            if payload.get(k):
+                new_json[k] = payload[k]
+        if validate:
+            jsonschema.validate(new_json, self.SCHEMA)
+        self.json = new_json
+        flag_modified(self, 'json')
+        return self
+
+
+class GroupRelationshipMetadata(Base, Timestamp):
+    __tablename__ = 'grouprelationshipmetadata'
+
+    # TODO: assert group_relationship.type == GroupType.Identity
+    group_relationship_id = Column(
+        UUIDType,
+        ForeignKey(GroupRelationship.id,
+                   onupdate='CASCADE',
+                   ondelete='CASCADE'),
+        primary_key=True)
+    group_relationship = orm_relationship(
+        GroupRelationship,
+        backref=backref('data', uselist=False),
+        single_parent=True,
+    )
+    json = Column(
+        JSON()
+        .with_variant(postgresql.JSONB(none_as_null=True), 'postgresql')
+        .with_variant(JSONType(), 'sqlite'),
+        default=list,
+    )
+
+    # Relationship metadata
+    SCHEMA = {
+        '$schema': 'http://json-schema.org/draft-06/schema#',
+        'definitions': COMMON_SCHEMA_DEFINITIONS,
+        'type': 'array',
+        'items': {
+            'type': 'object',
+            'additionalProperties': False,
+            'properties': {
+                'LinkPublicationDate': {'$ref': '#/definitions/DateType'},
+                'LinkProvider': {
+                    'type': 'array',
+                    'items': {'$ref': '#/definitions/PersonOrOrgType'}
+                },
+                'LicenseURL': {'type': 'string'},
+            },
+            'required': ['LinkPublicationDate', 'LinkProvider'],
+        }
+    }
+
+    def update(self, payload, validate=True):
+        new_json = deepcopy(self.json or [])
+        new_json.append(payload)
+        if validate:
+            jsonschema.validate(new_json, self.SCHEMA)
+        self.json = new_json
+        flag_modified(self, 'json')
+        return self

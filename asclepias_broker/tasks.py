@@ -2,7 +2,8 @@
 
 from .datastore import Relation, Group, GroupType, Identifier2Group, \
     Relationship2GroupRelationship, GroupRelationship, GroupM2M, \
-    GroupRelationshipM2M, Identifier
+    GroupRelationshipM2M, Identifier, Relationship, GroupMetadata, \
+    GroupRelationshipMetadata
 import uuid
 from sqlalchemy.orm import aliased
 from typing import Tuple
@@ -377,3 +378,32 @@ def update_groups(session, relationship, delete=False):
         else:
             add_group_relationship(session, relationship, src_idg, tar_idg,
                                    src_vg, tar_vg)
+
+
+# TODO: When merging/splitting groups there is some merging/duplicating of
+# metadata as well
+def update_metadata(session, relationship: Relationship, payload):
+    # Get identity groups for source and targer
+    src_group = next((id2g.group for id2g in relationship.source.id2groups
+                      if id2g.group.type == GroupType.Identity), None)
+    trg_group = next((id2g.group for id2g in relationship.target.id2groups
+                      if id2g.group.type == GroupType.Identity), None)
+    rel_group = session.query(GroupRelationship).filter_by(
+        source=src_group, target=trg_group, relation=relationship.relation,
+        type=GroupType.Identity).one_or_none()
+    if src_group:
+        src_metadata = src_group.data or GroupMetadata(group=src_group)
+        src_metadata.update(payload['Source'])
+    if trg_group:
+        trg_metadata = trg_group.data or GroupMetadata(group=trg_group)
+        trg_metadata.update(payload['Target'])
+    if rel_group:
+        rel_metadata = rel_group.data or \
+            GroupRelationshipMetadata(group_relationship=rel_group)
+        rel_metadata.update(
+            {k: v for k, v in payload.items()
+             if k in ('LinkPublicationDate', 'LinkProvider')})
+    # TODO: Also this is a good place to update the upcoming ES indices
+    return (src_group and src_group.data,
+            trg_group and trg_group.data,
+            rel_group and rel_group.data)
