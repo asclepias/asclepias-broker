@@ -5,7 +5,8 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from .datastore import (Base, Event, Identifier, ObjectEvent, PayloadType,
                         Relation, Relationship, Group, GroupRelationship,
-                        Identifier2Group, GroupType)
+                        Identifier2Group, GroupType, GroupMetadata,
+                        GroupRelationshipMetadata)
 from .schemas.loaders import EventSchema, RelationshipSchema, \
     from_datacite_relation
 

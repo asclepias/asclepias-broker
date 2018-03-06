@@ -7,6 +7,7 @@ from asclepias_broker.datastore import Relationship, Relation, Identifier,\
     Group, GroupType, Identifier2Group, GroupM2M, GroupRelationship, \
     GroupRelationshipM2M, Relationship2GroupRelationship
 from asclepias_broker.tasks import get_or_create_groups
+from asclepias_broker.jsonschemas import SCHOLIX_SCHEMA
 
 import jsonschema
 
@@ -33,12 +34,45 @@ INPUT_ITEMS_SCHEMA = {
                 {'type': 'string', 'title': 'Publication Date'},
             ],
         },
+        'ObjMeta': {
+            'type': 'object',
+            'properties': {
+                'Type': {
+                    'type': 'string',
+                    'enum': ['literature', 'dataset', 'unknown']
+                },
+                'Title': {
+                    'type': 'string'
+                },
+                'Creator': {
+                    'type': 'array',
+                    'items': SCHOLIX_SCHEMA['definitions']['PersonOrOrgType']
+                }
+            }
+        },
+        'Metadata': {
+            'type': 'object',
+            'properties': {
+                'Source': {
+                    '$ref': '#definitions/ObjMeta'
+                },
+                'Target': {
+                    '$ref': '#definitions/ObjMeta'
+                },
+                'LinkProvider': SCHOLIX_SCHEMA['definitions']['PersonOrOrgType']
+            }
+        }
     },
     'type': 'array',
     'items': {
         'oneOf': [
             # Allow nested, multi-payload events
             {'type': 'array', 'items': {'$ref': '#/definitions/Relationship'}},
+            {'type': 'array', 'items': [
+                    {'$ref': '#/definitions/Relationship'},
+                    {'$ref': '#/definitions/Metadata'},
+                ]
+            },
             {'$ref': '#/definitions/Relationship'},
         ],
     }
@@ -62,11 +96,19 @@ class Event:
             d['IDURL'] = url
         return d
 
-    def _gen_object(self, source, type_=None, title=None, creator=None):
-        return {
+    def _gen_object(self, source, metadata):
+        type_ = metadata.get('Type')
+        title = metadata.get('Title')
+        creator = metadata.get('Creator')
+        obj = {
             'Identifier': self._gen_identifier(source),
             'Type': type_ or {'Name': 'unknown'},
         }
+        if title:
+            obj['Title'] = title
+        if creator:
+            obj['Creator'] = creator
+        return obj
 
     def _gen_relation(self, relation):
         if relation not in SCHOLIX_RELATIONS:
@@ -75,11 +117,15 @@ class Event:
         return {'Name': relation}
 
     def add_payload(self, source, relation, target, publication_date,
-                    provider=None):
+                    metadata=None):
+        metadata = metadata or {}
+        source_meta = metadata.get('Source', {})
+        target_meta = metadata.get('Target', {})
+        provider = metadata.get('LinkProvider')
         self.payloads.append({
-            'Source': self._gen_object(source),
+            'Source': self._gen_object(source, source_meta),
             'RelationshipType': self._gen_relation(relation),
-            'Target': self._gen_object(target),
+            'Target': self._gen_object(target, target_meta),
             'LinkPublicationDate': publication_date,
             'LinkProvider': [provider or {'Name': 'Link Provider Ltd.'}]
         })
@@ -101,15 +147,23 @@ def generate_payloads(input_items, event_schema=None):
     jsonschema.validate(input_items, INPUT_ITEMS_SCHEMA)
     events = []
     for item in input_items:
-        if isinstance(item[0], str):  # Single payload
-            payloads = [item]
-        else:  # Multiple payloads/relations
-            payloads = item
 
-        evt = Event(event_type=EVENT_TYPE_MAP[payloads[0][0]])
-        for op, src, rel, trg, at in payloads:
-            evt.add_payload(src, rel, trg, at)
-        events.append(evt.event)
+        if len(item) == 2 and isinstance(item[1], dict):  # Relation + Metadata
+            evt = Event(event_type=EVENT_TYPE_MAP[item[0][0]])
+            payload, metadata = item
+            op, src, rel, trg, at = payload
+            evt.add_payload(src, rel, trg, at, metadata)
+            events.append(evt.event)
+        else:
+            if isinstance(item[0], str):  # Single payload
+                payloads = [item]
+            else:
+                payloads = item
+            evt = Event(event_type=EVENT_TYPE_MAP[payloads[0][0]])
+
+            for op, src, rel, trg, at in payloads:
+                evt.add_payload(src, rel, trg, at)
+            events.append(evt.event)
     if event_schema:
         jsonschema.validate(events, {'type': 'array', 'items': event_schema})
     return events
