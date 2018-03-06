@@ -1,0 +1,18 @@
+root = true
+
+[*]
+indent_style = space
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+charset = utf-8
+
+# Python files
+[*.py]
+indent_size = 4
+# isort plugin configuration
+max_line_length = 79
+known_first_party = asclepias_broker
+multi_line_output = 2
+default_section = THIRDPARTY
+skip = .eggs

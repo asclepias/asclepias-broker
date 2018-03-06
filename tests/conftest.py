@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 
 from asclepias_broker.broker import SoftwareBroker
+from asclepias_broker.es import create_all, delete_all, es_client
 from asclepias_broker.datastore import Base
 from helpers import generate_payloads
 
@@ -12,7 +13,15 @@ from sqlalchemy_utils.functions import create_database, database_exists, drop_da
 
 
 @pytest.fixture()
-def broker():
+def es():
+    create_all()
+    es_client.indices.refresh()
+    yield es_client
+    delete_all()
+
+
+@pytest.fixture()
+def broker(es):
     db_uri = os.environ.get('SQLALCHEMY_DATABASE_URI')
     broker_ = SoftwareBroker(db_uri)
     yield broker_
@@ -20,6 +29,7 @@ def broker():
     # Close all open sessions sand drop all tables
     broker_.session.close_all()
     Base.metadata.drop_all(broker_.engine)
+
 
 #
 # JSON schema and test data loading fixtures

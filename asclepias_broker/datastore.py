@@ -238,6 +238,7 @@ class Group(Base, Timestamp):
     id = Column(UUIDType, default=uuid.uuid4, primary_key=True)
     type = Column(Enum(GroupType), nullable=False)
 
+    # TODO: See if this works...
     # identifiers = orm_relationship(
     #     Identifier,
     #     secondary=lambda: Identifier2Group,

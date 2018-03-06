@@ -5,8 +5,10 @@ from .datastore import Relation, Group, GroupType, Identifier2Group, \
     GroupRelationshipM2M, Identifier, Relationship, GroupMetadata, \
     GroupRelationshipMetadata
 import uuid
+from .indexer import index_identity_group, index_relationship_group
+from .es import ObjectDoc, RelationshipDoc
 from sqlalchemy.orm import aliased
-from typing import Tuple
+from typing import Tuple, List
 
 
 def merge_group_relationships(session, group_a, group_b, merged_group,
@@ -403,7 +405,46 @@ def update_metadata(session, relationship: Relationship, payload):
         rel_metadata.update(
             {k: v for k, v in payload.items()
              if k in ('LinkPublicationDate', 'LinkProvider')})
-    # TODO: Also this is a good place to update the upcoming ES indices
-    return (src_group and src_group.data,
-            trg_group and trg_group.data,
-            rel_group and rel_group.data)
+    update_indices(session, src_group, trg_group, rel_group)
+
+
+# TODO: Use this function when these lists are available
+def _update_indices(session,
+                    created_or_updated: Tuple[List[uuid.UUID], List[uuid.UUID]]=None,
+                    deleted: Tuple[List[uuid.UUID], List[uuid.UUID]]=None):
+    if created_or_updated:
+        groups, rels = created_or_updated
+        for g_id in groups:
+            group = session.query(Group).get(g_id)
+            if group:
+                index_identity_group(session, group)
+        for r_id in rels:
+            rel = session.query(GroupRelationship).get(r_id)
+            if rel:
+                index_relationship_group(session, rel)
+    if deleted:
+        deleted_groups, deleted_rels = deleted
+        for g_id in deleted_groups:
+            obj_doc = ObjectDoc.get(g_id)
+            if obj_doc:
+                obj_doc.delete(ignore=[400, 404])
+        for r_id in deleted_rels:
+            rel_obj = RelationshipDoc.get(r_id)
+            if rel_obj:
+                rel_obj.delete(ignore=[400, 404])
+
+
+def update_indices(session,
+                   src_group: Group,
+                   trg_group: Group,
+                   rel_group: GroupRelationship) -> Tuple[ObjectDoc, ObjectDoc, RelationshipDoc]:
+    # Only the "Identifiers" of a single Object document have to be updated
+    if not rel_group or rel_group.relation == Relation.IsIdenticalTo:
+        obj_group = src_group or trg_group
+        obj_doc = index_identity_group(session, obj_group)
+        return obj_doc, obj_doc, None
+
+    src_doc = index_identity_group(session, src_group)
+    trg_doc = index_identity_group(session, trg_group)
+    rel_doc = index_relationship_group(session, rel_group)
+    return src_doc, trg_doc, rel_doc
