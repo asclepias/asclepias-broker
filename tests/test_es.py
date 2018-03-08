@@ -41,7 +41,8 @@ def _create_identity_groups(session, identifier_groups) -> List[Tuple[Group, Gro
     return all_groups
 
 
-def _create_group_rel(session, src_identifier, trg_identifier, relation=None, metadata=None):
+def _create_group_rel(session, src_identifier, trg_identifier, relation=None,
+        metadata=None):
     relation = relation or Relation.Cites
     metadata = metadata or {'LinkProvider': [{'Name': 'Test provider'}],
                             'LinkPublicationDate': '2018-01-01'}
@@ -57,7 +58,7 @@ def _create_group_rel(session, src_identifier, trg_identifier, relation=None, me
         source=src_group, target=trg_group, relation=rel.relation,
         type=GroupType.Identity).one_or_none()
     rel_metadata = rel_group.data or \
-        GroupRelationshipMetadata(group_relationship=rel_group)
+        GroupRelationshipMetadata(group_relationship_id=rel_group.id)
     rel_metadata.update(metadata)
     session.commit()
     return src_group, trg_group, rel_group

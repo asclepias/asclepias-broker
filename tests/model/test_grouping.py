@@ -3,7 +3,8 @@ import pytest
 
 from asclepias_broker.datastore import Relationship, Relation, Identifier,\
     Group, GroupType, Identifier2Group, GroupM2M, GroupRelationship,\
-    GroupRelationshipM2M, Relationship2GroupRelationship
+    GroupRelationshipM2M, Relationship2GroupRelationship, GroupMetadata,\
+    GroupRelationshipMetadata
 
 from asclepias_broker.tasks import get_or_create_groups, merge_version_groups, \
     merge_identity_groups, get_group_from_id
@@ -357,7 +358,89 @@ def test_merge_identity_groups(broker):
         ('D', Relation.Cites, 'A'),
         ('D', Relation.Cites, 'B'),
     ]
-    create_objects_from_relations(s, rels)
+    metadata = [
+        (
+            {'Title': 'Title of A v1',
+             'Type': {'Name': 'literature',
+                      'SubType': 'journal article',
+                      'SubTypeSchema': 'datacite'},
+             'PublicationDate': '2018-01-01',
+             'Creator': [{'Name': 'Creator A v1',
+                          'Identifier': [{'ID': '0000-0001-2345-6789',
+                                          'IDScheme': 'orcid'}]}]},
+            {'LinkPublicationDate': '2018-01-01',
+              'LinkProvider': [{'Name': 'Foobar'}]},
+            {'Title': 'Title of C v1',
+             'Type': {'Name': 'literature',
+                      'SubType': 'journal article',
+                      'SubTypeSchema': 'datacite'},
+             'PublicationDate': '2018-01-01',
+             'Creator': [{'Name': 'Creator C v1',
+                          'Identifier': [{'ID': '0000-0001-2345-6789',
+                                          'IDScheme': 'orcid'}]}]}
+        ),
+        (
+            {'Title': 'Title of B v1',
+             'Type': {'Name': 'literature',
+                      'SubType': 'journal article',
+                      'SubTypeSchema': 'datacite'},
+             'PublicationDate': '2018-01-01',
+             'Creator': [{'Name': 'Creator B v1',
+                          'Identifier': [{'ID': '0000-0001-2345-6789',
+                                          'IDScheme': 'orcid'}]}]},
+            {'LinkPublicationDate': '2018-01-01',
+              'LinkProvider': [{'Name': 'Foobar'}]},
+            {'Title': 'Title of C v2',
+             'Type': {'Name': 'literature',
+                      'SubType': 'journal article',
+                      'SubTypeSchema': 'datacite'},
+             'PublicationDate': '2018-01-01',
+             'Creator': [{'Name': 'Creator C v2',
+                          'Identifier': [{'ID': '0000-0001-2345-6789',
+                                          'IDScheme': 'orcid'}]}]}
+        ),
+        (
+            {'Title': 'Title of D v1',
+             'Type': {'Name': 'literature',
+                      'SubType': 'journal article',
+                      'SubTypeSchema': 'datacite'},
+             'PublicationDate': '2018-01-01',
+             'Creator': [{'Name': 'Creator D v1',
+                          'Identifier': [{'ID': '0000-0001-2345-6789',
+                                          'IDScheme': 'orcid'}]}]},
+            {'LinkPublicationDate': '2018-01-01',
+              'LinkProvider': [{'Name': 'Foobar'}]},
+            {'Title': 'Title of A v2',
+             'Type': {'Name': 'literature',
+                      'SubType': 'journal article',
+                      'SubTypeSchema': 'datacite'},
+             'PublicationDate': '2018-01-01',
+             'Creator': [{'Name': 'Creator A v2',
+                          'Identifier': [{'ID': '0000-0001-2345-6789',
+                                          'IDScheme': 'orcid'}]}]}
+        ),
+        (
+            {'Title': 'Title of D v2',
+             'Type': {'Name': 'literature',
+                      'SubType': 'journal article',
+                      'SubTypeSchema': 'datacite'},
+             'PublicationDate': '2018-01-01',
+             'Creator': [{'Name': 'Creator D v2',
+                          'Identifier': [{'ID': '0000-0001-2345-6789',
+                                          'IDScheme': 'orcid'}]}]},
+            {'LinkPublicationDate': '2018-01-01',
+              'LinkProvider': [{'Name': 'Foobar'}]},
+            {'Title': 'Title of B v2',
+             'Type': {'Name': 'literature',
+                      'SubType': 'journal article',
+                      'SubTypeSchema': 'datacite'},
+             'PublicationDate': '2018-01-01',
+             'Creator': [{'Name': 'Creator B v2',
+                          'Identifier': [{'ID': '0000-0001-2345-6789',
+                                          'IDScheme': 'orcid'}]}]}
+        )
+    ]
+    create_objects_from_relations(s, rels, metadata=metadata)
 
     grouping = (
         # Groups and GroupM2M
@@ -485,6 +568,10 @@ def test_merge_identity_groups(broker):
     )
 
     assert_grouping(s, grouping)
+    id_grp1 = get_group_from_id(s, 'A').data
+    id_grp2 = get_group_from_id(s, 'B').data
+    assert id_grp1 == id_grp2 and id_grp1.json['Title'] == 'Title of B v2'
+
     id_grp1 = get_group_from_id(s, 'A')
     id_grp2 = get_group_from_id(s, 'C')
     merge_identity_groups(s, id_grp1, id_grp2)
@@ -504,8 +591,12 @@ def test_merge_identity_groups(broker):
         ],
         []  # No relations M2M
     )
+
+    id_grp1 = get_group_from_id(s, 'A').data
+    id_grp2 = get_group_from_id(s, 'B').data
+    id_grp3 = get_group_from_id(s, 'C').data
+    id_grp4 = get_group_from_id(s, 'D').data
+    # All metadata should be merged to that of the last "D" object
+    assert id_grp1 == id_grp2 == id_grp3 == id_grp4 and \
+        id_grp1.json['Title'] == 'Title of D v2'
     assert_grouping(s, grouping)
-
-
-def test_update_groups(broker):
-    pass

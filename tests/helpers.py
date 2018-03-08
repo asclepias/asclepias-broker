@@ -4,8 +4,9 @@ import time
 import uuid
 
 from asclepias_broker.datastore import Relationship, Relation, Identifier,\
-    Group, GroupType, Identifier2Group, GroupM2M, GroupRelationship, \
-    GroupRelationshipM2M, Relationship2GroupRelationship
+    Group, GroupType, GroupMetadata, Identifier2Group, GroupM2M,\
+    GroupRelationship, GroupRelationshipM2M, Relationship2GroupRelationship, \
+    GroupRelationshipMetadata
 from asclepias_broker.tasks import get_or_create_groups
 from asclepias_broker.jsonschemas import SCHOLIX_SCHEMA
 
@@ -169,7 +170,7 @@ def generate_payloads(input_items, event_schema=None):
     return events
 
 
-def create_objects_from_relations(session, relationships):
+def create_objects_from_relations(session, relationships, metadata=None):
     """Given a list of relationships, create all corresponding DB objects.
 
     E.g.:
@@ -180,6 +181,8 @@ def create_objects_from_relations(session, relationships):
 
         Will create Identifier, Relationship, Group and all M2M objects.
     """
+    if not metadata:
+        metadata = [({}, {}, {}) for _ in range(len(relationships))]
     identifiers = sorted(set(sum([[a,b] for a, _, b in relationships],[])))
     groups = []  # Cointains pairs of (Identifier2Group, Group2Group)
     for i in identifiers:
@@ -189,7 +192,7 @@ def create_objects_from_relations(session, relationships):
     rel_obj = []
     id_gr_relationships = []
     ver_gr_relationships = []
-    for src, rel, tar in relationships:
+    for (src, rel, tar), (src_m, rel_m, tar_m) in zip(relationships, metadata):
         src_, tar_ = Identifier.get(session, src, 'doi'), \
             Identifier.get(session, tar, 'doi')
         r = Relationship(source=src_, target=tar_, relation=rel)
@@ -198,7 +201,14 @@ def create_objects_from_relations(session, relationships):
         s_id_gr, s_ver_gr = groups[identifiers.index(src)]
         t_id_gr, t_ver_gr = groups[identifiers.index(tar)]
         id_gr_rel = GroupRelationship(source=s_id_gr,
-            target=t_id_gr, relation=rel, type=GroupType.Identity)
+            target=t_id_gr, relation=rel, type=GroupType.Identity,
+            id=uuid.uuid4())
+        s_id_gr.data.update(src_m, validate=False)
+        t_id_gr.data.update(tar_m, validate=False)
+
+        grm = GroupRelationshipMetadata(group_relationship_id=id_gr_rel.id)
+        session.add(grm)
+        grm.update(rel_m, validate=False)
         session.add(Relationship2GroupRelationship(relationship=r,
             group_relationship=id_gr_rel))
         session.add(id_gr_rel)
@@ -271,6 +281,8 @@ def assert_grouping(session, grouping):
     assert session.query(Group).filter_by(
         type=GroupType.Identity).count() == len(id_groups)
 
+    assert session.query(GroupMetadata).count() == len(id_groups)
+
     # Make sure that all loaded groups are unique
     assert len(set(map(lambda x: x.id, group_map))) == len(group_map)
     assert session.query(Group).count() == len(group_map)
@@ -300,6 +312,9 @@ def assert_grouping(session, grouping):
                    if t == GroupType.Identity]
     # There are as many GroupRelationshipM2M objects as Identity Groups
     assert session.query(GroupRelationshipM2M).count() == len(id_grp_rels)
+
+    # Same number of GroupRelationshipMetadata as GRelationships of type ID
+    assert session.query(GroupRelationshipMetadata).count() == len(id_grp_rels)
 
     # There are as many Relationship to GR items as Relationships
     n_rel2grrels = sum([len(x[1]) for x in relationship_groups

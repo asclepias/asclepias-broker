@@ -98,9 +98,12 @@ class SoftwareBroker(object):
                 self.create_relation_object_events(event_obj, relationship, payload_idx)
 
                 # TODO: This should be a task after the ingestion commit
-                update_groups(self.session, relationship)
+                groups = update_groups(self.session, relationship)
+                src_grp, tar_grp, merged_grp = groups
                 # Update metadata
                 update_metadata(self.session, relationship, payload)
+
+                #_update_indices(self.session,
 
     def show_all(self):
         lines = []

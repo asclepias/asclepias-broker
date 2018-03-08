@@ -11,8 +11,7 @@ from sqlalchemy.orm import aliased
 from typing import Tuple, List
 
 
-def merge_group_relationships(session, group_a, group_b, merged_group,
-        with_identifier_relationships=False):
+def merge_group_relationships(session, group_a, group_b, merged_group):
     """Merge the relationships of merged groups A and B to avoid collisions.
 
     Groups 'group_a' and 'group_b' will be merged as 'merged_group'.
@@ -34,6 +33,9 @@ def merge_group_relationships(session, group_a, group_b, merged_group,
     relationships (only one of each duplicate pair), so that we can later
     execute and UPDATE.
     """
+    # Determine if this is an Identity-type group merge
+    identity_groups = group_a.type == GroupType.Identity
+
     # Remove all GroupRelationship objects between groups A and B.
     # Correspnding GroupRelationshipM2M objects will cascade
     (
@@ -87,10 +89,19 @@ def merge_group_relationships(session, group_a, group_b, merged_group,
                 'type': rel_a.type
             }
             new_grp_rel = GroupRelationship(**kwargs)
+            session.add(new_grp_rel)
+            if identity_groups:
+                group_rel_meta = GroupRelationshipMetadata(
+                    group_relationship_id=new_grp_rel.id)
+                session.add(group_rel_meta)
+                json1, json2 = rel_a.data.json, rel_b.data.json
+                if rel_b.data.updated < rel_a.data.updated:
+                    json1, json2 = json2, json1
+                group_rel_meta.json = json1
+                group_rel_meta.update(json2, validate=False)
 
             # Delete the duplicate pairs of relationship M2Ms before updating
             delete_duplicate_relationship_m2m(session, rel_a, rel_b)
-            session.add(new_grp_rel)
             (
                 session.query(GroupRelationshipM2M)
                 .filter(GroupRelationshipM2M.relationship_id.in_([rel_a.id, rel_b.id]))
@@ -103,7 +114,7 @@ def merge_group_relationships(session, group_a, group_b, merged_group,
                 .update({GroupRelationshipM2M.subrelationship_id: new_grp_rel.id},
                     synchronize_session='fetch')
             )
-            if with_identifier_relationships:
+            if identity_groups:
                 cls = Relationship2GroupRelationship
                 delete_duplicate_relationship_m2m(session, rel_a, rel_b,
                     cls=cls)
@@ -242,9 +253,15 @@ def merge_identity_groups(session, group_a: Group, group_b: Group):
 
     merged_group = Group(type=GroupType.Identity, id=uuid.uuid4())
     session.add(merged_group)
+    merged_group_meta = GroupMetadata(group_id=merged_group.id)
+    session.add(merged_group_meta)
+    json1, json2 = group_a.data.json, group_b.data.json
+    if group_b.data.updated < group_a.data.updated:
+        json1, json2 = json2, json1
+    merged_group_meta.json = json1
+    merged_group_meta.update(json2)
 
-    merge_group_relationships(session, group_a, group_b, merged_group,
-                              with_identifier_relationships=True)
+    merge_group_relationships(session, group_a, group_b, merged_group)
 
     (session.query(Identifier2Group)
      .filter(Identifier2Group.group_id.in_([group_a.id, group_b.id]))
@@ -262,6 +279,7 @@ def merge_identity_groups(session, group_a: Group, group_b: Group):
     session.query(Group).filter(Group.id.in_([group_a.id, group_b.id])).delete(
         synchronize_session='fetch')
     # After merging identity groups, we need to merge the version groups
+    return merged_group
 
 
 def merge_version_groups(session, group_a: Group, group_b: Group):
@@ -305,6 +323,8 @@ def get_or_create_groups(
     if not id2g:
         group = Group(type=GroupType.Identity, id=uuid.uuid4())
         session.add(group)
+        gm = GroupMetadata(group_id=group.id)
+        session.add(gm)
         id2g = Identifier2Group(identifier=identifier, group=group)
         session.add(id2g)
     g2g = (session.query(GroupM2M)
@@ -337,7 +357,12 @@ def add_group_relationship(session, relationship, src_id_grp, tar_id_grp,
     # Add GroupRelationship between Identity groups
     id_grp_rel = GroupRelationship(source=src_id_grp, target=tar_id_grp,
                                    relation=relationship.relation,
-                                   type=GroupType.Identity)
+                                   type=GroupType.Identity, id=uuid.uuid4())
+
+    grm = GroupRelationshipMetadata(
+        group_relationship_id=id_grp_rel.id)
+    session.add(grm)
+
     session.add(id_grp_rel)
     rel2grp_rel = Relationship2GroupRelationship(
         relationship=relationship, group_relationship=id_grp_rel)
@@ -357,9 +382,10 @@ def update_groups(session, relationship, delete=False):
     """Update groups and related M2M objects for given relationship."""
     src_idg, src_vg = get_or_create_groups(session, relationship.source)
     tar_idg, tar_vg = get_or_create_groups(session, relationship.target)
+    merged_group = None
 
     if relationship.relation == Relation.IsIdenticalTo:
-        merge_identity_groups(session, src_idg, tar_idg)
+        merged_group = merge_identity_groups(session, src_idg, tar_idg)
     elif relationship.relation == Relation.HasVersion:
         merge_version_groups(session, src_vg, tar_vg)
     else: # Relation.Cites, Relation.IsSupplementTo, Relation.IsRelatedTo
@@ -380,6 +406,7 @@ def update_groups(session, relationship, delete=False):
         else:
             add_group_relationship(session, relationship, src_idg, tar_idg,
                                    src_vg, tar_vg)
+    return src_idg, tar_idg, merged_group
 
 
 # TODO: When merging/splitting groups there is some merging/duplicating of
@@ -405,7 +432,8 @@ def update_metadata(session, relationship: Relationship, payload):
         rel_metadata.update(
             {k: v for k, v in payload.items()
              if k in ('LinkPublicationDate', 'LinkProvider')})
-    update_indices(session, src_group, trg_group, rel_group)
+    # TODO: remove
+    #update_indices(session, src_group, trg_group, rel_group)
 
 
 # TODO: Use this function when these lists are available
