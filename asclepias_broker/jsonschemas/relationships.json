@@ -6,9 +6,9 @@
   "additionalProperties": false,
   "type": "object",
   "properties": {
-    "Identifier": {
-      "$ref": "scholix-v3.json#definitions/IdentifierType",
-      "description": "Identifier of the queried object."
+    "Source": {
+      "$ref": "scholix-v3.json#definitions/ObjectType",
+      "description": "Metadata about the queried object."
     },
     "GroupBy": {
       "type": "string",
@@ -21,41 +21,28 @@
       "description": "Relation that was queried for.",
       "enum": ["IsCitedBy", "Cites", "IsSupplementTo", "IsSupplementedBy"]
     },
-    "Objects": {
+    "Relationship": {
       "type": "array",
       "description": "List of Objects for given identifier and relation",
       "items": {
         "properties": {
-          "Identifiers": {
+          "Target": {
+            "$ref": "scholix-v3.json#definitions/ObjectType",
+            "description": "Metadata about the target object."
+          },
+          "LinkHistory": {
             "type": "array",
             "items": {
-              "$ref": "scholix-v3.json#definitions/IdentifierType"
-            }
-          },
-          "Metadata": {
-            "type": "object",
-            "properties": {
-              "Title": {
-                  "type": "string",
-                  "description": "Title of the object."
-              },
-              "Creators": {
-                "type": "array",
-                "items": {
-                  "$ref": "scholix-v3.json#/definitions/PersonOrOrgType"
+              "properties": {
+                "LinkPublicationDate": {
+                  "title": "Link publication date",
+                  "$ref": "scholix-v3.json#/definitions/DateType"
+                },
+                "LinkProvider": {
+                  "$ref": "scholix-v3.json#/definitions/PersonOrOrgType",
+                  "description": "The source of this Link Information Package"
                 }
               }
-            }
-          },
-          "LinkPublicationDate": {
-            "title": "Link publication date",
-            "$ref": "scholix-v3.json#/definitions/DateType"
-          },
-          "LinkProviders": {
-            "type": "array",
-            "description": "The source of this Link Information Package",
-            "items": {
-              "$ref": "scholix-v3.json#/definitions/PersonOrOrgType"
             }
           }
         }
@@ -63,9 +50,9 @@
     }
   },
   "required": [
-    "Identifier",
+    "Source",
     "GroupBy",
     "Relation",
-    "Objects"
+    "Relationship"
   ]
 }
