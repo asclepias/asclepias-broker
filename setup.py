@@ -2,7 +2,7 @@ from setuptools import setup
 
 from asclepias_broker import __version__
 
-tests_require = ['pytest', 'pytest-cov', 'sqltap', ]
+tests_require = ['pytest', 'pytest-cov', 'sqltap', 'flask-debugtoolbar']
 install_requires = [
     'faker',
     'flask',
@@ -18,7 +18,7 @@ install_requires = [
     'arrow',
 ]
 extras_require = {
-    'postgres': ['psycopg2', ],
+    'postgres': ['psycopg2-binary', ],
     'tests': tests_require,
 }
 extras_require['all'] = sum((v for k, v in extras_require.items()), [])
