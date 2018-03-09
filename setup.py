@@ -28,6 +28,11 @@ setup(version=__version__,
       name="asclepias-broker",
       description='Prototype broker code for the Asclepias project',
       packages=['asclepias_broker'],
+      entry_points={
+        'console_scripts': [
+            'asclepias-broker = asclepias_broker.cli:cli',
+        ],
+      },
       extras_require=extras_require,
       tests_require=tests_require,
       install_requires=install_requires,
