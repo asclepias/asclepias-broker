@@ -1,14 +1,16 @@
 """Utility functions and tasks."""
 
-from .datastore import Relation, Group, GroupType, Identifier2Group, \
-    Relationship2GroupRelationship, GroupRelationship, GroupM2M, \
-    GroupRelationshipM2M, Identifier, Relationship, GroupMetadata, \
-    GroupRelationshipMetadata
 import uuid
-from .indexer import index_identity_group, index_relationship_group
-from .es import ObjectDoc, RelationshipDoc
+from itertools import chain
+from typing import Tuple
+
 from sqlalchemy.orm import aliased
-from typing import Tuple, List
+
+from .datastore import Group, GroupM2M, GroupMetadata, GroupRelationship, \
+    GroupRelationshipM2M, GroupRelationshipMetadata, GroupType, Identifier, \
+    Identifier2Group, Relation, Relationship, Relationship2GroupRelationship
+from .indexer import delete_identity_group, index_group_relationships, \
+    index_identity_group
 
 
 def merge_group_relationships(session, group_a, group_b, merged_group):
@@ -432,47 +434,38 @@ def update_metadata(session, relationship: Relationship, payload):
         rel_metadata.update(
             {k: v for k, v in payload.items()
              if k in ('LinkPublicationDate', 'LinkProvider')})
-    # TODO: remove
-    #update_indices(session, src_group, trg_group, rel_group)
-
-
-# TODO: Use this function when these lists are available
-def _update_indices(session,
-                    created_or_updated: Tuple[List[uuid.UUID], List[uuid.UUID]]=None,
-                    deleted: Tuple[List[uuid.UUID], List[uuid.UUID]]=None):
-    if created_or_updated:
-        groups, rels = created_or_updated
-        for g_id in groups:
-            group = session.query(Group).get(g_id)
-            if group:
-                index_identity_group(session, group)
-        for r_id in rels:
-            rel = session.query(GroupRelationship).get(r_id)
-            if rel:
-                index_relationship_group(session, rel)
-    if deleted:
-        deleted_groups, deleted_rels = deleted
-        for g_id in deleted_groups:
-            obj_doc = ObjectDoc.get(g_id)
-            if obj_doc:
-                obj_doc.delete(ignore=[400, 404])
-        for r_id in deleted_rels:
-            rel_obj = RelationshipDoc.get(r_id)
-            if rel_obj:
-                rel_obj.delete(ignore=[400, 404])
 
 
 def update_indices(session,
                    src_group: Group,
                    trg_group: Group,
-                   rel_group: GroupRelationship) -> Tuple[ObjectDoc, ObjectDoc, RelationshipDoc]:
-    # Only the "Identifiers" of a single Object document have to be updated
-    if not rel_group or rel_group.relation == Relation.IsIdenticalTo:
-        obj_group = src_group or trg_group
-        obj_doc = index_identity_group(session, obj_group)
-        return obj_doc, obj_doc, None
+                   merged_group: Group,
+                   rel_group: GroupRelationship):
+    # `src_group` and `trg_group` were merged into `merged_group`.
+    if merged_group:
+        # Delete Source and Traget groups
+        delete_identity_group(src_group)
+        delete_identity_group(trg_group)
 
+        # Index the merged object and its relationships
+        obj_doc = index_identity_group(session, merged_group)
+        obj_rel_doc = index_group_relationships(session, merged_group)
+
+        # Update all group relationships of the merged group
+        # TODO: This can be optimized to avoid fetching a lot of the same
+        # GroupMetadata, by keeping a temporary cache of them...
+        relationships = chain(obj_rel_doc.to_dict().values())
+        target_ids = [r.get('TargetID') for r in relationships]
+        for i in target_ids:
+            index_group_relationships(session, i)
+
+        return (obj_doc, obj_rel_doc), (obj_doc, obj_rel_doc)
+
+    # No groups were merged, this is a simple relationship
+
+    # Index Source and Target objects and their relationships
     src_doc = index_identity_group(session, src_group)
     trg_doc = index_identity_group(session, trg_group)
-    rel_doc = index_relationship_group(session, rel_group)
-    return src_doc, trg_doc, rel_doc
+    src_rel_doc = index_group_relationships(session, src_group)
+    trg_rel_doc = index_group_relationships(session, trg_group)
+    return (src_doc, src_rel_doc), (trg_doc, trg_rel_doc)

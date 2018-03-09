@@ -3,14 +3,14 @@ from itertools import groupby
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from .datastore import (Base, Event, Identifier, ObjectEvent, PayloadType,
-                        Relation, Relationship, Group, GroupRelationship,
-                        Identifier2Group, GroupType, GroupMetadata,
-                        GroupRelationshipMetadata)
+from .datastore import Base, Event, Group, GroupRelationship, GroupType, \
+    Identifier, Identifier2Group, ObjectEvent, PayloadType, Relation, \
+    Relationship
+from .es import get_relationships
 from .schemas.loaders import EventSchema, RelationshipSchema, \
     from_datacite_relation
-
-from .tasks import update_groups, update_metadata, get_group_from_id
+from .tasks import get_group_from_id, update_groups, update_indices, \
+    update_metadata
 
 
 def get(session, model, **kwargs):
@@ -102,8 +102,8 @@ class SoftwareBroker(object):
                 src_grp, tar_grp, merged_grp = groups
                 # Update metadata
                 update_metadata(self.session, relationship, payload)
-
-                #_update_indices(self.session,
+                # Index the groups and relationships
+                update_indices(self.session, src_grp, tar_grp, merged_grp)
 
     def show_all(self):
         lines = []
@@ -159,7 +159,6 @@ class SoftwareBroker(object):
             aggregated_citations = [(list(frontier), frontier_rel)] + aggregated_citations
         return aggregated_citations
 
-
     def get_citations2(self, identifier, relation: str, grouping_type=GroupType.Identity):
 
         grp = get_group_from_id(self.session, identifier.value, identifier.scheme,
@@ -184,3 +183,9 @@ class SoftwareBroker(object):
         from itertools import groupby
         result = [(k, list(v)) for k, v in groupby(res, key=lambda x: x[1])]
         return result
+
+    def get_relationships(self, id_: str, scheme: str='doi',
+                          relation: str=None, target_type: str=None,
+                          from_: str=None, to: str=None, group_by: str=None):
+        return get_relationships(
+            id_, scheme, relation, target_type, from_, to, group_by)

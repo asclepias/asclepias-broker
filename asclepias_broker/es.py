@@ -1,14 +1,14 @@
-import operator
 import random
 import timeit
 from contextlib import contextmanager
 from datetime import datetime, timedelta
 from uuid import uuid4
-from .datastore import Relation
 
 from elasticsearch_dsl import Date, DocType, Index, InnerObjectWrapper, \
     Keyword, MetaField, Nested, Object, Q, String, connections
 from faker import Faker
+
+from .datastore import Relation
 
 #
 # Config/Setup
@@ -68,33 +68,8 @@ class PersonOrOrgBaseObject(Nested):
         super().__init__(*args, **kwargs)
 
 
-class CreatorTypeObject(PersonOrOrgBaseObject):
+class CreatorObject(PersonOrOrgBaseObject):
     pass
-
-
-class RelationshipRefTypeObject(Object):
-
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('doc_class', InnerObjectWrapper)
-        kwargs.setdefault('properties', {}).update(
-            RelationshipID=Keyword(),
-            TargetID=Keyword(),
-        )
-        super().__init__(*args, **kwargs)
-
-
-class ObjectRelationshipsType(Object):
-
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('doc_class', InnerObjectWrapper)
-        kwargs.setdefault('properties', {}).update(
-            cites=RelationshipRefTypeObject(multi=True),
-            isCitedBy=RelationshipRefTypeObject(multi=True),
-            isSupplementTo=RelationshipRefTypeObject(multi=True),
-            isSupplementedBy=RelationshipRefTypeObject(multi=True),
-            isRelatedTo=RelationshipRefTypeObject(multi=True),
-        )
-        super().__init__(*args, **kwargs)
 
 
 @objects_index.doc_type
@@ -107,10 +82,9 @@ class ObjectDoc(BaseDoc):
         SubTypeSchema=Keyword(),
     ))
     Identifier = IdentifierObject(multi=True)
-    Creator = CreatorTypeObject(multi=True)
+    Creator = CreatorObject(multi=True)
     PublicationDate = Date()
-    Publisher = CreatorTypeObject(multi=True)
-    Relationships = ObjectRelationshipsType(multi=False)
+    Publisher = CreatorObject(multi=True)
 
     @classmethod
     def get_by_identifiers(cls, id_values, _source=None):
@@ -121,6 +95,9 @@ class ObjectDoc(BaseDoc):
         if _source:
             q = q.source(_source)
         return next(q[0].scan(), None)
+
+    def relationships(self, _source=None):
+        return ObjectRelationshipsDoc.get(self._id, _source=_source)
 
 
 class ProviderObject(PersonOrOrgBaseObject):
@@ -139,50 +116,61 @@ class RelationshipHistoryObject(Nested):
         super().__init__(*args, **kwargs)
 
 
-@relationships_index.doc_type
-class RelationshipDoc(BaseDoc):
+class RelationshipObject(Nested):
 
-    SourceID = Keyword()
-    TargetID = Keyword()
-    RelationshipType = Object(properties=dict(
-        Name=Keyword(),
-        SubType=Keyword(),
-        SubTypeSchema=Keyword(),
-    ))
-    InverseRelation = Keyword()
-    History = RelationshipHistoryObject(multi=True)
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('doc_class', InnerObjectWrapper)
+        kwargs.setdefault('properties', {}).update(
+            TargetID=Keyword(),
+            History=RelationshipHistoryObject(multi=True)
+        )
+        super().__init__(*args, **kwargs)
+
+
+@relationships_index.doc_type
+class ObjectRelationshipsDoc(BaseDoc):
+
+    cites = RelationshipObject(multi=True)
+    isCitedBy = RelationshipObject(multi=True)
+    isSupplementTo = RelationshipObject(multi=True)
+    isSupplementedBy = RelationshipObject(multi=True)
+    isRelatedTo = RelationshipObject(multi=True)
+
+    @property
+    def object(self):
+        return ObjectDoc.get(self.SourceID)
+
+    def rel_objects(self, relation, target_type=None, from_=None, to=None):
+        rels = getattr(self, relation, None)
+        if rels:
+            histories = {r.TargetID: r.to_dict()['History'] for r in rels}
+            if target_type:
+                objects = (
+                    ObjectDoc.search()
+                    .query('ids', values=histories.keys())
+                    .query('term', **{'Type.Name': target_type})).scan()
+            else:
+                objects = ObjectDoc.mget(histories.keys())
+            return [(o, histories[o._id]) for o in objects]
+        return []
 
 
 #
 # Queries
 #
-def get_citations(identifier, target_type=None, use_es_filter=False):
-    src_doc = ObjectDoc.get_by_identifiers([identifier], _source=[
-        'Title', 'Creator', 'Identifier', 'Type', 'Relationships.isCitedBy'])
-    if 'isCitedBy' in src_doc.Relationships:
-        rel_trg_getter = operator.itemgetter('RelationshipID', 'TargetID')
-        rels, targets = zip(*map(rel_trg_getter,
-                                 src_doc.Relationships.isCitedBy))
-        rel_docs = RelationshipDoc.mget(rels)
-        if target_type:
-            if use_es_filter:
-                # TODO: Fix this verision
-                trg_docs = (
-                    ObjectDoc.search()
-                    .source(exclude=['Relationships'])
-                    .query('ids', values=targets)
-                    .query('term', **{'Type.Name': target_type})).scan()
-            else:
-                trg_docs = ObjectDoc.mget(
-                    targets, _source_exclude=['Relationships'])
-                trg_docs = [d if d.Type.Name == target_type else None
-                            for d in trg_docs]
-        else:
-            trg_docs = ObjectDoc.mget(
-                targets, _source_exclude=['Relationships'])
-        return src_doc, list(zip(rel_docs, trg_docs))
-    else:
-        return []
+def get_relationships(identifier, scheme=None, relation=None, target_type=None,
+                      from_=None, to=None, group_by=None):
+    src_doc = ObjectDoc.get_by_identifiers([identifier])
+    rels = []
+    if src_doc:
+        rel_doc = src_doc.relationships()
+        rels = rel_doc.rel_objects(
+            relation=relation, target_type=target_type, from_=from_, to=to)
+    return src_doc, rels
+
+
+def get_citations(*args, **kwargs):
+    return get_relationships(*args, relation='isCitedBy', **kwargs)
 
 
 #
@@ -221,10 +209,12 @@ def progressbar(iterable, label, report_every, total_items):
 
 def benchmark_get_citations(N=100, **kwargs):
     ids = [o._id for o in ObjectDoc.search().source(False).scan()]
+
     def _f():
         o = ObjectDoc.get(random.choice(ids))
         return len(get_citations(random.choice([i.ID for i in o.Identifier])))
     return min(timeit.Timer(_f).repeat(3, number=N)) / N
+
 
 #
 # Seed data
@@ -240,18 +230,17 @@ OBJECT_TYPES = [
     {'Name': 'software'},
 ]
 RELATION_TYPES = [
-    {'RelationshipType': {'Name': 'cites'}, 'InverseRelation': 'isCitedBy'},
-    {'RelationshipType': {'Name': 'isCitedBy'}, 'InverseRelation': 'cites'},
-    {'RelationshipType': {'Name': 'isSupplementTo'}, 'InverseRelation': 'isSupplementedBy'},
-    {'RelationshipType': {'Name': 'isSupplementedBy'}, 'InverseRelation': 'isSupplementTo'},
-    {'RelationshipType': {'Name': 'isRelatedTo'}, 'InverseRelation': 'isRelatedTo'},
+    ('cites', 'isCitedBy'),
+    ('isCitedBy', 'cites'),
+    ('isSupplementTo', 'isSupplementedBy'),
+    ('isSupplementedBy', 'isSupplementTo'),
+    ('isRelatedTo', 'isRelatedTo'),
 ]
-PROVIDERS = ['Zenodo', 'ADS', 'INSPIRE']
+PROVIDERS = ['Zenodo', 'ADS', 'INSPIRE', 'DLI']
 
 
 def _gen_identifier():
     base_value = uuid4()
-
     ids = [{'ID': '{}{}'.format(faker.url(), base_value.hex), 'IDScheme': 'url'}]
     if random.random() > 0.3:  # doi
         ids.append({'ID': '10.5072/{}'.format(base_value.hex), 'IDScheme': 'doi'})
@@ -273,15 +262,36 @@ def _gen_object(names, ids):
 
 
 def _gen_relationship(source, target, rel_type=None):
-    kwargs = {
-        'SourceID': source._id,
+    rel_type, inv_rel_type = rel_type or random.choice(RELATION_TYPES)
+    provider = random.choice(PROVIDERS)
+    publication_date = faker.date()
+
+    src_rels = source.relationships()
+    trg_rels = target.relationships()
+
+    new_src_rels = getattr(src_rels, rel_type, [])
+    new_src_rels.append({
         'TargetID': target._id,
-    }
-    kwargs.update(rel_type or random.choice(RELATION_TYPES))
-    kwargs['History'] = [
-        {'PublicationDate': faker.date(), 'Provider': {'Name': random.choice(PROVIDERS)}}
-        for _ in range(random.randint(1,3))]
-    return RelationshipDoc(**kwargs)
+        'History': [{
+            'LinkPublicationDate': publication_date,
+            'LinkProvider': {'Name': provider}}
+        ]
+    })
+    src_rels[rel_type] = new_src_rels
+    src_rels.save()
+
+    new_trg_rels = getattr(trg_rels, inv_rel_type, [])
+    new_trg_rels.append({
+        'TargetID': source._id,
+        'History': [{
+            'LinkPublicationDate': publication_date,
+            'LinkProvider': {'Name': provider}}
+        ]
+    })
+    trg_rels[inv_rel_type] = new_trg_rels
+    trg_rels.save()
+
+    return src_rels, trg_rels
 
 
 def seed_data(N=1000):
@@ -290,34 +300,27 @@ def seed_data(N=1000):
 
     names = [{'Name': n} for n in {faker.name() for _ in range(N)}]
     id_groups = [_gen_identifier() for _ in range(N)]
-    objects = []
+    object_ids = []
 
     with progressbar(id_groups, 'Objects...', len(id_groups)/10, len(id_groups)) as progress:
         for ids in progress:
             obj = _gen_object(names, ids)
             obj.save()
-            objects.append(obj)
+            # Index an empty object relationships as well
+            rel = ObjectRelationshipsDoc(meta={'id': obj._id})
+            rel.save()
+            object_ids.append(obj._id)
 
     with progressbar(range(N * 100), 'Relationships...', N, N * 100) as progress:
         for _ in progress:
-            src_obj = random.choice(objects)
-            trg_obj = random.choice(objects)
-            while trg_obj._id == src_obj._id:
-                trg_obj = random.choice(objects)
+            src_obj_id = random.choice(object_ids)
+            trg_obj_id = random.choice(object_ids)
+            while trg_obj_id == src_obj_id:
+                trg_obj_id = random.choice(object_ids)
+            src_obj = ObjectDoc.get(src_obj_id)
+            trg_obj = ObjectDoc.get(trg_obj_id)
 
-            rel = _gen_relationship(src_obj, trg_obj)
-            rel.save()
-
-            # TODO; Maybe order, for easyier "zipping" in `get_cittations`?
-            relations = getattr(src_obj.Relationships, str(rel.RelationshipType.Name), [])
-            relations.append({'RelationshipID': rel._id, 'TargetID': trg_obj._id})
-            src_obj.Relationships[str(rel.RelationshipType.Name)] = relations
-            src_obj.save()
-
-            relations = getattr(trg_obj.Relationships, str(rel.InverseRelation), [])
-            relations.append({'RelationshipID': rel._id, 'TargetID': src_obj._id})
-            trg_obj.Relationships[str(rel.InverseRelation)] = relations
-            trg_obj.save()
+            _gen_relationship(src_obj, trg_obj)
 
 
 def add_random_citations(objects, trg_obj: ObjectDoc, N=100):
