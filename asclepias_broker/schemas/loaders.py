@@ -2,6 +2,7 @@
 
 import arrow
 import idutils
+from copy import deepcopy
 from marshmallow import (Schema, fields, missing, post_load, pre_load,
                          validates_schema)
 from marshmallow.exceptions import ValidationError
@@ -85,9 +86,10 @@ class RelationshipSchema(Schema):
 
     @pre_load
     def remove_object_envelope(self, obj):
+        obj2 = deepcopy(obj)
         for k in ('Source', 'Target'):
-            obj[k] = obj[k]['Identifier']
-        return obj
+            obj2[k] = obj[k]['Identifier']
+        return obj2
 
     def load_relation(self, data):
         rel_name, self._inversed = from_scholix_relationship_type(data)

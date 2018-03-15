@@ -6,6 +6,7 @@ tests_require = ['pytest', 'pytest-cov', 'sqltap', ]
 install_requires = [
     'faker',
     'flask',
+    'flask-debugtoolbar',
     'flask-shell-ipython',
     'idutils',
     'jsonschema',

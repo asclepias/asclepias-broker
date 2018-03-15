@@ -1,11 +1,11 @@
 [
   {
-    "id": "41bcdb2c-9fb4-4948-a2ca-434493dc83b3",
-    "event_type": "relationship_created",
-    "time": "1516728860",
-    "creator": "ACME Inc.",
-    "source": "Test",
-    "payload": [
+    "ID": "41bcdb2c-9fb4-4948-a2ca-434493dc83b3",
+    "EventType": "RelationshipCreated",
+    "Time": "1516728860",
+    "Creator": "ACME Inc.",
+    "Source": "Test",
+    "Payload": [
       {
         "Source": {
           "Identifier": {

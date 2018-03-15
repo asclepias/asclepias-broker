@@ -421,14 +421,14 @@ def update_metadata(session, relationship: Relationship, payload):
         source=src_group, target=trg_group, relation=relationship.relation,
         type=GroupType.Identity).one_or_none()
     if src_group:
-        src_metadata = src_group.data or GroupMetadata(group=src_group)
+        src_metadata = src_group.data or GroupMetadata(group_id=src_group.id)
         src_metadata.update(payload['Source'])
     if trg_group:
-        trg_metadata = trg_group.data or GroupMetadata(group=trg_group)
+        trg_metadata = trg_group.data or GroupMetadata(group_id=trg_group.id)
         trg_metadata.update(payload['Target'])
     if rel_group:
         rel_metadata = rel_group.data or \
-            GroupRelationshipMetadata(group_relationship=rel_group)
+            GroupRelationshipMetadata(group_relationship_id=rel_group.id)
         rel_metadata.update(
             {k: v for k, v in payload.items()
              if k in ('LinkPublicationDate', 'LinkProvider')})

@@ -3,6 +3,8 @@ import sys
 import time
 import uuid
 
+from typing import List, Tuple
+
 from asclepias_broker.datastore import Relationship, Relation, Identifier,\
     Group, GroupType, GroupMetadata, Identifier2Group, GroupM2M,\
     GroupRelationship, GroupRelationshipM2M, Relationship2GroupRelationship, \
@@ -170,19 +172,30 @@ def generate_payloads(input_items, event_schema=None):
     return events
 
 
-def create_objects_from_relations(session, relationships, metadata=None):
+def create_objects_from_relations(session, relationships: List[Tuple],
+        metadata: List[Tuple[dict]]=None):
     """Given a list of relationships, create all corresponding DB objects.
+
+    Optional 'metadata' list can be passed, which contains corresponding
+    metadata items for each of the relationships, i.e., a triplet of Source,
+    Relation and Target metadata.
 
     E.g.:
         relationships = [
-            'A', Relation.Cites, 'B',
-            'C', Relation.Cites, 'D',
+            ('A', Relation.Cites, 'B'),
+            ('C', Relation.Cites, 'D'),
+        ]
+
+        metadata = [
+            ({<source-1>}, {<relation-1>}, {<target-1>}),
+            ({<source-2>}, {<relation-2>}, {<target-2>}),
         ]
 
         Will create Identifier, Relationship, Group and all M2M objects.
     """
     if not metadata:
         metadata = [({}, {}, {}) for _ in range(len(relationships))]
+    assert len(relationships) == len(metadata)
     identifiers = sorted(set(sum([[a,b] for a, _, b in relationships],[])))
     groups = []  # Cointains pairs of (Identifier2Group, Group2Group)
     for i in identifiers:
