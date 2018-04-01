@@ -469,9 +469,12 @@ class GroupRelationshipMetadata(Base, Timestamp):
         }
     }
 
-    def update(self, payload, validate=True):
+    def update(self, payload, validate=True, multi=False):
         new_json = deepcopy(self.json or [])
-        new_json.append(payload)
+        if multi:
+            new_json.extend(payload)
+        else:
+            new_json.append(payload)
         if validate:
             jsonschema.validate(new_json, self.SCHEMA)
         self.json = new_json

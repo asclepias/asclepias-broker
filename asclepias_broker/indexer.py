@@ -29,7 +29,8 @@ def _get_group_relationships(session, group_id: UUID) -> Iterable[GroupRelations
 
 
 def _build_object_relationships(group_id: UUID, rels: Iterable[GroupRelationship]):
-
+    # TODO: There's some issue here, depending on the perspective from which
+    # the group id checks relationships (the reverse relationship...)
     relationships = defaultdict(list)
     for r in rels:
         es_rel, es_inv_rel = DB_RELATION_TO_ES[r.relation]
@@ -44,11 +45,11 @@ def _build_object_relationships(group_id: UUID, rels: Iterable[GroupRelationship
 
 
 def delete_identity_group(id_group, with_relationships=True):
-    obj_doc = ObjectDoc.get(str(id_group.id))
+    obj_doc = ObjectDoc.get(str(id_group.id), ignore=404)
     if obj_doc:
         obj_doc.delete(ignore=404)
 
-    obj_rel_doc = ObjectRelationshipsDoc.get(str(id_group.id))
+    obj_rel_doc = ObjectRelationshipsDoc.get(str(id_group.id), ignore=404)
     if obj_rel_doc:
         obj_rel_doc.delete(ignore=404)
     return obj_doc, obj_rel_doc

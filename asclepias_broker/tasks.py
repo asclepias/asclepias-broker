@@ -100,7 +100,7 @@ def merge_group_relationships(session, group_a, group_b, merged_group):
                 if rel_b.data.updated < rel_a.data.updated:
                     json1, json2 = json2, json1
                 group_rel_meta.json = json1
-                group_rel_meta.update(json2, validate=False)
+                group_rel_meta.update(json2, validate=False, multi=True)
 
             # Delete the duplicate pairs of relationship M2Ms before updating
             delete_duplicate_relationship_m2m(session, rel_a, rel_b)
@@ -415,6 +415,9 @@ def update_groups(session, relationship, delete=False):
 # metadata as well
 def update_metadata(session, relationship: Relationship, payload):
     # Get identity groups for source and targer
+    # TODO: Do something for this case?
+    if relationship.relation == Relation.IsIdenticalTo:
+        return
     src_group = next((id2g.group for id2g in relationship.source.id2groups
                       if id2g.group.type == GroupType.Identity), None)
     trg_group = next((id2g.group for id2g in relationship.target.id2groups
@@ -439,8 +442,7 @@ def update_metadata(session, relationship: Relationship, payload):
 def update_indices(session,
                    src_group: Group,
                    trg_group: Group,
-                   merged_group: Group,
-                   rel_group: GroupRelationship):
+                   merged_group: Group=None):
     # `src_group` and `trg_group` were merged into `merged_group`.
     if merged_group:
         # Delete Source and Traget groups
@@ -449,12 +451,12 @@ def update_indices(session,
 
         # Index the merged object and its relationships
         obj_doc = index_identity_group(session, merged_group)
-        obj_rel_doc = index_group_relationships(session, merged_group)
+        obj_rel_doc = index_group_relationships(session, merged_group.id)
 
         # Update all group relationships of the merged group
         # TODO: This can be optimized to avoid fetching a lot of the same
         # GroupMetadata, by keeping a temporary cache of them...
-        relationships = chain(obj_rel_doc.to_dict().values())
+        relationships = chain.from_iterable(obj_rel_doc.to_dict().values())
         target_ids = [r.get('TargetID') for r in relationships]
         for i in target_ids:
             index_group_relationships(session, i)
@@ -466,6 +468,6 @@ def update_indices(session,
     # Index Source and Target objects and their relationships
     src_doc = index_identity_group(session, src_group)
     trg_doc = index_identity_group(session, trg_group)
-    src_rel_doc = index_group_relationships(session, src_group)
-    trg_rel_doc = index_group_relationships(session, trg_group)
+    src_rel_doc = index_group_relationships(session, src_group.id)
+    trg_rel_doc = index_group_relationships(session, trg_group.id)
     return (src_doc, src_rel_doc), (trg_doc, trg_rel_doc)
