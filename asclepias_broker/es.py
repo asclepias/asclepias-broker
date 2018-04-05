@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 
 from elasticsearch_dsl import Date, DocType, Index, InnerObjectWrapper, \
-    Keyword, MetaField, Nested, Object, Q, String, connections
+    Keyword, MetaField, Nested, Object, Q, Text, connections
 from faker import Faker
 
 from .datastore import Relation
@@ -62,7 +62,7 @@ class PersonOrOrgBaseObject(Nested):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('doc_class', InnerObjectWrapper)
         kwargs.setdefault('properties', {}).update(
-            Name=String(),
+            Name=Text(),
             Identifier=IdentifierObject(multi=True),
         )
         super().__init__(*args, **kwargs)
@@ -75,7 +75,7 @@ class CreatorObject(PersonOrOrgBaseObject):
 @objects_index.doc_type
 class ObjectDoc(BaseDoc):
 
-    Title = String()
+    Title = Text()
     Type = Object(properties=dict(
         Type=Keyword(),
         SubType=Keyword(),
@@ -110,7 +110,7 @@ class RelationshipHistoryObject(Nested):
         kwargs.setdefault('doc_class', InnerObjectWrapper)
         kwargs.setdefault('properties', {}).update(
             LinkPublicationDate=Date(),
-            LinkProvider=ProviderObject(multi=True),
+            LinkProvider=ProviderObject(),
             LicenseURL=Keyword(),
         )
         super().__init__(*args, **kwargs)

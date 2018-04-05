@@ -62,7 +62,8 @@ INPUT_ITEMS_SCHEMA = {
                 'Target': {
                     '$ref': '#definitions/ObjMeta'
                 },
-                'LinkProvider': SCHOLIX_SCHEMA['definitions']['PersonOrOrgType']
+                'LinkProvider': SCHOLIX_SCHEMA['definitions']['PersonOrOrgType'],
+                'LinkPublicationDate': SCHOLIX_SCHEMA['definitions']['DateType'],
             }
         }
     },
@@ -74,8 +75,7 @@ INPUT_ITEMS_SCHEMA = {
             {'type': 'array', 'items': [
                     {'$ref': '#/definitions/Relationship'},
                     {'$ref': '#/definitions/Metadata'},
-                ]
-            },
+                ]},
             {'$ref': '#/definitions/Relationship'},
         ],
     }
@@ -99,12 +99,12 @@ class Event:
             d['IDURL'] = url
         return d
 
-    def _gen_object(self, source, metadata):
+    def _gen_object(self, obj, metadata):
         type_ = metadata.get('Type')
         title = metadata.get('Title')
         creator = metadata.get('Creator')
         obj = {
-            'Identifier': self._gen_identifier(source),
+            'Identifier': self._gen_identifier(obj),
             'Type': type_ or {'Name': 'unknown'},
         }
         if title:
@@ -122,15 +122,13 @@ class Event:
     def add_payload(self, source, relation, target, publication_date,
                     metadata=None):
         metadata = metadata or {}
-        source_meta = metadata.get('Source', {})
-        target_meta = metadata.get('Target', {})
-        provider = metadata.get('LinkProvider')
         self.payloads.append({
-            'Source': self._gen_object(source, source_meta),
+            'Source': self._gen_object(source, metadata.get('Source', {})),
             'RelationshipType': self._gen_relation(relation),
-            'Target': self._gen_object(target, target_meta),
+            'Target': self._gen_object(target, metadata.get('Target', {})),
             'LinkPublicationDate': publication_date,
-            'LinkProvider': [provider or {'Name': 'Link Provider Ltd.'}]
+            'LinkProvider': [metadata.get('LinkProvider',
+                                          {'Name': 'Link Provider Ltd.'})]
         })
         return self
 
@@ -147,7 +145,7 @@ class Event:
 
 
 def generate_payloads(input_items, event_schema=None):
-    jsonschema.validate(input_items, INPUT_ITEMS_SCHEMA)
+    # jsonschema.validate(input_items, INPUT_ITEMS_SCHEMA)
     events = []
     for item in input_items:
 
