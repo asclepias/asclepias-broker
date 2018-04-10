@@ -1,9 +1,15 @@
 <body>
+Target:
 {{target}}
-{{citations}}
-{% for gid, citlist in citations %}
-  {% for grouprel, group, id in citlist %}
-    {{ id }}
+<br />
+isCitedBy:
+<ul>
+  {% for gid, citlist in citations %}
+    <li>
+    {% for grouprel, group, id in citlist %}
+      {{ id }}
+    {% endfor %}
+    </li>
   {% endfor %}
-{% endfor %}
+<ul>
 </body>

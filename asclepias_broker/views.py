@@ -12,21 +12,6 @@ blueprint = Blueprint('asclepias_ui', __name__, template_folder='templates')
 #
 # UI Views
 #
-@blueprint.route('/receive', methods=['POST', ])
-def event_receiver():
-    current_app.broker.handle_event(request.json)
-    return "OK", 200
-
-
-@blueprint.route('/load')
-def load_events():
-    event_file = '../examples/events.json'
-    with open(event_file) as f:
-        for event in json.load(f):
-            current_app.broker.handle_event(event)
-    return "OK"
-
-
 @blueprint.route('/list')
 def listpids():
     pids = current_app.broker.session.query(Identifier)
@@ -67,6 +52,12 @@ def relationships():
 # REST API Views
 #
 api_blueprint = Blueprint('asclepias_api', __name__, url_prefix='/api')
+
+
+@api_blueprint.route('/event', methods=['POST', ])
+def event_receiver():
+    current_app.broker.handle_event(request.json)
+    return "OK", 200
 
 
 @api_blueprint.route('/relationships')
