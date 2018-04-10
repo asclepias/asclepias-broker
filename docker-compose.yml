@@ -33,8 +33,6 @@ services:
       memlock:
         soft: -1
         hard: -1
-    volumes:
-      - esdata:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
       - 9300:9300
@@ -45,6 +43,3 @@ services:
       - ELASTICSEARCH_USERNAME=kibana
     ports: ['5601:5601']
     depends_on: ['elasticsearch']
-
-volumes:
-  esdata:

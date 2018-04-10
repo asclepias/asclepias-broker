@@ -6,7 +6,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from .datastore import Base, Event, Group, GroupRelationship, GroupType, \
     Identifier, Identifier2Group, ObjectEvent, PayloadType, Relation, \
     Relationship
-from .es import get_relationships
+from .es import get_relationships, create_all
 from .schemas.loaders import EventSchema, RelationshipSchema, \
     from_datacite_relation
 from .tasks import get_group_from_id, update_groups, update_indices, \
@@ -39,6 +39,7 @@ class SoftwareBroker(object):
         Session = scoped_session(sessionmaker(bind=self.engine))
         self.session = Session()
         Base.metadata.create_all(self.engine)
+        create_all()
 
     def handle_event(self, event):
         event_type = event['EventType']
