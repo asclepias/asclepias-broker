@@ -17,6 +17,7 @@ install_requires = [
     'sqlalchemy',
     'arrow',
     'webargs',
+    'requests'
 ]
 extras_require = {
     'postgres': ['psycopg2-binary', ],

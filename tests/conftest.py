@@ -35,26 +35,26 @@ def broker(es):
 # JSON schema and test data loading fixtures
 #
 @pytest.fixture
-def test_dir():
-    return Path(__file__)
+def tests_dir():
+    return os.path.dirname(__file__)
 
 
 @pytest.fixture
-def data_dir(test_dir):
-    return test_dir / 'data'
+def data_dir(tests_dir):
+    return os.path.join(tests_dir, 'data')
 
 
 @pytest.fixture
-def base_dir(test_dir):
-    return test_dir.parent
+def base_dir(tests_dir):
+    return os.path.dirname(tests_dir)
 
 
 @pytest.fixture
 def schema_dir(base_dir):
-    return base_dir / 'asclepias_broker' / 'jsonschema'
+    return os.path.join(base_dir, 'asclepias_broker', 'jsonschema')
 
 
 @pytest.fixture
 def event_schema(schema_dir):
-    with open(schema_dir / 'event.json', 'r') as fp:
+    with open(os.path.join(schema_dir, 'event.json'), 'r') as fp:
         return json.load(fp)
