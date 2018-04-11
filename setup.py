@@ -2,7 +2,7 @@ from setuptools import setup
 
 from asclepias_broker import __version__
 
-tests_require = ['pytest', 'pytest-cov', 'sqltap', 'flask-debugtoolbar']
+tests_require = ['pytest', 'pytest-cov', 'pytest-flask', 'sqltap', 'flask-debugtoolbar']
 install_requires = [
     'faker',
     'flask',

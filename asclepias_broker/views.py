@@ -1,5 +1,3 @@
-import json
-
 from flask import Blueprint, abort, current_app, jsonify, render_template, \
     request
 from webargs import fields, validate

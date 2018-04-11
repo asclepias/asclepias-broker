@@ -22,12 +22,5 @@ def create_app(config=None):
         'SQLALCHEMY_DATABASE_URI',
         'postgresql://admin:postgres@localhost:5432/asclepias')
 
-    # recreate = True
-    recreate = False
-    if recreate:
-        if database_exists(db_uri):
-            drop_database(db_uri)
-        create_database(db_uri)
-
     app.broker = SoftwareBroker(db_uri=db_uri)
     return app
