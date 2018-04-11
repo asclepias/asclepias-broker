@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2018 CERN.
+#
+# Asclepias Broker is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+set -e
+
+pip install -e .[all]
+
+npm update && npm install --silent -g node-sass@3.8.0 clean-css@3.4.19 uglify-js@2.7.3 requirejs@2.2.0
+
+CWD=`pwd`
+invenio npm
+cd ${VIRTUAL_ENV}/var/instance/static
+npm install
+cd ${CWD}
+invenio collect -v
+invenio assets build
