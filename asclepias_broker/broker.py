@@ -89,6 +89,9 @@ class SoftwareBroker(object):
             with self.session.begin_nested():
                 relationship, errors = RelationshipSchema(
                     session=self.session, check_existing=True).load(payload)
+                if errors:
+                    # TODO: Add better error handling
+                    raise ValueError(errors)
                 if relationship.id:
                     relationship.deleted = delete
                 self.session.add(relationship)
