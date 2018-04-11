@@ -34,7 +34,7 @@ def _build_object_relationships(group_id: UUID, rels: Iterable[GroupRelationship
     relationships = defaultdict(list)
     for r in rels:
         es_rel, es_inv_rel = DB_RELATION_TO_ES[r.relation]
-        is_reverse = group_id == r.target_id
+        is_reverse = str(group_id) == str(r.target_id)
         rel_key = es_inv_rel if is_reverse else es_rel
         target_id = r.source_id if is_reverse else r.target_id
         relationships[rel_key].append({
