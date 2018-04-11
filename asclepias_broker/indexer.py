@@ -5,7 +5,7 @@ from uuid import UUID
 
 import sqlalchemy as sa
 
-from .datastore import Group, GroupRelationship, GroupType, Identifier, \
+from .models import Group, GroupRelationship, GroupType, Identifier, \
     Relation
 from .es import DB_RELATION_TO_ES, ObjectDoc, ObjectRelationshipsDoc
 

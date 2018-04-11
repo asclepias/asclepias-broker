@@ -5,7 +5,7 @@ import pytest
 
 from asclepias_broker.app import create_app
 from asclepias_broker.broker import SoftwareBroker
-from asclepias_broker.datastore import Base
+from asclepias_broker.models import Base
 from asclepias_broker.es import create_all, delete_all, es_client
 
 

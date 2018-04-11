@@ -2,7 +2,7 @@
 
 import pytest
 
-from asclepias_broker.datastore import Identifier, Relation, Relationship
+from asclepias_broker.models import Identifier, Relation, Relationship
 from asclepias_broker.schemas.scholix import SCHOLIX_RELATIONS, \
     RelationshipSchema
 from asclepias_broker.tasks import update_metadata

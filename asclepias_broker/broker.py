@@ -3,7 +3,7 @@ from itertools import groupby
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from .datastore import Base, Event, Group, GroupRelationship, GroupType, \
+from .models import Base, Event, Group, GroupRelationship, GroupType, \
     Identifier, Identifier2Group, ObjectEvent, PayloadType, Relation, \
     Relationship
 from .es import get_relationships, create_all

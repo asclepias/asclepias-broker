@@ -1,7 +1,7 @@
 """Test citation queries."""
 import pytest
 
-from asclepias_broker.datastore import Identifier, GroupMetadata, GroupRelationshipMetadata
+from asclepias_broker.models import Identifier, GroupMetadata, GroupRelationshipMetadata
 from collections import OrderedDict
 
 from helpers import generate_payloads

@@ -1,7 +1,7 @@
 """Test broker model."""
 import pytest
 
-from asclepias_broker.datastore import Identifier
+from asclepias_broker.models import Identifier
 
 from helpers import generate_payloads
 

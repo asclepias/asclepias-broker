@@ -6,7 +6,7 @@ from typing import Tuple
 
 from sqlalchemy.orm import aliased
 
-from .datastore import Group, GroupM2M, GroupMetadata, GroupRelationship, \
+from .models import Group, GroupM2M, GroupMetadata, GroupRelationship, \
     GroupRelationshipM2M, GroupRelationshipMetadata, GroupType, Identifier, \
     Identifier2Group, Relation, Relationship, Relationship2GroupRelationship
 from .indexer import delete_identity_group, index_group_relationships, \

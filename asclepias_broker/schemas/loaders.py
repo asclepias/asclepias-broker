@@ -8,7 +8,7 @@ from marshmallow import (Schema, fields, missing, post_load, pre_load,
 from marshmallow.exceptions import ValidationError
 from marshmallow.validate import OneOf
 
-from ..datastore import Event, EventType, Identifier, Relation, Relationship
+from ..models import Event, EventType, Identifier, Relation, Relationship
 from .utils import to_model
 from typing import Tuple
 

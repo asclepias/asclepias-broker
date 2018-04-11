@@ -8,7 +8,7 @@ import arrow
 import sqlalchemy as sa
 from helpers import create_objects_from_relations, generate_payloads
 
-from asclepias_broker.datastore import Group, GroupMetadata, \
+from asclepias_broker.models import Group, GroupMetadata, \
     GroupRelationship, GroupRelationshipMetadata, GroupType, Identifier, \
     Relation, Relationship
 from asclepias_broker.es import DB_RELATION_TO_ES, ObjectDoc, \

@@ -1,7 +1,7 @@
 """Test broker model."""
 import pytest
 
-from asclepias_broker.datastore import Relationship, Relation, Identifier,\
+from asclepias_broker.models import Relationship, Relation, Identifier,\
     Group, GroupType, Identifier2Group, GroupM2M, GroupRelationship,\
     GroupRelationshipM2M, Relationship2GroupRelationship, GroupMetadata,\
     GroupRelationshipMetadata

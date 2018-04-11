@@ -3,7 +3,7 @@ from flask import Blueprint, abort, current_app, jsonify, render_template, \
 from webargs import fields, validate
 from webargs.flaskparser import use_kwargs
 
-from .datastore import Identifier
+from .models import Identifier
 
 blueprint = Blueprint('asclepias_ui', __name__, template_folder='templates')
 

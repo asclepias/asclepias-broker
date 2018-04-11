@@ -5,7 +5,7 @@ import uuid
 
 from typing import List, Tuple
 
-from asclepias_broker.datastore import Relationship, Relation, Identifier,\
+from asclepias_broker.models import Relationship, Relation, Identifier,\
     Group, GroupType, GroupMetadata, Identifier2Group, GroupM2M,\
     GroupRelationship, GroupRelationshipM2M, Relationship2GroupRelationship, \
     GroupRelationshipMetadata

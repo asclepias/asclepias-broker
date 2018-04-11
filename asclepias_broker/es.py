@@ -8,7 +8,7 @@ from elasticsearch_dsl import Date, DocType, Index, InnerObjectWrapper, \
     Keyword, MetaField, Nested, Object, Q, Text, connections
 from faker import Faker
 
-from .datastore import Relation
+from .models import Relation
 
 #
 # Config/Setup

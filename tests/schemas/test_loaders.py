@@ -4,7 +4,7 @@ import arrow
 from datetime import datetime
 import pytest
 
-from asclepias_broker.datastore import (Event, EventType, Identifier, Relation,
+from asclepias_broker.models import (Event, EventType, Identifier, Relation,
                                         Relationship)
 from asclepias_broker.schemas.loaders import (EventSchema, IdentifierSchema,
                                               RelationshipSchema)

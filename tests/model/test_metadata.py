@@ -2,7 +2,7 @@
 import pytest
 from jsonschema.exceptions import ValidationError
 
-from asclepias_broker.datastore import Group, GroupMetadata, \
+from asclepias_broker.models import Group, GroupMetadata, \
     GroupRelationship, GroupRelationshipMetadata, GroupType, Relation
 
 
