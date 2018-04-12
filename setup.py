@@ -101,6 +101,10 @@ setup(
         'invenio_base.blueprints': [
             'asclepias_broker = asclepias_broker.views:blueprint',
         ],
+        'invenio_search.mappings': [
+            'objects = asclepias_broker.mappings',
+            'object-relationships = asclepias_broker.mappings',
+        ],
     },
     extras_require=extras_require,
     install_requires=install_requires,

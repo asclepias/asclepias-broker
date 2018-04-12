@@ -13,9 +13,8 @@ from invenio_db import db
 
 import sqlalchemy as sa
 
-from .models import Group, GroupRelationship, GroupType, Identifier, \
-    Relation
-from .es import DB_RELATION_TO_ES, ObjectDoc, ObjectRelationshipsDoc
+from .mappings.dsl import DB_RELATION_TO_ES, ObjectDoc, ObjectRelationshipsDoc
+from .models import Group, GroupRelationship, GroupType, Identifier, Relation
 
 
 # TODO: Move this to Group.identifiers
@@ -36,7 +35,8 @@ def _get_group_relationships(group_id: UUID) -> Iterable[GroupRelationship]:
     )
 
 
-def _build_object_relationships(group_id: UUID, rels: Iterable[GroupRelationship]):
+def _build_object_relationships(group_id: UUID,
+                                rels: Iterable[GroupRelationship]):
     # TODO: There's some issue here, depending on the perspective from which
     # the group id checks relationships (the reverse relationship...)
     relationships = defaultdict(list)

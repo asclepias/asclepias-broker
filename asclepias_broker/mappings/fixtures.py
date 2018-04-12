@@ -11,163 +11,15 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta
 from uuid import uuid4
 
-from elasticsearch_dsl import Date, DocType, Index, InnerDoc, Keyword, \
-    MetaField, Nested, Object, Q, Text, connections
 from faker import Faker
 
-from .models import Relation
-
-#
-# Config/Setup
-#
-
-# TODO: Don't use this...
-# Register global client
-es_client = connections.connections.create_connection()
-
-objects_index = Index('objects')
-objects_index.settings(number_of_shards=1, number_of_replicas=0)
-relationships_index = Index('relationships')
-relationships_index.settings(number_of_shards=1, number_of_replicas=0)
-
-
-DB_RELATION_TO_ES = {
-    Relation.Cites: ('cites', 'isCitedBy'),
-    Relation.IsSupplementTo: ('isSupplementTo', 'isSupplementedBy'),
-    Relation.IsRelatedTo: ('isRelatedTo', 'isRelatedTo'),
-}
-
-
-class BaseDoc(DocType):
-
-    class Meta(object):
-        all = MetaField(enabled=False)
-        dynamic = MetaField(False)
-
-    @classmethod
-    def all(cls):
-        return list(cls.search().scan())
-
-
-#
-# Mappings
-#
-class IdentifierObject(InnerDoc):
-
-    ID = Keyword()
-    IDScheme = Keyword()
-    IDURL = Keyword()
-
-
-class PersonOrOrgBaseObject(InnerDoc):
-
-    Name = Text()
-    Identifier = Nested(IdentifierObject, multi=True)
-
-
-class ObjectType(InnerDoc):
-
-    Type = Keyword()
-    SubType = Keyword()
-    SubTypeSchema = Keyword()
-
-
-@objects_index.doc_type
-class ObjectDoc(BaseDoc):
-
-    Title = Text()
-    Type = Object(ObjectType, multi=False)
-    Identifier = Nested(IdentifierObject, multi=True)
-    Creator = Nested(PersonOrOrgBaseObject, multi=True)
-    PublicationDate = Date()
-    Publisher = Nested(PersonOrOrgBaseObject, multi=True)
-
-    @classmethod
-    def get_by_identifiers(cls, id_values, _source=None):
-        q = (cls.search()
-             .query('nested',
-                    path='Identifier',
-                    query=Q('terms', Identifier__ID=id_values)))
-        if _source:
-            q = q.source(_source)
-        return next(q[0].scan(), None)
-
-    def relationships(self, _source=None):
-        return ObjectRelationshipsDoc.get(self._id, _source=_source)
-
-
-class RelationshipHistoryObject(InnerDoc):
-
-    LinkPublicationDate = Date()
-    LinkProvider = Nested(PersonOrOrgBaseObject, multi=False)
-    LicenseURL = Keyword()
-
-
-class RelationshipObject(InnerDoc):
-
-    TargetID = Keyword()
-    History = Nested(RelationshipHistoryObject, multi=True)
-
-
-@relationships_index.doc_type
-class ObjectRelationshipsDoc(BaseDoc):
-
-    cites = Nested(RelationshipObject, multi=True)
-    isCitedBy = Nested(RelationshipObject, multi=True)
-    isSupplementTo = Nested(RelationshipObject, multi=True)
-    isSupplementedBy = Nested(RelationshipObject, multi=True)
-    isRelatedTo = Nested(RelationshipObject, multi=True)
-
-    @property
-    def object(self):
-        return ObjectDoc.get(self.SourceID)
-
-    def rel_objects(self, relation, target_type=None, from_=None, to=None):
-        rels = getattr(self, relation, None)
-        if rels:
-            histories = {r.TargetID: r.to_dict()['History'] for r in rels}
-            if target_type:
-                objects = (
-                    ObjectDoc.search()
-                    .query('ids', values=histories.keys())
-                    .query('term', **{'Type.Name': target_type})).scan()
-            else:
-                objects = ObjectDoc.mget(histories.keys())
-            return [(o, histories[o._id]) for o in objects]
-        return []
-
-
-#
-# Queries
-#
-def get_relationships(identifier, scheme=None, relation=None, target_type=None,
-                      from_=None, to=None, group_by=None):
-    src_doc = ObjectDoc.get_by_identifiers([identifier])
-    rels = []
-    if src_doc:
-        rel_doc = src_doc.relationships()
-        rels = rel_doc.rel_objects(
-            relation=relation, target_type=target_type, from_=from_, to=to)
-    return src_doc, rels
-
-
-def get_citations(*args, **kwargs):
-    return get_relationships(*args, relation='isCitedBy', **kwargs)
+from .dsl import ObjectDoc, ObjectRelationshipsDoc
+from ..api import RelationshipsAPI
 
 
 #
 # Utils
 #
-def create_all():
-    objects_index.create(ignore=[400, 404])
-    relationships_index.create(ignore=[400, 404])
-
-
-def delete_all():
-    objects_index.delete(ignore=[400, 404])
-    relationships_index.delete(ignore=[400, 404])
-
-
 @contextmanager
 def progressbar(iterable, label, report_every, total_items):
     print(label, report_every, total_items)
@@ -194,7 +46,7 @@ def benchmark_get_citations(N=100, **kwargs):
 
     def _f():
         o = ObjectDoc.get(random.choice(ids))
-        return len(get_citations(random.choice([i.ID for i in o.Identifier])))
+        return len(RelationshipsAPI.get_citations(random.choice([i.ID for i in o.Identifier])))
     return min(timeit.Timer(_f).repeat(3, number=N)) / N
 
 
@@ -277,8 +129,8 @@ def _gen_relationship(source, target, rel_type=None):
 
 
 def seed_data(N=1000):
-    delete_all()
-    create_all()
+    # delete_all()
+    # create_all()
 
     names = [{'Name': n} for n in {faker.name() for _ in range(N)}]
     id_groups = [_gen_identifier() for _ in range(N)]

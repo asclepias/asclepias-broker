@@ -101,6 +101,12 @@ CELERY_BEAT_SCHEDULE = {
 SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://asclepias-broker:asclepias-broker@localhost/asclepias-broker'
 
 
+# Search
+# ======
+
+SEARCH_MAPPINGS = ['objects', 'object-relationships']
+
+
 # JSONSchemas
 # ===========
 

@@ -1,0 +1,217 @@
+{
+  "mappings": {
+    "doc": {
+      "properties": {
+        "cites": {
+          "properties": {
+            "History": {
+              "properties": {
+                "LinkPublicationDate": {
+                  "type": "date"
+                },
+                "LinkProvider": {
+                  "properties": {
+                    "Name": {
+                      "type": "text"
+                    },
+                    "Identifier": {
+                      "properties": {
+                        "IDURL": {
+                          "type": "keyword"
+                        },
+                        "ID": {
+                          "type": "keyword"
+                        },
+                        "IDScheme": {
+                          "type": "keyword"
+                        }
+                      },
+                      "type": "nested"
+                    }
+                  },
+                  "type": "nested"
+                },
+                "LicenseURL": {
+                  "type": "keyword"
+                }
+              },
+              "type": "nested"
+            },
+            "TargetID": {
+              "type": "keyword"
+            }
+          },
+          "type": "nested"
+        },
+        "isSupplementTo": {
+          "properties": {
+            "History": {
+              "properties": {
+                "LinkPublicationDate": {
+                  "type": "date"
+                },
+                "LinkProvider": {
+                  "properties": {
+                    "Name": {
+                      "type": "text"
+                    },
+                    "Identifier": {
+                      "properties": {
+                        "IDURL": {
+                          "type": "keyword"
+                        },
+                        "ID": {
+                          "type": "keyword"
+                        },
+                        "IDScheme": {
+                          "type": "keyword"
+                        }
+                      },
+                      "type": "nested"
+                    }
+                  },
+                  "type": "nested"
+                },
+                "LicenseURL": {
+                  "type": "keyword"
+                }
+              },
+              "type": "nested"
+            },
+            "TargetID": {
+              "type": "keyword"
+            }
+          },
+          "type": "nested"
+        },
+        "isSupplementedBy": {
+          "properties": {
+            "History": {
+              "properties": {
+                "LinkPublicationDate": {
+                  "type": "date"
+                },
+                "LinkProvider": {
+                  "properties": {
+                    "Name": {
+                      "type": "text"
+                    },
+                    "Identifier": {
+                      "properties": {
+                        "IDURL": {
+                          "type": "keyword"
+                        },
+                        "ID": {
+                          "type": "keyword"
+                        },
+                        "IDScheme": {
+                          "type": "keyword"
+                        }
+                      },
+                      "type": "nested"
+                    }
+                  },
+                  "type": "nested"
+                },
+                "LicenseURL": {
+                  "type": "keyword"
+                }
+              },
+              "type": "nested"
+            },
+            "TargetID": {
+              "type": "keyword"
+            }
+          },
+          "type": "nested"
+        },
+        "isRelatedTo": {
+          "properties": {
+            "History": {
+              "properties": {
+                "LinkPublicationDate": {
+                  "type": "date"
+                },
+                "LinkProvider": {
+                  "properties": {
+                    "Name": {
+                      "type": "text"
+                    },
+                    "Identifier": {
+                      "properties": {
+                        "IDURL": {
+                          "type": "keyword"
+                        },
+                        "ID": {
+                          "type": "keyword"
+                        },
+                        "IDScheme": {
+                          "type": "keyword"
+                        }
+                      },
+                      "type": "nested"
+                    }
+                  },
+                  "type": "nested"
+                },
+                "LicenseURL": {
+                  "type": "keyword"
+                }
+              },
+              "type": "nested"
+            },
+            "TargetID": {
+              "type": "keyword"
+            }
+          },
+          "type": "nested"
+        },
+        "isCitedBy": {
+          "properties": {
+            "History": {
+              "properties": {
+                "LinkPublicationDate": {
+                  "type": "date"
+                },
+                "LinkProvider": {
+                  "properties": {
+                    "Name": {
+                      "type": "text"
+                    },
+                    "Identifier": {
+                      "properties": {
+                        "IDURL": {
+                          "type": "keyword"
+                        },
+                        "ID": {
+                          "type": "keyword"
+                        },
+                        "IDScheme": {
+                          "type": "keyword"
+                        }
+                      },
+                      "type": "nested"
+                    }
+                  },
+                  "type": "nested"
+                },
+                "LicenseURL": {
+                  "type": "keyword"
+                }
+              },
+              "type": "nested"
+            },
+            "TargetID": {
+              "type": "keyword"
+            }
+          },
+          "type": "nested"
+        }
+      },
+      "dynamic": false,
+      "_all": {
+        "enabled": false
+      }
+    }
+  }
+}
