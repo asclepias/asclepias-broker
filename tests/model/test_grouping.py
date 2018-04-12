@@ -8,6 +8,8 @@
 """Test broker model."""
 import pytest
 
+from invenio_db import db
+
 from asclepias_broker.models import Relationship, Relation, Identifier,\
     Group, GroupType, Identifier2Group, GroupM2M, GroupRelationship,\
     GroupRelationshipM2M, Relationship2GroupRelationship, GroupMetadata,\
@@ -28,67 +30,65 @@ def _handle_events(broker, evtsrc):
 
 def off_test_simple_id_group_merge(broker):
     """Test simple ID groups merging."""
-    sess = broker.session
     evtsrc = [
         ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
     ]
     _handle_events(broker, evtsrc)
     # {'A', 'B'}
-    assert sess.query(Group).count() == 2
-    vg = sess.query(Group).filter_by(type=GroupType.Version).one()
-    vi = sess.query(Group).filter_by(type=GroupType.Identity).one()
-    assert sess.query(Identifier).count() == 2
-    assert sess.query(Relationship).count() == 1
-    assert sess.query(Identifier2Group).count() == 2
+    assert Group.query.count() == 2
+    vg = Group.query.filter_by(type=GroupType.Version).one()
+    vi = Group.query.filter_by(type=GroupType.Identity).one()
+    assert Identifier.query.count() == 2
+    assert Relationship.query.count() == 1
+    assert Identifier2Group.query.count() == 2
     evtsrc = [
         ['C', 'A', 'IsIdenticalTo', 'C', '2018-01-01'],
     ]
     _handle_events(broker, evtsrc)
     # {'A', 'B', 'C'}
-    assert sess.query(Group).count() == 1
-    assert sess.query(Identifier).count() == 3
-    assert sess.query(Identifier2Group).count() == 3
+    assert Group.query.count() == 1
+    assert Identifier.query.count() == 3
+    assert Identifier2Group.query.count() == 3
 
     evtsrc = [
         ['C', 'D', 'IsIdenticalTo', 'E', '2018-01-01'],
     ]
     _handle_events(broker, evtsrc)
     # {'A', 'B', 'C'}, {'D', 'E'}
-    assert sess.query(Group).count() == 2
-    assert sess.query(Identifier).count() == 5
-    assert sess.query(Identifier2Group).count() == 5
+    assert Group.query.count() == 2
+    assert Identifier.query.count() == 5
+    assert Identifier2Group.query.count() == 5
 
     evtsrc = [
         ['C', 'A', 'IsIdenticalTo', 'D', '2018-01-01'],
     ]
     _handle_events(broker, evtsrc)
     # {'A', 'B', 'C', 'D', 'E'}
-    assert sess.query(Group).count() == 1
-    assert sess.query(Identifier).count() == 5
-    assert sess.query(Identifier2Group).count() == 5
+    assert Group.query.count() == 1
+    assert Identifier.query.count() == 5
+    assert Identifier2Group.query.count() == 5
 
 
 def test_get_or_create_groups(broker):
     """Test creating groups (Identity and Version) for an identifier."""
-    s = broker.session
     id1 = Identifier(value='A', scheme='doi')
-    s.add(id1)
+    db.session.add(id1)
     #id2 = Identifier(value='B', scheme='doi')
     #rel = Relationship(source=id1, target=id2, relation=Relation.IsIdenticalTo)
-    assert not s.query(Group).count()
-    assert not s.query(GroupM2M).count()
-    assert not s.query(Identifier2Group).count()
-    id_g, ver_g = get_or_create_groups(s, id1)
-    s.commit()
+    assert not Group.query.count()
+    assert not GroupM2M.query.count()
+    assert not Identifier2Group.query.count()
+    id_g, ver_g = get_or_create_groups(id1)
+    db.session.commit()
 
     def _check_groups(identifier, id_g, ver_g):
-        assert s.query(Group).count() == 2
-        assert s.query(GroupM2M).count() == 1
-        assert s.query(Identifier2Group).count() == 1
-        assert s.query(Group).filter_by(type=GroupType.Identity).one() == id_g
-        assert s.query(Group).filter_by(type=GroupType.Version).one() == ver_g
-        id2g = s.query(Identifier2Group).one()
-        g2g = s.query(GroupM2M).one()
+        assert Group.query.count() == 2
+        assert GroupM2M.query.count() == 1
+        assert Identifier2Group.query.count() == 1
+        assert Group.query.filter_by(type=GroupType.Identity).one() == id_g
+        assert Group.query.filter_by(type=GroupType.Version).one() == ver_g
+        id2g = Identifier2Group.query.one()
+        g2g = GroupM2M.query.one()
         assert id2g.identifier == identifier
         assert id2g.group == id_g
         assert g2g.group == ver_g
@@ -97,22 +97,22 @@ def test_get_or_create_groups(broker):
     _check_groups(id1, id_g, ver_g)
 
     # Fetch the ID again and try to create groups again
-    id2 = Identifier.get(s, 'A', 'doi')
+    id2 = Identifier.get('A', 'doi')
     assert id2
-    id_g, ver_g = get_or_create_groups(s, id1)
-    s.commit()
+    id_g, ver_g = get_or_create_groups(id1)
+    db.session.commit()
 
     # Make sure nothing changed
     _check_groups(id2, id_g, ver_g)
 
     # Add a new, separate identifier
     id3 = Identifier(value='B', scheme='doi')
-    s.add(id3)
-    id_g, ver_g = get_or_create_groups(s, id3)
+    db.session.add(id3)
+    id_g, ver_g = get_or_create_groups(id3)
 
-    assert s.query(Group).count() == 4
-    assert s.query(GroupM2M).count() == 2
-    assert s.query(Identifier2Group).count() == 2
+    assert Group.query.count() == 4
+    assert GroupM2M.query.count() == 2
+    assert Identifier2Group.query.count() == 2
 
 
 def test_merge_version_groups(broker):
@@ -121,7 +121,6 @@ def test_merge_version_groups(broker):
     Note: This test is merging Version groups. This does not automatically
           merge the Identity groups below!
     """
-    s = broker.session
     rels = [
         ('C', Relation.Cites, 'A'),
         ('C', Relation.Cites, 'B'),
@@ -132,7 +131,7 @@ def test_merge_version_groups(broker):
         ('A', Relation.Cites, 'F'),
         ('A', Relation.IsRelatedTo, 'F'),
     ]
-    create_objects_from_relations(s, rels)
+    create_objects_from_relations(rels)
 
     grouping = (
         [
@@ -197,15 +196,15 @@ def test_merge_version_groups(broker):
         ]
     )
 
-    assert_grouping(s, grouping)
+    assert_grouping(grouping)
 
     # Merge Version groups of A and B
     # This merges only the version groups, not Identity groups
 
-    id_grp1 = get_group_from_id(s, 'A', group_type=GroupType.Version)
-    id_grp2 = get_group_from_id(s, 'B', group_type=GroupType.Version)
-    merge_version_groups(s, id_grp1, id_grp2)
-    s.commit()
+    id_grp1 = get_group_from_id('A', group_type=GroupType.Version)
+    id_grp2 = get_group_from_id('B', group_type=GroupType.Version)
+    merge_version_groups(id_grp1, id_grp2)
+    db.session.commit()
 
     # Version groups and relations after merging:
     # C-Cites-AB (squashed C-Cites-A and C-Cites-B)
@@ -273,18 +272,18 @@ def test_merge_version_groups(broker):
         ]
     )
 
-    assert_grouping(s, grouping)
+    assert_grouping(grouping)
 
     # Merge Version groups of C and D and also E and F
 
-    id_grp1 = get_group_from_id(s, 'C', group_type=GroupType.Version)
-    id_grp2 = get_group_from_id(s, 'D', group_type=GroupType.Version)
-    merge_version_groups(s, id_grp1, id_grp2)
+    id_grp1 = get_group_from_id('C', group_type=GroupType.Version)
+    id_grp2 = get_group_from_id('D', group_type=GroupType.Version)
+    merge_version_groups(id_grp1, id_grp2)
 
-    id_grp1 = get_group_from_id(s, 'E', group_type=GroupType.Version)
-    id_grp2 = get_group_from_id(s, 'F', group_type=GroupType.Version)
-    merge_version_groups(s, id_grp1, id_grp2)
-    s.commit()
+    id_grp1 = get_group_from_id('E', group_type=GroupType.Version)
+    id_grp2 = get_group_from_id('F', group_type=GroupType.Version)
+    merge_version_groups(id_grp1, id_grp2)
+    db.session.commit()
 
     # Version groups and relations after merging:
     # CD-Cites-AB (squashed C-Cites-A and C-Cites-B)
@@ -349,7 +348,7 @@ def test_merge_version_groups(broker):
             (21, [15]),
         ]
     )
-    assert_grouping(s, grouping)
+    assert_grouping(grouping)
 
 
 def test_merge_identity_groups(broker):
@@ -358,7 +357,6 @@ def test_merge_identity_groups(broker):
     Note: This test is merging Version groups until only one is left.
         This does not automatically merge the Identity groups below!
     """
-    s = broker.session
     rels = [
         ('A', Relation.Cites, 'C'),
         ('B', Relation.Cites, 'C'),
@@ -447,7 +445,7 @@ def test_merge_identity_groups(broker):
                                           'IDScheme': 'orcid'}]}]}
         )
     ]
-    create_objects_from_relations(s, rels, metadata=metadata)
+    create_objects_from_relations(rels, metadata=metadata)
 
     grouping = (
         # Groups and GroupM2M
@@ -494,14 +492,14 @@ def test_merge_identity_groups(broker):
         ]
     )
 
-    assert_grouping(s, grouping)
+    assert_grouping(grouping)
 
     # Merge Version groups of A and B
     # This merges only the version groups, not Identity groups
-    id_grp1 = get_group_from_id(s, 'A')
-    id_grp2 = get_group_from_id(s, 'B')
-    merge_identity_groups(s, id_grp1, id_grp2)
-    s.commit()
+    id_grp1 = get_group_from_id('A')
+    id_grp2 = get_group_from_id('B')
+    merge_identity_groups(id_grp1, id_grp2)
+    db.session.commit()
 
     # Version groups and relations after merging:
     # C-Cites-AB (squashed C-Cites-A and C-Cites-B)
@@ -540,12 +538,12 @@ def test_merge_identity_groups(broker):
         ]
     )
 
-    assert_grouping(s, grouping)
+    assert_grouping(grouping)
     # Merge Version groups of C and D
-    id_grp1 = get_group_from_id(s, 'C')
-    id_grp2 = get_group_from_id(s, 'D')
-    merge_identity_groups(s, id_grp1, id_grp2)
-    s.commit()
+    id_grp1 = get_group_from_id('C')
+    id_grp2 = get_group_from_id('D')
+    merge_identity_groups(id_grp1, id_grp2)
+    db.session.commit()
 
     grouping = (
         [
@@ -574,15 +572,15 @@ def test_merge_identity_groups(broker):
         ]
     )
 
-    assert_grouping(s, grouping)
-    id_grp1 = get_group_from_id(s, 'A').data
-    id_grp2 = get_group_from_id(s, 'B').data
+    assert_grouping(grouping)
+    id_grp1 = get_group_from_id('A').data
+    id_grp2 = get_group_from_id('B').data
     assert id_grp1 == id_grp2 and id_grp1.json['Title'] == 'Title of B v2'
 
-    id_grp1 = get_group_from_id(s, 'A')
-    id_grp2 = get_group_from_id(s, 'C')
-    merge_identity_groups(s, id_grp1, id_grp2)
-    s.commit()
+    id_grp1 = get_group_from_id('A')
+    id_grp2 = get_group_from_id('C')
+    merge_identity_groups(id_grp1, id_grp2)
+    db.session.commit()
 
     grouping = (
         [
@@ -599,11 +597,11 @@ def test_merge_identity_groups(broker):
         []  # No relations M2M
     )
 
-    id_grp1 = get_group_from_id(s, 'A').data
-    id_grp2 = get_group_from_id(s, 'B').data
-    id_grp3 = get_group_from_id(s, 'C').data
-    id_grp4 = get_group_from_id(s, 'D').data
+    id_grp1 = get_group_from_id('A').data
+    id_grp2 = get_group_from_id('B').data
+    id_grp3 = get_group_from_id('C').data
+    id_grp4 = get_group_from_id('D').data
     # All metadata should be merged to that of the last "D" object
     assert id_grp1 == id_grp2 == id_grp3 == id_grp4 and \
         id_grp1.json['Title'] == 'Title of D v2'
-    assert_grouping(s, grouping)
+    assert_grouping(grouping)

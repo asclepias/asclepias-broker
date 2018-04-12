@@ -12,6 +12,8 @@ import uuid
 
 from typing import List, Tuple
 
+from invenio_db import db
+
 from asclepias_broker.models import Relationship, Relation, Identifier,\
     Group, GroupType, GroupMetadata, Identifier2Group, GroupM2M,\
     GroupRelationship, GroupRelationshipM2M, Relationship2GroupRelationship, \
@@ -177,7 +179,7 @@ def generate_payloads(input_items, event_schema=None):
     return events
 
 
-def create_objects_from_relations(session, relationships: List[Tuple],
+def create_objects_from_relations(relationships: List[Tuple],
         metadata: List[Tuple[dict]]=None):
     """Given a list of relationships, create all corresponding DB objects.
 
@@ -205,16 +207,16 @@ def create_objects_from_relations(session, relationships: List[Tuple],
     groups = []  # Cointains pairs of (Identifier2Group, Group2Group)
     for i in identifiers:
         id_ = Identifier(value=i, scheme='doi')
-        session.add(id_)
-        groups.append(get_or_create_groups(session, id_))
+        db.session.add(id_)
+        groups.append(get_or_create_groups(id_))
     rel_obj = []
     id_gr_relationships = []
     ver_gr_relationships = []
     for (src, rel, tar), (src_m, rel_m, tar_m) in zip(relationships, metadata):
-        src_, tar_ = Identifier.get(session, src, 'doi'), \
-            Identifier.get(session, tar, 'doi')
+        src_, tar_ = Identifier.get(src, 'doi'), \
+            Identifier.get(tar, 'doi')
         r = Relationship(source=src_, target=tar_, relation=rel)
-        session.add(r)
+        db.session.add(r)
         rel_obj.append(r)
         s_id_gr, s_ver_gr = groups[identifiers.index(src)]
         t_id_gr, t_ver_gr = groups[identifiers.index(tar)]
@@ -225,20 +227,20 @@ def create_objects_from_relations(session, relationships: List[Tuple],
         t_id_gr.data.update(tar_m, validate=False)
 
         grm = GroupRelationshipMetadata(group_relationship_id=id_gr_rel.id)
-        session.add(grm)
+        db.session.add(grm)
         grm.update(rel_m, validate=False)
-        session.add(Relationship2GroupRelationship(relationship=r,
+        db.session.add(Relationship2GroupRelationship(relationship=r,
             group_relationship=id_gr_rel))
-        session.add(id_gr_rel)
+        db.session.add(id_gr_rel)
         ver_gr_rel = GroupRelationship(source=s_ver_gr,
             target=t_ver_gr, relation=rel, type=GroupType.Version)
-        session.add(GroupRelationshipM2M(relationship=ver_gr_rel,
+        db.session.add(GroupRelationshipM2M(relationship=ver_gr_rel,
                                          subrelationship=id_gr_rel))
-        session.add(ver_gr_rel)
-    session.commit()
+        db.session.add(ver_gr_rel)
+    db.session.commit()
 
 
-def assert_grouping(session, grouping):
+def assert_grouping(grouping):
     """Determine if database state corresponds to 'grouping' definition.
 
     See tests in test_grouping.py for example input.
@@ -260,17 +262,17 @@ def assert_grouping(session, grouping):
 
     # id_map is a mapping of str -> Identifier
     # E.g.: 'A' -> Instance('A', 'doi')
-    id_map = dict(map(lambda x: (x, Identifier.get(session, x, 'doi')), uniqe_ids))
+    id_map = dict(map(lambda x: (x, Identifier.get(x, 'doi')), uniqe_ids))
 
     group_map = []
     for g in groups:
         if isinstance(g[0], str):  # Identity group
             group_map.append(
-                session.query(Identifier2Group).filter_by(
+                Identifier2Group.query.filter_by(
                     identifier=id_map[g[0]]).one().group)
         elif isinstance(g[0], int):  # GroupM2M
             group_map.append(
-                session.query(GroupM2M).filter_by(
+                GroupM2M.query.filter_by(
                     subgroup=group_map[g[0]]).one().group)
 
     rel_map = []
@@ -278,76 +280,76 @@ def assert_grouping(session, grouping):
         obj_a, relation, obj_b = r
         if isinstance(obj_a, str) and isinstance(obj_b, str):  # Identifiers relation
             rel_map.append(
-                session.query(Relationship).filter_by(
+                Relationship.query.filter_by(
                     source=id_map[obj_a], target=id_map[obj_b],
                     relation=relation).one()
             )
         elif isinstance(obj_a, int) and isinstance(obj_b, int):  # Groups relation
             rel_map.append(
-                session.query(GroupRelationship).filter_by(
+                GroupRelationship.query.filter_by(
                     source=group_map[obj_a], target=group_map[obj_b],
                     relation=relation).one()
             )
 
     # Make sure all loaded identifiers are unique
     assert len(set(map(lambda x: x[1].id, id_map.items()))) == len(id_map)
-    assert session.query(Identifier).count() == len(id_map)
+    assert Identifier.query.count() == len(id_map)
 
     # Make sure there's correct number of Identitfier2Group records
     # and 'Identity'-type groups
-    assert session.query(Identifier2Group).count() == len(id_map)
-    assert session.query(Group).filter_by(
+    assert Identifier2Group.query.count() == len(id_map)
+    assert Group.query.filter_by(
         type=GroupType.Identity).count() == len(id_groups)
 
-    assert session.query(GroupMetadata).count() == len(id_groups)
+    assert GroupMetadata.query.count() == len(id_groups)
 
     # Make sure that all loaded groups are unique
     assert len(set(map(lambda x: x.id, group_map))) == len(group_map)
-    assert session.query(Group).count() == len(group_map)
+    assert Group.query.count() == len(group_map)
 
     # Make sure there's correct number of GroupM2M records
     # and 'Version'-type groups
     m2m_groups = [g for g in groups if isinstance(g[0], int)]
-    assert session.query(Group).filter_by(
+    assert Group.query.filter_by(
         type=GroupType.Version).count() == len(m2m_groups)
     # There are as many M2M groups as there are Identity groups
-    assert session.query(GroupM2M).count() == len(id_groups)
+    assert GroupM2M.query.count() == len(id_groups)
 
     # Make sure that all loaded relationships are unique
     id_rels = [r for r, t in zip(rel_map, relationship_types)
                if t is None]
     assert len(set(map(lambda x: x.id, id_rels))) == len(id_rels)
-    assert session.query(Relationship).count() == len(id_rels)
+    assert Relationship.query.count() == len(id_rels)
 
     grp_rels = [r for r, t in zip(rel_map, relationship_types)
                if t is not None]
     # Make sure that all loaded groups relationships are unique
     assert len(set(map(lambda x: x.id, grp_rels))) == len(grp_rels)
-    assert session.query(GroupRelationship).count() == len(grp_rels)
+    assert GroupRelationship.query.count() == len(grp_rels)
 
     # Make sure that GroupRelationshipM2M are correct
     id_grp_rels = [r for r, t in zip(rel_map, relationship_types)
                    if t == GroupType.Identity]
     # There are as many GroupRelationshipM2M objects as Identity Groups
-    assert session.query(GroupRelationshipM2M).count() == len(id_grp_rels)
+    assert GroupRelationshipM2M.query.count() == len(id_grp_rels)
 
     # Same number of GroupRelationshipMetadata as GRelationships of type ID
-    assert session.query(GroupRelationshipMetadata).count() == len(id_grp_rels)
+    assert GroupRelationshipMetadata.query.count() == len(id_grp_rels)
 
     # There are as many Relationship to GR items as Relationships
     n_rel2grrels = sum([len(x[1]) for x in relationship_groups
                         if isinstance(rel_map[x[1][0]], Relationship)])
-    assert session.query(Relationship2GroupRelationship).count() == n_rel2grrels
+    assert Relationship2GroupRelationship.query.count() == n_rel2grrels
 
     # Make sure that all GroupRelationshipM2M are matching
     for group_rel, group_subrels in relationship_groups:
         for group_subrel in group_subrels:
             if isinstance(rel_map[group_subrel], Relationship):
-                assert session.query(Relationship2GroupRelationship).filter_by(
+                assert Relationship2GroupRelationship.query.filter_by(
                     relationship=rel_map[group_subrel],
                     group_relationship=rel_map[group_rel]).one()
             else:  # isinstance(rel_map[group_rel], GroupRelationship):
-                assert session.query(GroupRelationshipM2M).filter_by(
+                assert GroupRelationshipM2M.query.filter_by(
                     relationship=rel_map[group_rel],
                     subrelationship=rel_map[group_subrel]).one()
 

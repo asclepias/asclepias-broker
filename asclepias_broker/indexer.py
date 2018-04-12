@@ -9,6 +9,7 @@ from collections import defaultdict
 from copy import deepcopy
 from typing import Iterable
 from uuid import UUID
+from invenio_db import db
 
 import sqlalchemy as sa
 
@@ -23,10 +24,10 @@ def _get_group_identifiers(id_group: Group) -> Iterable[Identifier]:
     return (id2g.identifier for id2g in id_group.id2groups)
 
 
-def _get_group_relationships(session, group_id: UUID) -> Iterable[GroupRelationship]:
+def _get_group_relationships(group_id: UUID) -> Iterable[GroupRelationship]:
     # NOTE: These GroupRelationships are mixed in terms of the source/taget
     # perspective.
-    return session.query(GroupRelationship).filter(
+    return GroupRelationship.query.filter(
         sa.or_(
             GroupRelationship.source_id == group_id,
             GroupRelationship.target_id == group_id),
@@ -62,7 +63,7 @@ def delete_identity_group(id_group, with_relationships=True):
     return obj_doc, obj_rel_doc
 
 
-def index_identity_group(session, id_group: Group) -> ObjectDoc:
+def index_identity_group(id_group: Group) -> ObjectDoc:
     # Build source object identifiers
     doc = deepcopy((id_group.data and id_group.data.json) or {})
 
@@ -74,8 +75,8 @@ def index_identity_group(session, id_group: Group) -> ObjectDoc:
     return obj_doc
 
 
-def index_group_relationships(session, group_id: UUID) -> ObjectRelationshipsDoc:
-    rels = _get_group_relationships(session, group_id)
+def index_group_relationships(group_id: UUID) -> ObjectRelationshipsDoc:
+    rels = _get_group_relationships(group_id)
     doc = _build_object_relationships(group_id, rels)
     rel_doc = ObjectRelationshipsDoc(meta={'id': str(group_id)}, **doc)
     rel_doc.save()

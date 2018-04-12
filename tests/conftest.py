@@ -10,6 +10,8 @@ import os
 
 import pytest
 
+from invenio_db import db
+
 from asclepias_broker.app import create_app
 from asclepias_broker.broker import SoftwareBroker
 from asclepias_broker.models import Base

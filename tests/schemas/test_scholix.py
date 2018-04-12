@@ -57,11 +57,10 @@ def rel_obj(source, relation, target):
     ),
 ])
 def off_test_relationship_schema(broker, input_rel, output_rel, output_error):
-    s = broker.session
     rels, payload = input_rel
-    create_objects_from_relations(s, rels)
-    relationship_obj = s.query(Relationship).one()
-    update_metadata(s, relationship_obj, payload)
+    create_objects_from_relations(rels)
+    relationship_obj = Relationship.query.one()
+    update_metadata(relationship_obj, payload)
     relationship, errors = RelationshipSchema().dump(relationship_obj)
     if output_error:
         assert errors == output_error

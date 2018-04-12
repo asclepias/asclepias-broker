@@ -11,6 +11,7 @@ import uuid
 from copy import deepcopy
 
 import jsonschema
+from invenio_db import db
 from sqlalchemy import JSON, Boolean, Column, Enum, ForeignKey, Integer, String
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.declarative import declarative_base
@@ -24,7 +25,7 @@ from sqlalchemy_utils.types import JSONType, UUIDType
 
 from .jsonschemas import SCHOLIX_SCHEMA
 
-Base = declarative_base()
+#Base = declarative_base()
 
 
 class Relation(enum.Enum):
@@ -50,7 +51,7 @@ class GroupType(enum.Enum):
     Version = 2
 
 
-class Identifier(Base, Timestamp):
+class Identifier(db.Model, Timestamp):
     """A persistent Identifier."""
 
     __tablename__ = 'identifier'
@@ -68,30 +69,30 @@ class Identifier(Base, Timestamp):
         return "<{self.scheme}: {self.value}>".format(self=self)
 
     @classmethod
-    def get(cls, session, value=None, scheme=None, **kwargs):
+    def get(cls, value=None, scheme=None, **kwargs):
         """Get the identifier from the database."""
-        return session.query(cls).filter_by(
+        return cls.query(cls).filter_by(
             value=value, scheme=scheme).one_or_none()
 
-    def fetch_or_create_id(self, session):
+    def fetch_or_create_id(self):
         if not self.id:
-            obj = self.get(session, self.value, self.scheme)
+            obj = self.get(self.value, self.scheme)
             if obj:
                 self = obj
             else:
                 self.id = uuid.uuid4()
         return self
 
-    def _get_related(self, session, condition, relationship, with_deleted=False):
+    def _get_related(self, condition, relationship, with_deleted=False):
         cond = condition & (Relationship.relation == relationship)
         if not with_deleted:
             cond &= (Relationship.deleted == False)
-        return session.query(Relationship).filter(cond)
+        return Relationship.query.filter(cond)
 
-    def _get_identities(self, session, as_relation=False):
+    def _get_identities(self, as_relation=False):
         """Get the first-layer of 'Identical' Identifies."""
         cond = ((Relationship.source == self) | (Relationship.target == self))
-        q = self._get_related(session, cond, Relation.IsIdenticalTo)
+        q = self._get_related(cond, Relation.IsIdenticalTo)
         if as_relation:
             return q.all()
         else:
@@ -101,26 +102,26 @@ class Identifier(Base, Timestamp):
             else:
                 return [self, ]
 
-    def get_identities(self, session):
+    def get_identities(self):
         """Get the fully-expanded list of 'Identical' Identifiers."""
         ids = next_ids = set([self])
         while next_ids:
-            grp = set(sum([item._get_identities(session) for item in next_ids], []))
+            grp = set(sum([item._get_identities() for item in next_ids], []))
             next_ids = grp - ids
             ids |= grp
         return list(ids)
 
-    def get_parents(self, session, rel_type, as_relation=False):
+    def get_parents(self, rel_type, as_relation=False):
         """Get all parents of given Identifier for given relation."""
-        q = self._get_related(session, (Relationship.target == self), rel_type)
+        q = self._get_related((Relationship.target == self), rel_type)
         if as_relation:
             return q.all()
         else:
             return [item.source for item in q]
 
-    def get_children(self, session, rel_type, as_relation=False):
+    def get_children(self, rel_type, as_relation=False):
         """Get all children of given Identifier for given relation."""
-        q = self._get_related(session, (Relationship.source == self), rel_type)
+        q = self._get_related((Relationship.source == self), rel_type)
         if as_relation:
             return q.all()
         else:
@@ -139,7 +140,7 @@ class Identifier(Base, Timestamp):
             return self.identity_group.data.json
 
 
-class Relationship(Base, Timestamp):
+class Relationship(db.Model, Timestamp):
     __tablename__ = 'relationship'
     __table_args__ = (
         UniqueConstraint('source_id', 'target_id', 'relation',
@@ -166,17 +167,17 @@ class Relationship(Base, Timestamp):
                               backref='targets')
 
     @classmethod
-    def get(cls, session, source, target, relation, **kwargs):
-        return session.query(cls).filter_by(
+    def get(cls, source, target, relation, **kwargs):
+        return cls.query.filter_by(
             source_id=source.id, target_id=target.id,
             relation=relation).one_or_none()
 
-    def fetch_or_create_id(self, session):
-        self.source = self.source.fetch_or_create_id(session)
-        self.target = self.target.fetch_or_create_id(session)
+    def fetch_or_create_id(self):
+        self.source = self.source.fetch_or_create_id()
+        self.target = self.target.fetch_or_create_id()
 
         if not self.id:
-            obj = self.get(session, self.source, self.target, self.relation)
+            obj = self.get(self.source, self.target, self.relation)
             if obj:
                 self = obj
             else:
@@ -185,7 +186,7 @@ class Relationship(Base, Timestamp):
 
     # @property
     # def identity_group(self):
-    #     return session.query(GroupRelationship).filter_by(
+    #     return GroupRelationship.query.filter_by(
     #         source=self.source.identity_group,
     #         target=self.target.identity_group,
     #         relation=self.relation,
@@ -201,7 +202,7 @@ class Relationship(Base, Timestamp):
         return "<{self.source.value} {self.relation.name} {self.target.value}{deleted}>".format(self=self, deleted=" [D]" if self.deleted else "")
 
 
-class Event(Base, Timestamp):
+class Event(db.Model, Timestamp):
     __tablename__ = 'event'
 
     id = Column(UUIDType, primary_key=True)
@@ -213,15 +214,15 @@ class Event(Base, Timestamp):
     time = Column(DateTime)
 
     @classmethod
-    def get(cls, session, id=None, **kwargs):
-        return session.query(cls).filter_by(id=id).one_or_none()
+    def get(cls, id=None, **kwargs):
+        return cls.query.filter_by(id=id).one_or_none()
 
     def __repr__(self):
         """String representation of the Identifier."""
         return "<{self.id}: {self.time}>".format(self=self)
 
 
-class ObjectEvent(Base, Timestamp):
+class ObjectEvent(db.Model, Timestamp):
     __tablename__ = 'objectevent'
     __table_args__ = (
         PrimaryKeyConstraint('event_id', 'object_uuid', 'payload_type',
@@ -238,7 +239,7 @@ class ObjectEvent(Base, Timestamp):
         return "<{self.event_id}: {self.object_uuid}>".format(self=self)
 
 
-class Group(Base, Timestamp):
+class Group(db.Model, Timestamp):
     __tablename__ = 'group'
 
     id = Column(UUIDType, default=uuid.uuid4, primary_key=True)
@@ -256,7 +257,7 @@ class Group(Base, Timestamp):
         return "<{self.id}: {self.type.name}>".format(self=self)
 
 
-class GroupRelationship(Base, Timestamp):
+class GroupRelationship(db.Model, Timestamp):
     __tablename__ = 'grouprelationship'
     __table_args__ = (
         UniqueConstraint('source_id', 'target_id', 'relation',
@@ -295,7 +296,7 @@ class GroupRelationship(Base, Timestamp):
     #     viewonly=True)
 
 
-class Identifier2Group(Base, Timestamp):
+class Identifier2Group(db.Model, Timestamp):
     __tablename__ = 'identifier2group'
     __table_args__ = (
         PrimaryKeyConstraint('identifier_id', 'group_id',
@@ -316,7 +317,7 @@ class Identifier2Group(Base, Timestamp):
                              backref='id2groups')
 
 
-class Relationship2GroupRelationship(Base, Timestamp):
+class Relationship2GroupRelationship(db.Model, Timestamp):
     __tablename__ = 'relationship2grouprelationship'
     __table_args__ = (
         PrimaryKeyConstraint('relationship_id', 'group_relationship_id',
@@ -341,7 +342,7 @@ class Relationship2GroupRelationship(Base, Timestamp):
         return "<{self.group_relationship}: {self.relationship}>".format(self=self)
 
 
-class GroupM2M(Base, Timestamp):
+class GroupM2M(db.Model, Timestamp):
     __tablename__ = 'groupm2m'
     __table_args__ = (
         PrimaryKeyConstraint('group_id', 'subgroup_id',
@@ -361,7 +362,7 @@ class GroupM2M(Base, Timestamp):
         return "<{self.group}: {self.subgroup}>".format(self=self)
 
 
-class GroupRelationshipM2M(Base, Timestamp):
+class GroupRelationshipM2M(db.Model, Timestamp):
     __tablename__ = 'grouprelationshipm2m'
     __table_args__ = (
         PrimaryKeyConstraint('relationship_id', 'subrelationship_id',
@@ -390,7 +391,7 @@ OBJECT_TYPE_SCHEMA = COMMON_SCHEMA_DEFINITIONS['ObjectType']
 OVERRIDABLE_KEYS = {'Type', 'Title', 'Creator', 'PublicationDate', 'Publisher'}
 
 
-class GroupMetadata(Base, Timestamp):
+class GroupMetadata(db.Model, Timestamp):
     __tablename__ = 'groupmetadata'
 
     # TODO: assert group.type == GroupType.Identity
@@ -433,7 +434,7 @@ class GroupMetadata(Base, Timestamp):
         return self
 
 
-class GroupRelationshipMetadata(Base, Timestamp):
+class GroupRelationshipMetadata(db.Model, Timestamp):
     __tablename__ = 'grouprelationshipmetadata'
 
     # TODO: assert group_relationship.type == GroupType.Identity

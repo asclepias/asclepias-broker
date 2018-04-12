@@ -125,7 +125,7 @@ def test_simple_citations(broker, test_case_name, events, results):
     for ev in generate_payloads(events):
         broker.handle_event(ev)
     for cited_id_value, (citation_result, relation_result) in results.items():
-        cited_id = (broker.session.query(Identifier)
+        cited_id = (Identifier.query
                     .filter_by(value=cited_id_value).one())
         citations = set()
         relations = set()
@@ -154,7 +154,7 @@ def test_grouping_query(broker, test_case_name, events, results):
         broker.handle_event(ev)
     for cited_id_value, _ in results.items():
 
-        cited_id = (broker.session.query(Identifier)
+        cited_id = (Identifier.query
                     .filter_by(value=cited_id_value).one())
         # TODO: Fix this test
         # ret = broker.get_citations2(cited_id, 'IsCitedBy')

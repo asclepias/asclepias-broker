@@ -11,6 +11,8 @@ import uuid
 from itertools import chain
 from typing import Tuple
 
+from invenio_db import db
+
 from sqlalchemy.orm import aliased
 
 from .models import Group, GroupM2M, GroupMetadata, GroupRelationship, \
@@ -20,7 +22,7 @@ from .indexer import delete_identity_group, index_group_relationships, \
     index_identity_group
 
 
-def merge_group_relationships(session, group_a, group_b, merged_group):
+def merge_group_relationships(group_a, group_b, merged_group):
     """Merge the relationships of merged groups A and B to avoid collisions.
 
     Groups 'group_a' and 'group_b' will be merged as 'merged_group'.
@@ -48,8 +50,7 @@ def merge_group_relationships(session, group_a, group_b, merged_group):
     # Remove all GroupRelationship objects between groups A and B.
     # Correspnding GroupRelationshipM2M objects will cascade
     (
-        session.query(GroupRelationship)
-        .filter(
+        GroupRelationship.query.filter(
             ((GroupRelationship.source_id == group_a.id) &
              (GroupRelationship.target_id == group_b.id)) |
             ((GroupRelationship.source_id == group_b.id) &
@@ -77,7 +78,7 @@ def merge_group_relationships(session, group_a, group_b, merged_group):
         # Generate 'duplicate_relations' by joining the table with itself
         # by the "grouping_fk" (target_id/source_id)
         duplicate_relations = (
-            session.query(left_gr, right_gr)
+            db.session.query(left_gr, right_gr)
             .filter(
                 left_gr.id < right_gr.id,  # Don't repeat the same pairs
                 left_queried_fk.in_(merge_groups_ids),
@@ -98,11 +99,11 @@ def merge_group_relationships(session, group_a, group_b, merged_group):
                 'type': rel_a.type
             }
             new_grp_rel = GroupRelationship(**kwargs)
-            session.add(new_grp_rel)
+            db.session.add(new_grp_rel)
             if identity_groups:
                 group_rel_meta = GroupRelationshipMetadata(
                     group_relationship_id=new_grp_rel.id)
-                session.add(group_rel_meta)
+                db.session.add(group_rel_meta)
                 json1, json2 = rel_a.data.json, rel_b.data.json
                 if rel_b.data.updated < rel_a.data.updated:
                     json1, json2 = json2, json1
@@ -110,25 +111,25 @@ def merge_group_relationships(session, group_a, group_b, merged_group):
                 group_rel_meta.update(json2, validate=False, multi=True)
 
             # Delete the duplicate pairs of relationship M2Ms before updating
-            delete_duplicate_relationship_m2m(session, rel_a, rel_b)
+            delete_duplicate_relationship_m2m(rel_a, rel_b)
             (
-                session.query(GroupRelationshipM2M)
+                GroupRelationshipM2M.query
                 .filter(GroupRelationshipM2M.relationship_id.in_([rel_a.id, rel_b.id]))
                 .update({GroupRelationshipM2M.relationship_id: new_grp_rel.id},
                     synchronize_session='fetch')
             )
             (
-                session.query(GroupRelationshipM2M)
+                GroupRelationshipM2M.query
                 .filter(GroupRelationshipM2M.subrelationship_id.in_([rel_a.id, rel_b.id]))
                 .update({GroupRelationshipM2M.subrelationship_id: new_grp_rel.id},
                     synchronize_session='fetch')
             )
             if identity_groups:
                 cls = Relationship2GroupRelationship
-                delete_duplicate_relationship_m2m(session, rel_a, rel_b,
+                delete_duplicate_relationship_m2m(rel_a, rel_b,
                     cls=cls)
                 (
-                    session.query(cls)
+                    cls.query
                     .filter(cls.group_relationship_id.in_([rel_a.id, rel_b.id]))
                     .update({cls.group_relationship_id: new_grp_rel.id},
                         synchronize_session='fetch')
@@ -137,7 +138,7 @@ def merge_group_relationships(session, group_a, group_b, merged_group):
             del_rel.add(rel_b.id)
         # Delete the duplicate relations
         (
-            session.query(GroupRelationship)
+            GroupRelationship.query
             .filter(GroupRelationship.id.in_(del_rel))
             .delete(synchronize_session='fetch')
         )
@@ -145,14 +146,14 @@ def merge_group_relationships(session, group_a, group_b, merged_group):
         queried_fk_inst = getattr(GroupRelationship, queried_fk)
         # Update the other non-duplicated relations
         q = (
-            session.query(GroupRelationship)
+            GroupRelationship.query
             .filter(queried_fk_inst.in_(merge_groups_ids))
             .update({queried_fk_inst: merged_group.id},
                     synchronize_session='fetch')
         )
 
 
-def delete_duplicate_relationship_m2m(session, group_a, group_b,
+def delete_duplicate_relationship_m2m(group_a, group_b,
                                       cls=GroupRelationshipM2M):
     """Delete any duplicate relationship M2M objects.
 
@@ -181,7 +182,7 @@ def delete_duplicate_relationship_m2m(session, group_a, group_b,
         merge_groups_ids = [group_a.id, group_b.id]
 
         duplicate_relations = (
-            session.query(left_gr, right_gr)
+            db.session.query(left_gr, right_gr)
             .filter(
                 # Because we join in the same table by grouping_fk, we will have
                 # pairs [(A,B), (B,A)] on the list. We can impose an inequality
@@ -197,10 +198,10 @@ def delete_duplicate_relationship_m2m(session, group_a, group_b,
         )
         # TODO: Delete in a query
         for rel_a, rel_b in duplicate_relations:
-            session.delete(rel_a)
+            db.session.delete(rel_a)
 
 
-def delete_duplicate_group_m2m(session, group_a: Group, group_b: Group):
+def delete_duplicate_group_m2m(group_a: Group, group_b: Group):
     """
     Delete any duplicate GroupM2M objects.
 
@@ -221,7 +222,7 @@ def delete_duplicate_group_m2m(session, group_a: Group, group_b: Group):
         merge_groups_ids = [group_a.id, group_b.id]
 
         duplicate_relations = (
-            session.query(left_gr, right_gr)
+            db.session.query(left_gr, right_gr)
             .filter(
                 # Because we join in the same table by grouping_fk, we will have
                 # pairs [(A,B), (B,A)] on the list. We impose an inequality
@@ -237,10 +238,10 @@ def delete_duplicate_group_m2m(session, group_a: Group, group_b: Group):
         )
         # TODO: Delete in a query
         for rel_a, rel_b in duplicate_relations:
-            session.delete(rel_a)
+            db.session.delete(rel_a)
 
 
-def merge_identity_groups(session, group_a: Group, group_b: Group):
+def merge_identity_groups(group_a: Group, group_b: Group):
     """Merge two groups of type "Identity".
 
     Merges the groups together into one group, taking care of migrating
@@ -253,45 +254,45 @@ def merge_identity_groups(session, group_a: Group, group_b: Group):
         raise ValueError("Can only merge Identity groups.")
 
     # TODO: Should join with Group and filter by Group.type=GroupType.Version
-    version_group_a = session.query(GroupM2M).filter_by(
+    version_group_a = GroupM2M.query.filter_by(
         subgroup=group_a).one().group
-    version_group_b = session.query(GroupM2M).filter_by(
+    version_group_b = GroupM2M.query.filter_by(
         subgroup=group_b).one().group
 
-    merge_version_groups(session, version_group_a, version_group_b)
+    merge_version_groups(version_group_a, version_group_b)
 
     merged_group = Group(type=GroupType.Identity, id=uuid.uuid4())
-    session.add(merged_group)
+    db.session.add(merged_group)
     merged_group_meta = GroupMetadata(group_id=merged_group.id)
-    session.add(merged_group_meta)
+    db.session.add(merged_group_meta)
     json1, json2 = group_a.data.json, group_b.data.json
     if group_b.data.updated < group_a.data.updated:
         json1, json2 = json2, json1
     merged_group_meta.json = json1
     merged_group_meta.update(json2)
 
-    merge_group_relationships(session, group_a, group_b, merged_group)
+    merge_group_relationships(group_a, group_b, merged_group)
 
-    (session.query(Identifier2Group)
+    (Identifier2Group.query
      .filter(Identifier2Group.group_id.in_([group_a.id, group_b.id]))
      .update({Identifier2Group.group_id: merged_group.id},
              synchronize_session='fetch'))
 
     # Delete the duplicate GroupM2M entries and update the remaining with
     # the new Group
-    delete_duplicate_group_m2m(session, group_a, group_b)
-    (session.query(GroupM2M)
+    delete_duplicate_group_m2m(group_a, group_b)
+    (GroupM2M.query
      .filter(GroupM2M.subgroup_id.in_([group_a.id, group_b.id]))
      .update({GroupM2M.subgroup_id: merged_group.id},
              synchronize_session='fetch'))
 
-    session.query(Group).filter(Group.id.in_([group_a.id, group_b.id])).delete(
+    Group.query.filter(Group.id.in_([group_a.id, group_b.id])).delete(
         synchronize_session='fetch')
     # After merging identity groups, we need to merge the version groups
     return merged_group
 
 
-def merge_version_groups(session, group_a: Group, group_b: Group):
+def merge_version_groups(group_a: Group, group_b: Group):
     """Merge two Version groups into one."""
     # Nothing to do if groups are already merged
     if group_a == group_b:
@@ -303,64 +304,63 @@ def merge_version_groups(session, group_a: Group, group_b: Group):
         raise ValueError("Cannot merge groups of type 'Identity'.")
 
     merged_group = Group(type=group_a.type, id=uuid.uuid4())
-    session.add(merged_group)
+    db.session.add(merged_group)
 
-    merge_group_relationships(session, group_a, group_b, merged_group)
+    merge_group_relationships(group_a, group_b, merged_group)
 
     # Delete the duplicate GroupM2M entries and update the remaining with
     # the new Group
-    delete_duplicate_group_m2m(session, group_a, group_b)
-    (session.query(GroupM2M)
+    delete_duplicate_group_m2m(group_a, group_b)
+    (GroupM2M.query
      .filter(GroupM2M.group_id.in_([group_a.id, group_b.id]))
      .update({GroupM2M.group_id: merged_group.id},
              synchronize_session='fetch'))
-    (session.query(GroupM2M)
+    (GroupM2M.query
      .filter(GroupM2M.subgroup_id.in_([group_a.id, group_b.id]))
      .update({GroupM2M.subgroup_id: merged_group.id},
              synchronize_session='fetch'))
 
-    session.query(Group).filter(Group.id.in_([group_a.id, group_b.id])).delete(
+    Group.query.filter(Group.id.in_([group_a.id, group_b.id])).delete(
         synchronize_session='fetch')
     return merged_group
 
 
-def get_or_create_groups(
-        session, identifier: Identifier) -> Tuple[Group, Group]:
+def get_or_create_groups(identifier: Identifier) -> Tuple[Group, Group]:
     """Given an Identifier, fetch or create its Identity and Version groups."""
-    id2g = session.query(Identifier2Group).filter(
+    id2g = Identitfier2Group.query.filter(
         Identifier2Group.identifier==identifier).one_or_none()
     if not id2g:
         group = Group(type=GroupType.Identity, id=uuid.uuid4())
-        session.add(group)
+        db.session.add(group)
         gm = GroupMetadata(group_id=group.id)
-        session.add(gm)
+        db.session.add(gm)
         id2g = Identifier2Group(identifier=identifier, group=group)
-        session.add(id2g)
-    g2g = (session.query(GroupM2M)
+        db.session.add(id2g)
+    g2g = (GroupM2M.query
            .join(Group, GroupM2M.group_id == Group.id)
            .filter(GroupM2M.subgroup==id2g.group,
                    Group.type==GroupType.Version)
            .one_or_none())
     if not g2g:
         group = Group(type=GroupType.Version, id=uuid.uuid4())
-        session.add(group)
+        db.session.add(group)
         g2g = GroupM2M(group=group, subgroup=id2g.group)
-        session.add(g2g)
+        db.session.add(g2g)
     return id2g.group, g2g.group
 
 
-def get_group_from_id(session, identifier_value, id_type='doi',
+def get_group_from_id(identifier_value, id_type='doi',
                       group_type=GroupType.Identity):
     """Resolve from 'A' to Identity Group of A or to a Version Group of A."""
-    id_ = Identifier.get(session, identifier_value, id_type)
+    id_ = Identifier.get(identifier_value, id_type)
     id_grp = id_.id2groups[0].group
     if group_type == GroupType.Identity:
         return id_grp
     else:
-        return session.query(GroupM2M).filter_by(subgroup=id_grp).one().group
+        return GroupM2M.query.filter_by(subgroup=id_grp).one().group
 
 
-def add_group_relationship(session, relationship, src_id_grp, tar_id_grp,
+def add_group_relationship(relationship, src_id_grp, tar_id_grp,
                            src_ver_grp, tar_ver_grp):
     """Add a group relationship between corresponding groups."""
     # Add GroupRelationship between Identity groups
@@ -370,36 +370,36 @@ def add_group_relationship(session, relationship, src_id_grp, tar_id_grp,
 
     grm = GroupRelationshipMetadata(
         group_relationship_id=id_grp_rel.id)
-    session.add(grm)
+    db.session.add(grm)
 
-    session.add(id_grp_rel)
+    db.session.add(id_grp_rel)
     rel2grp_rel = Relationship2GroupRelationship(
         relationship=relationship, group_relationship=id_grp_rel)
-    session.add(rel2grp_rel)
+    db.session.add(rel2grp_rel)
 
     # Add GroupRelationship between Version groups
     ver_grp_rel = GroupRelationship(source=src_ver_grp, target=tar_ver_grp,
                                     relation=relationship.relation,
                                     type=GroupType.Version)
-    session.add(ver_grp_rel)
+    db.session.add(ver_grp_rel)
     g2g_rel = GroupRelationshipM2M(relationship=ver_grp_rel,
                                    subrelationship=id_grp_rel)
-    session.add(g2g_rel)
+    db.session.add(g2g_rel)
 
 
-def update_groups(session, relationship, delete=False):
+def update_groups(relationship, delete=False):
     """Update groups and related M2M objects for given relationship."""
-    src_idg, src_vg = get_or_create_groups(session, relationship.source)
-    tar_idg, tar_vg = get_or_create_groups(session, relationship.target)
+    src_idg, src_vg = get_or_create_groups(relationship.source)
+    tar_idg, tar_vg = get_or_create_groups(relationship.target)
     merged_group = None
 
     if relationship.relation == Relation.IsIdenticalTo:
-        merged_group = merge_identity_groups(session, src_idg, tar_idg)
+        merged_group = merge_identity_groups(src_idg, tar_idg)
     elif relationship.relation == Relation.HasVersion:
-        merge_version_groups(session, src_vg, tar_vg)
+        merge_version_groups(src_vg, tar_vg)
     else: # Relation.Cites, Relation.IsSupplementTo, Relation.IsRelatedTo
         grp_rel = (
-            session.query(GroupRelationship)
+            GroupRelationship.query
             .filter(GroupRelationship.source == src_idg,
                     GroupRelationship.target == tar_idg,
                     GroupRelationship.relation == relationship.relation)
@@ -410,17 +410,17 @@ def update_groups(session, relationship, delete=False):
             obj = Relationship2GroupRelationship(
                 relationship=relationship,
                 group_relationship=grp_rel)
-            session.add(obj)
+            db.session.add(obj)
         # Otherwise, add the group relationship with propagation
         else:
-            add_group_relationship(session, relationship, src_idg, tar_idg,
-                                   src_vg, tar_vg)
+            add_group_relationship(relationship, src_idg, tar_idg, src_vg,
+                                   tar_vg)
     return src_idg, tar_idg, merged_group
 
 
 # TODO: When merging/splitting groups there is some merging/duplicating of
 # metadata as well
-def update_metadata(session, relationship: Relationship, payload):
+def update_metadata(relationship: Relationship, payload):
     # Get identity groups for source and targer
     # TODO: Do something for this case?
     if relationship.relation == Relation.IsIdenticalTo:
@@ -429,7 +429,7 @@ def update_metadata(session, relationship: Relationship, payload):
                       if id2g.group.type == GroupType.Identity), None)
     trg_group = next((id2g.group for id2g in relationship.target.id2groups
                       if id2g.group.type == GroupType.Identity), None)
-    rel_group = session.query(GroupRelationship).filter_by(
+    rel_group = GroupRelationship.query.filter_by(
         source=src_group, target=trg_group, relation=relationship.relation,
         type=GroupType.Identity).one_or_none()
     if src_group:
@@ -446,8 +446,7 @@ def update_metadata(session, relationship: Relationship, payload):
              if k in ('LinkPublicationDate', 'LinkProvider')})
 
 
-def update_indices(session,
-                   src_group: Group,
+def update_indices(src_group: Group,
                    trg_group: Group,
                    merged_group: Group=None):
     # `src_group` and `trg_group` were merged into `merged_group`.
@@ -457,8 +456,8 @@ def update_indices(session,
         delete_identity_group(trg_group)
 
         # Index the merged object and its relationships
-        obj_doc = index_identity_group(session, merged_group)
-        obj_rel_doc = index_group_relationships(session, merged_group.id)
+        obj_doc = index_identity_group(merged_group)
+        obj_rel_doc = index_group_relationships(merged_group.id)
 
         # Update all group relationships of the merged group
         # TODO: This can be optimized to avoid fetching a lot of the same
@@ -466,15 +465,15 @@ def update_indices(session,
         relationships = chain.from_iterable(obj_rel_doc.to_dict().values())
         target_ids = [r.get('TargetID') for r in relationships]
         for i in target_ids:
-            index_group_relationships(session, i)
+            index_group_relationships(i)
 
         return (obj_doc, obj_rel_doc), (obj_doc, obj_rel_doc)
 
     # No groups were merged, this is a simple relationship
 
     # Index Source and Target objects and their relationships
-    src_doc = index_identity_group(session, src_group)
-    trg_doc = index_identity_group(session, trg_group)
-    src_rel_doc = index_group_relationships(session, src_group.id)
-    trg_rel_doc = index_group_relationships(session, trg_group.id)
+    src_doc = index_identity_group(src_group)
+    trg_doc = index_identity_group(trg_group)
+    src_rel_doc = index_group_relationships(src_group.id)
+    trg_rel_doc = index_group_relationships(trg_group.id)
     return (src_doc, src_rel_doc), (trg_doc, trg_rel_doc)

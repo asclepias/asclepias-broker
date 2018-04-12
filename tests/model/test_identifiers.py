@@ -96,6 +96,6 @@ def test_identities(broker, events, result_sets):
 
     for rs in result_sets:
         for v in rs:
-            id_ = broker.session.query(Identifier).filter_by(value=v).one()
-            ids = set(i.value for i in id_.get_identities(broker.session))
+            id_ = Identifier.query.filter_by(value=v).one()
+            ids = set(i.value for i in id_.get_identities())
             assert ids == rs

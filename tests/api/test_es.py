@@ -56,8 +56,8 @@ def _scholix_data(src_id, trg_id):
     }
 
 
-def _build_object_relationships(session, group_id):
-    rels = session.query(GroupRelationship).filter(
+def _build_object_relationships(group_id):
+    rels = GroupRelationship.query.filter(
         sa.or_(
             GroupRelationship.source_id == group_id,
             GroupRelationship.target_id == group_id),
@@ -93,10 +93,10 @@ def _assert_equal_rels(model, doc):
         assert model_rels_set == es_rels_set
 
 
-def _assert_equal_doc_and_model(session, doc, rel_doc, model):
+def _assert_equal_doc_and_model(doc, rel_doc, model):
     db_data = model.data.json
     db_ids = [id2g.identifier.value for id2g in model.id2groups]
-    db_rels = _build_object_relationships(session, model.id)
+    db_rels = _build_object_relationships(model.id)
 
     assert doc._id == str(model.id)
     assert rel_doc._id == doc._id
@@ -113,7 +113,6 @@ def test_init(es):
 
 
 def test_simple_groups(broker, es):
-    s = broker.session
     _handle_events(broker, [
         (['C', 'A', 'Cites', 'B', '2018-01-01'], _scholix_data('A', 'B')),
         (['C', 'A1', 'Cites', 'B', '2018-01-01'], _scholix_data('A1', 'B')),
@@ -126,25 +125,24 @@ def test_simple_groups(broker, es):
     #     (_group_data('A'), _rel_data(), _group_data('B'))
     # ]
 
-    # create_objects_from_relations(s, rels, metadata)
+    # create_objects_from_relations(rels, metadata)
 
     # assert len(ObjectDoc.all()) == 0
 
-    # src = get_group_from_id(s, 'A')
-    # trg = get_group_from_id(s, 'B')
-    # (src_doc, src_rel_doc), (trg_doc, trg_rel_doc) = update_indices(s, src, trg)
+    # src = get_group_from_id('A')
+    # trg = get_group_from_id('B')
+    # (src_doc, src_rel_doc), (trg_doc, trg_rel_doc) = update_indices(src, trg)
     # es.indices.refresh()
 
     # all_obj_docs = ObjectDoc.all()
     # all_obj_rel_docs = ObjectRelationshipsDoc.all()
     # assert len(all_obj_rel_docs) == len(all_obj_docs) == 2
 
-    # _assert_equal_doc_and_model(s, src_doc, src_rel_doc, src)
-    # _assert_equal_doc_and_model(s, trg_doc, trg_rel_doc, trg)
+    # _assert_equal_doc_and_model(src_doc, src_rel_doc, src)
+    # _assert_equal_doc_and_model(trg_doc, trg_rel_doc, trg)
 
 
 def test_simple_relationship(broker, es):
-    s = broker.session
 
     rels = [
         ('A', Relation.Cites, 'B'),
@@ -154,18 +152,18 @@ def test_simple_relationship(broker, es):
         (_group_data('A'), _rel_data(), _group_data('B'))
     ]
 
-    create_objects_from_relations(s, rels, metadata)
+    create_objects_from_relations(rels, metadata)
 
     assert len(ObjectDoc.all()) == 0
 
-    src = get_group_from_id(s, 'A')
-    trg = get_group_from_id(s, 'B')
-    (src_doc, src_rel_doc), (trg_doc, trg_rel_doc) = update_indices(s, src, trg)
+    src = get_group_from_id('A')
+    trg = get_group_from_id('B')
+    (src_doc, src_rel_doc), (trg_doc, trg_rel_doc) = update_indices(src, trg)
     es.indices.refresh()
 
     all_obj_docs = ObjectDoc.all()
     all_obj_rel_docs = ObjectRelationshipsDoc.all()
     assert len(all_obj_rel_docs) == len(all_obj_docs) == 2
 
-    _assert_equal_doc_and_model(s, src_doc, src_rel_doc, src)
-    _assert_equal_doc_and_model(s, trg_doc, trg_rel_doc, trg)
+    _assert_equal_doc_and_model(src_doc, src_rel_doc, src)
+    _assert_equal_doc_and_model(trg_doc, trg_rel_doc, trg)
