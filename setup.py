@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2018 CERN.
+# Copyright (c) 2017 Thomas P. Robitaille.
 #
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -22,13 +23,14 @@ tests_require = [
     'isort>=4.3',
     'mock>=2.0.0',
     'pydocstyle>=2.0.0',
+    'pytest>=3.3.1',
     'pytest-cache>=1.0',
     'pytest-cov>=2.5.1',
+    'pytest-flask>=0.10.0',
     'pytest-invenio>=1.0.0a1,<1.1.0',
     'pytest-mock>=1.6.0',
     'pytest-pep8>=1.0.6',
     'pytest-random-order>=0.5.4',
-    'pytest>=3.3.1',
 ]
 
 extras_require = {
@@ -51,6 +53,13 @@ search_version = '~=1.0.0'
 
 install_requires = [
     'Flask-Debugtoolbar>=0.10.1',
+    'flask-shell-ipython>=0.3.0',
+    'idutils>=1.0.0',
+    'jsonschema>=2.6.0',
+    'marshmallow>=2.15.0',
+    'arrow>=0.12.1',
+    'webargs>=2.1.0',
+    'requests>=2.18.4',
     'invenio-base~=1.0.0',
     'invenio-app~=1.0.0',
     'invenio-db[{db},versioning]{version}'.format(db=DATABASE, version=db_version),
@@ -73,7 +82,7 @@ setup(
     long_description=readme,
     keywords='scholarly link broker',
     license='MIT',
-    author='CERN',
+    author='CERN, Thomas Robitaille',
     author_email='info@inveniosoftware.org',
     url='https://github.com/asclepias/asclepias-broker',
     packages=packages,

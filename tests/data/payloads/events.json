@@ -1,0 +1,691 @@
+  {
+    "ID": "41bcdb2c-9fb4-4948-a2ca-434493dc83b3",
+    "EventType": "RelationshipCreated",
+    "Time": "1516728860",
+    "Creator": "ACME Inc.",
+    "Source": "Test",
+    "Payload": [
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "A",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "IsIdenticalTo",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "Aid",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "B",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "Cites",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "A",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "C",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "References",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "A",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "D",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "References",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "Aid",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "D",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "References",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "A",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "Ap",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "HasVersion",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "A",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "Ap",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "HasVersion",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "A2",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "E",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "Cites",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "Ap",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "F",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "Cites",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "A2",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "Aidp",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "HasVersion",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "Aid",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "Aidp",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "HasVersion",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "A3",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "G",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "Cites",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "Aidp",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "H",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "Cites",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "A3",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "Apid",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "IsIdenticalTo",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "Ap",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "A2",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "IsIdenticalTo",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "A2id",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "I",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "Cites",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "Apid",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "J",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "Cites",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "A2id",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "J2",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "IsIdenticalTo",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "J",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "K",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "Cites",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "A3",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "K",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "IsIdenticalTo",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "K1",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "H",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "IsIdenticalTo",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "H1",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      },
+      {
+        "Source": {
+          "Identifier": {
+            "ID": "H1",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "RelationshipType": {
+          "Name": "IsRelatedTo",
+          "SubType": "IsIdenticalTo",
+          "SubTypeSchema": "DataCite"
+        },
+        "Target": {
+          "Identifier": {
+            "ID": "K1",
+            "IDScheme": "DOI"
+          },
+          "Type": {
+            "Name": "unknown"
+          }
+        },
+        "LinkPublicationDate": "2018-01-01",
+        "LinkProvider": [
+          {
+            "Name": "Link Provider Ltd."
+          }
+        ]
+      }
+    ]
+  }

@@ -7,4 +7,7 @@
 Authors
 =======
 
-- CERN
+- Alexander Ioannidis
+- Chiara Bigarella
+- Krzysztof Nowak
+- Thomas P. Robitaille
