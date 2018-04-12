@@ -13,7 +13,7 @@ from ..mappings import ObjectDoc
 from ..models import Group, GroupRelationship, GroupType, Identifier, \
     Identifier2Group, Relation
 from ..schemas.loaders import from_datacite_relation
-from .tasks import get_group_from_id
+from ..tasks import get_group_from_id
 
 
 class RelationshipAPI:

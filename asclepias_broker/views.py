@@ -112,5 +112,5 @@ event_view = EventResource.as_view('event')
 
 relationships_view = RelationshipResource.as_view('relationships')
 
-api_blueprint.add_url('/event', view_func=event_view)
-api_blueprint.add_url('/relationships', view_func=relationships_view)
+api_blueprint.add_url_rule('/event', view_func=event_view)
+api_blueprint.add_url_rule('/relationships', view_func=relationships_view)

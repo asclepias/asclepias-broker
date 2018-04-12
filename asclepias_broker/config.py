@@ -98,7 +98,7 @@ CELERY_BEAT_SCHEDULE = {
 # Database
 # ========
 
-SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://asclepias-broker:asclepias-broker@localhost/asclepias-broker'
+SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://asclepias:asclepias@localhost/asclepias'
 
 
 # Search
