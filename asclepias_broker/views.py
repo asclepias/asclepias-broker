@@ -7,6 +7,8 @@
 
 from flask import Blueprint, abort, current_app, jsonify, render_template, \
     request
+from flask.views import MethodView
+from invenio_rest import ContentNegotiatedMethodView
 from webargs import fields, validate
 from webargs.flaskparser import use_kwargs
 
@@ -59,43 +61,55 @@ def relationships():
 api_blueprint = Blueprint('asclepias_api', __name__, url_prefix='/api')
 
 
-@api_blueprint.route('/event', methods=['POST', ])
-def event_receiver():
-    current_app.broker.handle_event(request.json)
-    return "OK", 200
+class EventResource(MethodView):
+    def post(self):
+        current_app.broker.handle_event(request.json)
+        return "OK", 200
 
 
-@api_blueprint.route('/relationships')
-@use_kwargs({
-    'id_': fields.Str(load_from='id', required=True),
-    'scheme': fields.Str(missing='doi'),
-    'relation': fields.Str(
-        required=True,
-        validate=validate.OneOf([
-            'isCitedBy', 'cites', 'isSupplementTo', 'isSupplementedBy',
-        ])
-    ),
-    # TODO: Convert to datetime...
-    'type_': fields.Str(load_from='type', missing=None),
-    'from_': fields.Str(load_from='from', missing=None),
-    'to': fields.Str(missing=None),
-    'group_by': fields.Str(
-        load_from='groupBy',
-        validate=validate.OneOf(['identity', 'version']),
-        missing='identity'),
-})
-def api_relationships(id_, scheme, relation, type_, from_, to, group_by):
-    # TODO: Serialize using marshmallow (.schemas.scholix)
-    src_doc, relationships = current_app.broker.get_relationships(
-        id_, scheme, relation, target_type=type_, from_=from_, to=to,
-        group_by=group_by)
-    if not src_doc:
-        return jsonify(message='No object found with identifier "{}"'.format(id_)), 404
-    source = (src_doc and src_doc.to_dict()) or {}
-    return jsonify({
-        'Source': source,
-        'Relationship': [{'Target': t.to_dict(), 'LinkHistory': h}
-                         for t, h in relationships],
-        'Relation': relation,
-        'GroupBy': group_by,
+class RelationshipResource(ContentNegotiatedMethodView):
+    @use_kwargs({
+        'id_': fields.Str(load_from='id', required=True),
+        'scheme': fields.Str(missing='doi'),
+        'relation': fields.Str(
+            required=True,
+            validate=validate.OneOf([
+                'isCitedBy', 'cites', 'isSupplementTo', 'isSupplementedBy',
+            ])
+        ),
+        # TODO: Convert to datetime...
+        'type_': fields.Str(load_from='type', missing=None),
+        'from_': fields.Str(load_from='from', missing=None),
+        'to': fields.Str(missing=None),
+        'group_by': fields.Str(
+            load_from='groupBy',
+            validate=validate.OneOf(['identity', 'version']),
+            missing='identity'),
     })
+    def get(self, id_, scheme, relation, type_, from_, to, group_by):
+        # TODO: Serialize using marshmallow (.schemas.scholix)
+        src_doc, relationships = current_app.broker.get_relationships(
+            id_, scheme, relation, target_type=type_, from_=from_, to=to,
+            group_by=group_by)
+        if not src_doc:
+            return jsonify(message='No object found with identifier "{}"'.format(id_)), 404
+        source = (src_doc and src_doc.to_dict()) or {}
+        return jsonify({
+            'Source': source,
+            'Relationship': [{'Target': t.to_dict(), 'LinkHistory': h}
+                             for t, h in relationships],
+            'Relation': relation,
+            'GroupBy': group_by,
+        })
+
+
+#
+# Blueprint definition
+#
+
+event_view = EventResource.as_view('event')
+
+relationships_view = RelationshipResource.as_view('relationships')
+
+api_blueprint.add_url('/event', view_func=event_view)
+api_blueprint.add_url('/relationships', view_func=relationships_view)
