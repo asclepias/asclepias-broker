@@ -8,6 +8,7 @@
 """Test citation queries."""
 import pytest
 
+from asclepias_broker.api import EventAPI, RelationshipAPI
 from asclepias_broker.models import Identifier, GroupMetadata, GroupRelationshipMetadata
 from collections import OrderedDict
 
@@ -120,16 +121,16 @@ TEST_CASES = [
 
 
 @pytest.mark.parametrize(('test_case_name', 'events', 'results'), TEST_CASES)
-def test_simple_citations(broker, test_case_name, events, results):
+def test_simple_citations(test_case_name, events, results):
     """Test simple citation queries."""
     for ev in generate_payloads(events):
-        broker.handle_event(ev)
+        EventAPI.handle_event(ev)
     for cited_id_value, (citation_result, relation_result) in results.items():
         cited_id = (Identifier.query
                     .filter_by(value=cited_id_value).one())
         citations = set()
         relations = set()
-        for citing_id, relation in broker.get_citations(cited_id):
+        for citing_id, relation in RelationshipAPI.get_citations(cited_id):
             citations |= {i.value for i in citing_id}
             relations |= {(r.source.value, r.target.value) for r in relation}
         assert citations == citation_result
@@ -149,12 +150,12 @@ TEST_CASES = [
     ),
 ]
 @pytest.mark.parametrize(('test_case_name', 'events', 'results'), TEST_CASES)
-def test_grouping_query(broker, test_case_name, events, results):
+def test_grouping_query(test_case_name, events, results):
     for ev in generate_payloads(events):
-        broker.handle_event(ev)
+        EventAPI.handle_event(ev)
     for cited_id_value, _ in results.items():
 
         cited_id = (Identifier.query
                     .filter_by(value=cited_id_value).one())
         # TODO: Fix this test
-        # ret = broker.get_citations2(cited_id, 'IsCitedBy')
+        # ret = RelationshipAPI.get_citations2(cited_id, 'IsCitedBy')

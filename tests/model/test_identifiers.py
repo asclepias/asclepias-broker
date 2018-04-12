@@ -8,6 +8,8 @@
 """Test broker model."""
 import pytest
 
+from asclepias_broker.api import EventAPI
+
 from asclepias_broker.models import Identifier
 
 from helpers import generate_payloads
@@ -88,11 +90,11 @@ from helpers import generate_payloads
          [{'A', 'B', 'C'}, {'X', 'Y', 'Z'}]),
     ]
     )
-def test_identities(broker, events, result_sets):
+def test_identities(events, result_sets):
     # NOTE: We assume that only on identifier scheme being used so just using
     # identifier values is enough when comparing sets.
     for ev in generate_payloads(events):
-        broker.handle_event(ev)
+        EventAPI.handle_event(ev)
 
     for rs in result_sets:
         for v in rs:

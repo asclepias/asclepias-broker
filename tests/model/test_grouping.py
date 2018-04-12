@@ -10,6 +10,8 @@ import pytest
 
 from invenio_db import db
 
+from asclepias_broker.api import EventAPI
+
 from asclepias_broker.models import Relationship, Relation, Identifier,\
     Group, GroupType, Identifier2Group, GroupM2M, GroupRelationship,\
     GroupRelationshipM2M, Relationship2GroupRelationship, GroupMetadata,\
@@ -22,18 +24,18 @@ from helpers import generate_payloads, assert_grouping, \
     create_objects_from_relations
 
 
-def _handle_events(broker, evtsrc):
+def _handle_events(evtsrc):
     events = generate_payloads(evtsrc)
     for ev in events:
-        broker.handle_event(ev)
+        EventAPI.handle_event(ev)
 
 
-def off_test_simple_id_group_merge(broker):
+def off_test_simple_id_group_merge():
     """Test simple ID groups merging."""
     evtsrc = [
         ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
     ]
-    _handle_events(broker, evtsrc)
+    _handle_events(evtsrc)
     # {'A', 'B'}
     assert Group.query.count() == 2
     vg = Group.query.filter_by(type=GroupType.Version).one()
@@ -44,7 +46,7 @@ def off_test_simple_id_group_merge(broker):
     evtsrc = [
         ['C', 'A', 'IsIdenticalTo', 'C', '2018-01-01'],
     ]
-    _handle_events(broker, evtsrc)
+    _handle_events(evtsrc)
     # {'A', 'B', 'C'}
     assert Group.query.count() == 1
     assert Identifier.query.count() == 3
@@ -53,7 +55,7 @@ def off_test_simple_id_group_merge(broker):
     evtsrc = [
         ['C', 'D', 'IsIdenticalTo', 'E', '2018-01-01'],
     ]
-    _handle_events(broker, evtsrc)
+    _handle_events(evtsrc)
     # {'A', 'B', 'C'}, {'D', 'E'}
     assert Group.query.count() == 2
     assert Identifier.query.count() == 5
@@ -62,14 +64,14 @@ def off_test_simple_id_group_merge(broker):
     evtsrc = [
         ['C', 'A', 'IsIdenticalTo', 'D', '2018-01-01'],
     ]
-    _handle_events(broker, evtsrc)
+    _handle_events(evtsrc)
     # {'A', 'B', 'C', 'D', 'E'}
     assert Group.query.count() == 1
     assert Identifier.query.count() == 5
     assert Identifier2Group.query.count() == 5
 
 
-def test_get_or_create_groups(broker):
+def test_get_or_create_groups():
     """Test creating groups (Identity and Version) for an identifier."""
     id1 = Identifier(value='A', scheme='doi')
     db.session.add(id1)
@@ -115,7 +117,7 @@ def test_get_or_create_groups(broker):
     assert Identifier2Group.query.count() == 2
 
 
-def test_merge_version_groups(broker):
+def test_merge_version_groups():
     """Test group merging.
 
     Note: This test is merging Version groups. This does not automatically
@@ -351,7 +353,7 @@ def test_merge_version_groups(broker):
     assert_grouping(grouping)
 
 
-def test_merge_identity_groups(broker):
+def test_merge_identity_groups():
     """Test group merging.
 
     Note: This test is merging Version groups until only one is left.

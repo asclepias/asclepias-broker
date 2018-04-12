@@ -10,11 +10,9 @@ import os
 
 import pytest
 
+from invenio_app.factory import create_api
 from invenio_db import db
 
-from asclepias_broker.app import create_app
-from asclepias_broker.broker import SoftwareBroker
-from asclepias_broker.models import Base
 from asclepias_broker.es import create_all, delete_all, es_client
 
 
@@ -26,23 +24,9 @@ def es():
     delete_all()
 
 
-@pytest.fixture
-def broker(es):
-    db_uri = os.environ.get('SQLALCHEMY_DATABASE_URI')
-    broker_ = SoftwareBroker(db_uri)
-    yield broker_
-
-    # Close all open sessions sand drop all tables
-    broker_.session.close_all()
-    Base.metadata.drop_all(broker_.engine)
-
-
-@pytest.fixture
-def app(es):
-    app = create_app()
-    yield app
-    app.broker.session.close_all()
-    Base.metadata.drop_all(app.broker.engine)
+@pytest.fixture(scope='module')
+def create_app():
+    return create_api
 
 
 #

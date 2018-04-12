@@ -56,7 +56,7 @@ def rel_obj(source, relation, target):
         {},
     ),
 ])
-def off_test_relationship_schema(broker, input_rel, output_rel, output_error):
+def off_test_relationship_schema(input_rel, output_rel, output_error):
     rels, payload = input_rel
     create_objects_from_relations(rels)
     relationship_obj = Relationship.query.one()

@@ -15,6 +15,7 @@ import arrow
 import sqlalchemy as sa
 from helpers import create_objects_from_relations, generate_payloads
 
+from asclepias_broker.api import EventAPI
 from asclepias_broker.models import Group, GroupMetadata, \
     GroupRelationship, GroupRelationshipMetadata, GroupType, Identifier, \
     Relation, Relationship
@@ -24,10 +25,10 @@ from asclepias_broker.tasks import get_group_from_id, get_or_create_groups, \
     update_indices
 
 
-def _handle_events(broker, evtsrc):
+def _handle_events(evtsrc):
     events = generate_payloads(evtsrc)
     for ev in events:
-        broker.handle_event(ev)
+        EventAPI.handle_event(ev)
 
 
 def dates_equal(a, b):
@@ -112,8 +113,8 @@ def test_init(es):
     assert es.indices.exists(index='relationships')
 
 
-def test_simple_groups(broker, es):
-    _handle_events(broker, [
+def test_simple_groups(es):
+    _handle_events([
         (['C', 'A', 'Cites', 'B', '2018-01-01'], _scholix_data('A', 'B')),
         (['C', 'A1', 'Cites', 'B', '2018-01-01'], _scholix_data('A1', 'B')),
         (['C', 'C', 'Cites', 'B', '2018-01-01'], _scholix_data('C', 'B')),
@@ -142,7 +143,7 @@ def test_simple_groups(broker, es):
     # _assert_equal_doc_and_model(trg_doc, trg_rel_doc, trg)
 
 
-def test_simple_relationship(broker, es):
+def test_simple_relationship(es):
 
     rels = [
         ('A', Relation.Cites, 'B'),
