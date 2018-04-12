@@ -60,6 +60,7 @@ install_requires = [
     'webargs>=2.1.0',
     'requests>=2.18.4',
     'invenio-base~=1.0.0',
+    'invenio-rest>=1.0.0',
     'invenio-app~=1.0.0',
     'invenio-db[{db},versioning]{version}'.format(db=DATABASE, version=db_version),
     'invenio-search[{es}]{version}'.format(es=ELASTICSEARCH, version=search_version),

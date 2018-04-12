@@ -12,6 +12,8 @@ from invenio_rest import ContentNegotiatedMethodView
 from webargs import fields, validate
 from webargs.flaskparser import use_kwargs
 
+from asclepias_broker.api import RelationshipAPI, EventAPI
+
 from .models import Identifier
 
 blueprint = Blueprint('asclepias_ui', __name__, template_folder='templates')
@@ -21,19 +23,20 @@ blueprint = Blueprint('asclepias_ui', __name__, template_folder='templates')
 #
 @blueprint.route('/list')
 def listpids():
-    pids = current_app.broker.session.query(Identifier)
+    pids = Identifier.query
     return render_template('list.html', pids=pids)
 
 
 @blueprint.route('/citations/<path:pid_value>')
 def citations(pid_value):
-    identifier = current_app.broker.session.query(Identifier).filter_by(
+    identifier = Identifier.query.filter_by(
         scheme='doi', value=pid_value).first()
     if not identifier:
         return abort(404)
     else:
-        citations = current_app.broker.get_citations(identifier, with_parents=True,
-            with_siblings=True, expand_target=True)
+        citations = RelationshipAPI.get_citations(
+            identifier, with_parents=True, with_siblings=True,
+            expand_target=True)
         target = citations[0]
         citations = citations[1:]
         return render_template('citations.html', target=target, citations=citations)
@@ -45,13 +48,11 @@ def relationships():
     scheme = request.values['scheme']
     relation = request.values['relation']
 
-    broker = current_app.broker
-    identifier = broker.session.query(Identifier).filter_by(
-        scheme=scheme, value=id_).first()
+    identifier = Identifier.query.filter_by(scheme=scheme, value=id_).first()
     if not identifier:
         return abort(404)
     else:
-        citations = broker.get_citations2(identifier, relation)
+        citations = RelationshipAPI.get_citations2(identifier, relation)
         return render_template('gcitations.html', target=identifier, citations=citations)
 
 
@@ -63,7 +64,7 @@ api_blueprint = Blueprint('asclepias_api', __name__, url_prefix='/api')
 
 class EventResource(MethodView):
     def post(self):
-        current_app.broker.handle_event(request.json)
+        EventAPI.handle_event(request.json)
         return "OK", 200
 
 
@@ -88,7 +89,7 @@ class RelationshipResource(ContentNegotiatedMethodView):
     })
     def get(self, id_, scheme, relation, type_, from_, to, group_by):
         # TODO: Serialize using marshmallow (.schemas.scholix)
-        src_doc, relationships = current_app.broker.get_relationships(
+        src_doc, relationships = RelationshipAPI.get_relationships(
             id_, scheme, relation, target_type=type_, from_=from_, to=to,
             group_by=group_by)
         if not src_doc:

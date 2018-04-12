@@ -7,27 +7,23 @@
 Installation
 ============
 
-You can install ``Asclepias Broker`` and each service (database, Elasticsearch, etc.) in your machine
-or you can use ``docker-compose`` to run it in one command.
-The easiest way to run Invenio is by using Docker. For a complete installation and usage guide, please refer to
-the `Invenio documentation <https://invenio.readthedocs.io/en/latest/usersguide/>`.
+To run an instance of ``Asclepias Broker`` you will need a PostgreSQL and Elasticsearch, which can be installed directly on your machine,
+or you can use ``docker-compose`` with the provided docker configuration to run those in the sandboxed docker environment (recommended).
 
 Quick start
 -----------
 
 .. note::
 
-    The docker configuration provided in this module uses PostgresSQL and ElasticSearch 6. If you have chosen different
-    database or ElasticSearch version and you want to try this quick start with Docker, modify the ``setup.py``
-    configuration.
+    The docker configuration provided in this module uses PostgresSQL and ElasticSearch 6.
 
-Install `Docker` and ``docker-compose`` in your machine.
-Then, create and run all the docker containers:
+Install ``docker`` and ``docker-compose`` in your machine.
+Then, create and run the services using the docker containers:
 
 .. code-block:: console
 
     $ cd asclepias-broker
-    $ docker-compose -f docker-compose.full.yml up
+    $ docker-compose up db es kibana
 
 Database and search index
 -------------------------
@@ -67,6 +63,6 @@ Open your browser and visit the url https://localhost.
 Development setup
 -----------------
 
-The recommended way of developing on Invenio is to install and run the web app locally in your machine, while keeping
+The recommended way of development is to install and run the web app locally in your machine, while keeping
 the other services (provided by `docker-compose.yml`) on Docker containers.
 See the `Developer Guide <https://http://invenio.readthedocs.io/en/latest/developersguide/>` documentation.

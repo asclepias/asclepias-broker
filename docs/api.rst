@@ -8,14 +8,15 @@
 API Docs
 ========
 
-Configuration
--------------
+..
+    Configuration
+    -------------
 
-.. automodule:: asclepias_broker.config
-   :members:
+    .. automodule:: asclepias_broker.config
+       :members:
 
-Views
------
+    Views
+    -----
 
-.. automodule:: asclepias_broker.views
-   :members:
+    .. automodule:: asclepias_broker.views
+       :members:
