@@ -58,6 +58,7 @@ install_requires = [
     'jsonschema>=2.6.0',
     'marshmallow>=2.15.0',
     'arrow>=0.12.1',
+    'redis>=2.10.6',
     'webargs>=2.1.0',
     'requests>=2.18.4',
     'invenio-base~=1.0.0',
@@ -95,6 +96,12 @@ setup(
         ],
         'invenio_config.module': [
             'asclepias_broker = asclepias_broker.config',
+        ],
+        'invenio_base.api_blueprints': [
+            'asclepias_broker = asclepias_broker.views:api_blueprint',
+        ],
+        'invenio_base.blueprints': [
+            'asclepias_broker = asclepias_broker.views:blueprint',
         ],
     },
     extras_require=extras_require,
