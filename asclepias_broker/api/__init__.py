@@ -5,8 +5,9 @@
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-from .relationships import RelationshipsAPI
+from .relationships import RelationshipAPI
+from .events import EventAPI
 
 __all__ = (
-    'RelationshipsAPI',
+    'RelationshipAPI', 'EventAPI',
 )

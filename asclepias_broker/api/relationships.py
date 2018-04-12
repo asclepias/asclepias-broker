@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2018 CERN.
+#
+# Asclepias Broker is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
 from itertools import groupby
 
 from invenio_db import db
@@ -23,6 +30,7 @@ class RelationshipAPI:
                 relation=relation, target_type=target_type, from_=from_, to=to)
         return src_doc, rels
 
+    @classmethod
     def print_citations(self, pid_value):
         id_A = Identifier.query.filter_by(scheme='DOI', value=pid_value).one()
         ids = id_A.get_identities(db.session)
@@ -31,6 +39,7 @@ class RelationshipAPI:
         pprint(full_c)
 
 
+    @classmethod
     def get_citations(self, identifier, with_parents=False, with_siblings=False, expand_target=False):
         # At the beginning, frontier is just identities
         frontier = identifier.get_identities(db.session)
@@ -66,6 +75,7 @@ class RelationshipAPI:
             aggregated_citations = [(list(frontier), frontier_rel)] + aggregated_citations
         return aggregated_citations
 
+    @classmethod
     def get_citations2(self, identifier, relation: str, grouping_type=GroupType.Identity):
 
         grp = get_group_from_id(db.session, identifier.value, identifier.scheme,
