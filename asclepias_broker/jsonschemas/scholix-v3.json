@@ -1,0 +1,246 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$id": "http://www.scholix.org/schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "definitions": {
+    "IdentifierType": {
+      "type": "object",
+      "description": "Identifier of an object (paper, dataset, person or organization), e.g.: DOI, URL, ISBN, ORCID etc.",
+      "additionalProperties": false,
+      "properties": {
+        "ID": {
+          "type": "string",
+          "title": "Identifier",
+          "description": "The identifier string.",
+          "default": "",
+          "examples": [
+            "475826.a"
+          ]
+        },
+        "IDScheme": {
+          "type": "string",
+          "title": "Identifier's scheme",
+          "description": "Name of the identifier's scheme.",
+          "default": "",
+          "examples": [
+            "grid",
+            "doi",
+            "url"
+          ]
+        },
+        "IDURL": {
+          "type": "string",
+          "title": "Identifier's URL",
+          "description": "Identifier in a URL form.",
+          "default": "",
+          "examples": [
+            "https://grid.ac/institutes/grid.475826.a"
+          ]
+        }
+      },
+      "required": [
+        "ID",
+        "IDScheme"
+      ]
+    },
+    "DateType": {
+      "type": "string",
+      "title": "Date",
+      "description": "Date as an ISO 8601 standard.",
+      "default": "",
+      "examples": [
+        "2017-11-15",
+        "2017-11-15T13:15:00Z",
+        "2017-11-15T13:15:00+02:00"
+      ]
+    },
+    "PersonOrOrgType": {
+      "description": "An organization or a person.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Name": {
+          "type": "string",
+          "title": "Person or organization name.",
+          "description": "The name of an organization or a person.",
+          "default": "",
+          "examples": [
+            "Dr Sandro",
+            "CERN",
+            "Doe, John James"
+          ]
+        },
+        "Identifier": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IdentifierType"
+          }
+        }
+      },
+      "required": [
+        "Name"
+      ]
+    },
+    "ObjectType": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Identifier": {
+          "$ref": "#/definitions/IdentifierType",
+          "description": "Identifier of the source or target object."
+        },
+        "Type": {
+          "type": "object",
+          "description": "Type of the object",
+          "additionalProperties": false,
+          "properties": {
+            "Name": {
+              "type": "string",
+              "enum": [
+                "literature",
+                "dataset",
+                "software",
+                "unknown"
+              ],
+              "title": "Object's name",
+              "description": "Name of the object type",
+              "default": "",
+              "examples": [
+                "publication"
+              ]
+            },
+            "SubType": {
+              "type": "string",
+              "title": "Object's subtype",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "journal article"
+              ]
+            },
+            "SubTypeSchema": {
+              "type": "string",
+              "title": "Object's subtype schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "CASRAI"
+              ]
+            }
+          },
+          "required": [
+            "Name"
+          ]
+        },
+        "Title": {
+          "type": "string",
+          "title": "The 0 Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "A Title"
+          ]
+        },
+        "Creator": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PersonOrOrgType"
+          }
+        },
+        "PublicationDate": {
+          "title": "Object publication date",
+          "$ref": "#/definitions/DateType"
+        },
+        "Publisher": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PersonOrOrgType"
+          }
+        }
+      },
+      "required": [
+        "Identifier",
+        "Type"
+      ]
+    }
+  },
+  "properties": {
+    "LinkPublicationDate": {
+      "title": "Link publication date",
+      "$ref": "#/definitions/DateType"
+    },
+    "LinkProvider": {
+      "type": "array",
+      "description": "The source(s) of this Link Information Package",
+      "items": {
+        "$ref": "#/definitions/PersonOrOrgType"
+      }
+    },
+    "RelationshipType": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Name": {
+          "type": "string",
+          "enum": [
+            "IsSupplementTo",
+            "IsSupplementedBy",
+            "References",
+            "IsReferencedBy",
+            "IsRelatedTo"
+          ],
+          "title": "Relationship name",
+          "description": "The name of the relationship type.",
+          "default": "",
+          "examples": [
+            "IsRelatedTo"
+          ]
+        },
+        "SubType": {
+          "type": "string",
+          "title": "Relationship subtype",
+          "description": "The name of the relationship subtype.",
+          "default": "",
+          "examples": [
+            "isPreviousVersionOf"
+          ]
+        },
+        "SubTypeSchema": {
+          "type": "string",
+          "title": "Relationship subtype schema",
+          "description": "Schema of the relationship's subtype.",
+          "default": "",
+          "examples": [
+            "https://schema.datacite.org/meta/kernel-4.0/metadata.xsd"
+          ]
+        }
+      },
+      "required": [
+        "Name"
+      ]
+    },
+    "LicenseURL": {
+      "type": "string",
+      "title": "License URL schema",
+      "description": "URL to the license of this Link Information Package.",
+      "default": "",
+      "examples": [
+        "http://creativecommons.org/publicdomain/zero/1.0"
+      ]
+    },
+    "Source": {
+      "$ref": "#/definitions/ObjectType"
+    },
+    "Target": {
+      "$ref": "#/definitions/ObjectType"
+    }
+  },
+  "required": [
+    "LinkPublicationDate",
+    "LinkProvider",
+    "RelationshipType",
+    "Source",
+    "Target"
+  ]
+}
