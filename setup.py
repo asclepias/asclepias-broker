@@ -53,12 +53,10 @@ search_version = '~=1.0.0'
 
 install_requires = [
     'Flask-Debugtoolbar>=0.10.1',
-    'flask-shell-ipython>=0.3.0',
     'idutils>=1.0.0',
     'jsonschema>=2.6.0',
     'marshmallow>=2.15.0',
     'arrow>=0.12.1',
-    'redis>=2.10.6',
     'webargs>=2.1.0',
     'requests>=2.18.4',
     'invenio-base~=1.0.0',
