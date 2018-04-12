@@ -52,6 +52,7 @@ db_version = '~=1.0.0'
 search_version = '~=1.0.0'
 
 install_requires = [
+    'flask-babelex>=0.9.3',
     'Flask-Debugtoolbar>=0.10.1',
     'faker>=0.8.13',
     'idutils>=1.0.0',
@@ -60,11 +61,14 @@ install_requires = [
     'arrow>=0.12.1',
     'webargs>=2.1.0',
     'requests>=2.18.4',
-    'invenio-base~=1.0.0',
+    'invenio[base,auth]==3.0.0rc1',
+    'invenio-admin~=1.0.0',
+    'invenio-cache>=1.0.0',
     'invenio-rest>=1.0.0',
     'invenio-app~=1.0.0',
     'invenio-db[{db},versioning]{version}'.format(db=DATABASE, version=db_version),
     'invenio-search[{es}]{version}'.format(es=ELASTICSEARCH, version=search_version),
+    'redis>=2.10.5',
 ]
 
 packages = find_packages()
@@ -100,6 +104,14 @@ setup(
         'invenio_base.api_blueprints': [
             'asclepias_broker = asclepias_broker.views:api_blueprint',
         ],
+        'invenio_admin.views': [
+            'asclepias_broker_identifier = '
+            'asclepias_broker.admin:identifier_adminview',
+            'asclepias_broker_relationship = '
+            'asclepias_broker.admin:relationship_adminview',
+            'asclepias_broker_event = '
+            'asclepias_broker.admin:event_adminview',
+        ],
         'invenio_base.blueprints': [
             'asclepias_broker = asclepias_broker.views:blueprint',
         ],
@@ -107,6 +119,7 @@ setup(
             'objects = asclepias_broker.mappings',
             'object-relationships = asclepias_broker.mappings',
         ],
+
     },
     extras_require=extras_require,
     install_requires=install_requires,
