@@ -11,8 +11,8 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta
 from uuid import uuid4
 
-from elasticsearch_dsl import Date, DocType, Index, InnerObjectWrapper, \
-    Keyword, MetaField, Nested, Object, Q, Text, connections
+from elasticsearch_dsl import Date, DocType, Index, InnerDoc, Keyword, \
+    MetaField, Nested, Object, Q, Text, connections
 from faker import Faker
 
 from .models import Relation
@@ -52,46 +52,35 @@ class BaseDoc(DocType):
 #
 # Mappings
 #
-class IdentifierObject(Nested):
+class IdentifierObject(InnerDoc):
 
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('doc_class', InnerObjectWrapper)
-        kwargs.setdefault('properties', {}).update(
-            ID=Keyword(),
-            IDScheme=Keyword(),
-            IDURL=Keyword(),
-        )
-        super().__init__(*args, **kwargs)
+    ID = Keyword()
+    IDScheme = Keyword()
+    IDURL = Keyword()
 
 
-class PersonOrOrgBaseObject(Nested):
+class PersonOrOrgBaseObject(InnerDoc):
 
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('doc_class', InnerObjectWrapper)
-        kwargs.setdefault('properties', {}).update(
-            Name=Text(),
-            Identifier=IdentifierObject(multi=True),
-        )
-        super().__init__(*args, **kwargs)
+    Name = Text()
+    Identifier = Nested(IdentifierObject, multi=True)
 
 
-class CreatorObject(PersonOrOrgBaseObject):
-    pass
+class ObjectType(InnerDoc):
+
+    Type = Keyword()
+    SubType = Keyword()
+    SubTypeSchema = Keyword()
 
 
 @objects_index.doc_type
 class ObjectDoc(BaseDoc):
 
     Title = Text()
-    Type = Object(properties=dict(
-        Type=Keyword(),
-        SubType=Keyword(),
-        SubTypeSchema=Keyword(),
-    ))
-    Identifier = IdentifierObject(multi=True)
-    Creator = CreatorObject(multi=True)
+    Type = Object(ObjectType, multi=False)
+    Identifier = Nested(IdentifierObject, multi=True)
+    Creator = Nested(PersonOrOrgBaseObject, multi=True)
     PublicationDate = Date()
-    Publisher = CreatorObject(multi=True)
+    Publisher = Nested(PersonOrOrgBaseObject, multi=True)
 
     @classmethod
     def get_by_identifiers(cls, id_values, _source=None):
@@ -107,41 +96,27 @@ class ObjectDoc(BaseDoc):
         return ObjectRelationshipsDoc.get(self._id, _source=_source)
 
 
-class ProviderObject(PersonOrOrgBaseObject):
-    pass
+class RelationshipHistoryObject(InnerDoc):
+
+    LinkPublicationDate = Date()
+    LinkProvider = Nested(PersonOrOrgBaseObject, multi=False)
+    LicenseURL = Keyword()
 
 
-class RelationshipHistoryObject(Nested):
+class RelationshipObject(InnerDoc):
 
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('doc_class', InnerObjectWrapper)
-        kwargs.setdefault('properties', {}).update(
-            LinkPublicationDate=Date(),
-            LinkProvider=ProviderObject(),
-            LicenseURL=Keyword(),
-        )
-        super().__init__(*args, **kwargs)
-
-
-class RelationshipObject(Nested):
-
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('doc_class', InnerObjectWrapper)
-        kwargs.setdefault('properties', {}).update(
-            TargetID=Keyword(),
-            History=RelationshipHistoryObject(multi=True)
-        )
-        super().__init__(*args, **kwargs)
+    TargetID = Keyword()
+    History = Nested(RelationshipHistoryObject, multi=True)
 
 
 @relationships_index.doc_type
 class ObjectRelationshipsDoc(BaseDoc):
 
-    cites = RelationshipObject(multi=True)
-    isCitedBy = RelationshipObject(multi=True)
-    isSupplementTo = RelationshipObject(multi=True)
-    isSupplementedBy = RelationshipObject(multi=True)
-    isRelatedTo = RelationshipObject(multi=True)
+    cites = Nested(RelationshipObject, multi=True)
+    isCitedBy = Nested(RelationshipObject, multi=True)
+    isSupplementTo = Nested(RelationshipObject, multi=True)
+    isSupplementedBy = Nested(RelationshipObject, multi=True)
+    isRelatedTo = Nested(RelationshipObject, multi=True)
 
     @property
     def object(self):
