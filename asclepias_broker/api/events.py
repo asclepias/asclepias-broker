@@ -10,6 +10,11 @@ from invenio_db import db
 from ..models import ObjectEvent, PayloadType
 from ..schemas.loaders import EventSchema, RelationshipSchema
 from ..tasks import update_groups, update_indices, update_metadata
+from ..jsonschemas import EVENT_SCHEMA
+import jsonschema
+
+from marshmallow.exceptions import ValidationError as MarshmallowValidationError
+from jsonschema.exceptions import ValidationError as JSONValidationError
 
 
 def get_or_create(model, **kwargs):
@@ -25,6 +30,9 @@ def get_or_create(model, **kwargs):
 class EventAPI:
     @classmethod
     def handle_event(cls, event):
+
+        jsonschema.validate(event, EVENT_SCHEMA)
+
         event_type = event['EventType']
         handlers = {
             "RelationshipCreated": cls.relationship_created,
@@ -40,6 +48,8 @@ class EventAPI:
         # TODO: Skip existing events?
         # TODO: Check `errors`
         event_obj, errors = EventSchema(check_existing=True).load(event)
+        if errors:
+            raise MarshmallowValidationError(errors)
         db.session.add(event_obj)
         return event_obj
 
@@ -85,7 +95,7 @@ class EventAPI:
                 relationship, errors = RelationshipSchema(check_existing=True).load(payload)
                 if errors:
                     # TODO: Add better error handling
-                    raise ValueError(errors)
+                    raise MarshmallowValidationError(errors)
                 if relationship.id:
                     relationship.deleted = delete
                 db.session.add(relationship)
