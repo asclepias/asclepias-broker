@@ -79,8 +79,28 @@ class ObjectDoc(BaseDoc):
             q = q.source(_source)
         return next(q[0].scan(), None)
 
-    def relationships(self, _source=None):
-        return ObjectRelationshipsDoc.get(self._id, _source=_source)
+    def relationships(self, relation, from_=None, to=None, page=1, size=10):
+        nested_query = {'match_all': {}}
+        if from_ or to:
+            params = {}
+            if from_:
+                params['gte'] = from_.isoformat()
+            if to:
+                params['lte'] = to.isoformat()
+            key = '{}.History.LinkPublicationDate'.format(relation)
+            nested_query = Q('nested',
+                             path=(relation + '.History'),
+                             query=Q('range', **{key: params}))
+
+        res = (
+            ObjectRelationshipsDoc.search()
+            .source(False)  # disable source for the entire hits
+            .query('ids', values=[self._id])  # fetch by object._id
+            .query('nested', path=relation, query=nested_query,
+                   inner_hits={'from': (page - 1) * size, 'size': size})
+            .execute()
+        )
+        return res.hits[0].meta.inner_hits[relation].hits if res else res.hits
 
 
 class RelationshipHistoryObject(InnerDoc):
@@ -110,17 +130,3 @@ class ObjectRelationshipsDoc(BaseDoc):
     @property
     def object(self):
         return ObjectDoc.get(self.SourceID)
-
-    def rel_objects(self, relation, target_type=None, from_=None, to=None):
-        rels = getattr(self, relation, None)
-        if rels:
-            histories = {r.TargetID: r.to_dict()['History'] for r in rels}
-            if target_type:
-                objects = (
-                    ObjectDoc.search()
-                    .query('ids', values=histories.keys())
-                    .query('term', **{'Type.Name': target_type})).scan()
-            else:
-                objects = ObjectDoc.mget(histories.keys())
-            return [(o, histories[o._id]) for o in objects]
-        return []
