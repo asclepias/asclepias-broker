@@ -53,6 +53,7 @@ search_version = '~=1.0.0'
 
 install_requires = [
     'Flask-Debugtoolbar>=0.10.1',
+    'faker>=0.8.13',
     'idutils>=1.0.0',
     'jsonschema>=2.6.0',
     'marshmallow>=2.15.0',

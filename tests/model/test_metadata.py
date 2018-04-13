@@ -10,7 +10,6 @@ import pytest
 from jsonschema.exceptions import ValidationError
 from invenio_db import db
 
-from asclepias_broker.api import EventAPI
 from asclepias_broker.models import Group, GroupMetadata, \
     GroupRelationship, GroupRelationshipMetadata, GroupType, Relation
 
@@ -27,7 +26,7 @@ def update_and_compare(m, payload, expected=None):
         db.session.refresh(m)
 
 
-def test_group_metadata():
+def test_group_metadata(db):
     g = Group(type=GroupType.Identity)
     db.session.add(g)
     db.session.commit()
@@ -82,7 +81,7 @@ def test_group_metadata():
     )
 
 
-def test_group_relationship_metadata():
+def test_group_relationship_metadata(db):
     g_src = Group(type=GroupType.Identity)
     g_trg = Group(type=GroupType.Identity)
     db.session.add_all((g_src, g_trg))

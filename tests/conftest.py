@@ -11,17 +11,6 @@ import os
 import pytest
 
 from invenio_app.factory import create_api
-from invenio_db import db
-
-from asclepias_broker.es import create_all, delete_all, es_client
-
-
-@pytest.fixture
-def es():
-    create_all()
-    es_client.indices.refresh()
-    yield es_client
-    delete_all()
 
 
 @pytest.fixture(scope='module')

@@ -30,7 +30,7 @@ def _handle_events(evtsrc):
         EventAPI.handle_event(ev)
 
 
-def off_test_simple_id_group_merge():
+def off_test_simple_id_group_merge(db):
     """Test simple ID groups merging."""
     evtsrc = [
         ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
@@ -71,7 +71,7 @@ def off_test_simple_id_group_merge():
     assert Identifier2Group.query.count() == 5
 
 
-def test_get_or_create_groups():
+def test_get_or_create_groups(db):
     """Test creating groups (Identity and Version) for an identifier."""
     id1 = Identifier(value='A', scheme='doi')
     db.session.add(id1)
@@ -117,7 +117,7 @@ def test_get_or_create_groups():
     assert Identifier2Group.query.count() == 2
 
 
-def test_merge_version_groups():
+def test_merge_version_groups(db):
     """Test group merging.
 
     Note: This test is merging Version groups. This does not automatically
@@ -353,7 +353,7 @@ def test_merge_version_groups():
     assert_grouping(grouping)
 
 
-def test_merge_identity_groups():
+def test_merge_identity_groups(db):
     """Test group merging.
 
     Note: This test is merging Version groups until only one is left.

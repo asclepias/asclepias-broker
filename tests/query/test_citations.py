@@ -6,14 +6,12 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Test citation queries."""
+
 import pytest
-
-from asclepias_broker.api import EventAPI, RelationshipAPI
-from asclepias_broker.models import Identifier, GroupMetadata, GroupRelationshipMetadata
-from collections import OrderedDict
-
 from helpers import generate_payloads
 
+from asclepias_broker.api import EventAPI, RelationshipAPI
+from asclepias_broker.models import Identifier
 
 TEST_CASES = [
     (
@@ -121,10 +119,11 @@ TEST_CASES = [
 
 
 @pytest.mark.parametrize(('test_case_name', 'events', 'results'), TEST_CASES)
-def test_simple_citations(test_case_name, events, results):
+def test_simple_citations(test_case_name, events, results, db, es):
     """Test simple citation queries."""
     for ev in generate_payloads(events):
         EventAPI.handle_event(ev)
+    es.indices.refresh()
     for cited_id_value, (citation_result, relation_result) in results.items():
         cited_id = (Identifier.query
                     .filter_by(value=cited_id_value).one())
@@ -150,7 +149,7 @@ TEST_CASES = [
     ),
 ]
 @pytest.mark.parametrize(('test_case_name', 'events', 'results'), TEST_CASES)
-def test_grouping_query(test_case_name, events, results):
+def test_grouping_query(test_case_name, events, results, db, es):
     for ev in generate_payloads(events):
         EventAPI.handle_event(ev)
     for cited_id_value, _ in results.items():

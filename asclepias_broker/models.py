@@ -71,7 +71,7 @@ class Identifier(db.Model, Timestamp):
     @classmethod
     def get(cls, value=None, scheme=None, **kwargs):
         """Get the identifier from the database."""
-        return cls.query(cls).filter_by(
+        return cls.query.filter_by(
             value=value, scheme=scheme).one_or_none()
 
     def fetch_or_create_id(self):

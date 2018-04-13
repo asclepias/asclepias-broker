@@ -9,20 +9,17 @@
 
 from collections import defaultdict
 from copy import deepcopy
-from typing import List, Tuple
 
 import arrow
 import sqlalchemy as sa
 from helpers import create_objects_from_relations, generate_payloads
 
 from asclepias_broker.api import EventAPI
-from asclepias_broker.models import Group, GroupMetadata, \
-    GroupRelationship, GroupRelationshipMetadata, GroupType, Identifier, \
-    Relation, Relationship
-from asclepias_broker.es import DB_RELATION_TO_ES, ObjectDoc, \
+from asclepias_broker.mappings.dsl import DB_RELATION_TO_ES, ObjectDoc, \
     ObjectRelationshipsDoc
-from asclepias_broker.tasks import get_group_from_id, get_or_create_groups, \
-    update_indices
+from asclepias_broker.models import GroupRelationship, GroupType, Relation
+from asclepias_broker.tasks import get_group_from_id, update_indices
+from invenio_search import current_search_client
 
 
 def _handle_events(evtsrc):
@@ -108,12 +105,7 @@ def _assert_equal_doc_and_model(doc, rel_doc, model):
     _assert_equal_rels(db_rels, rel_doc)
 
 
-def test_init(es):
-    assert es.indices.exists(index='objects')
-    assert es.indices.exists(index='relationships')
-
-
-def test_simple_groups(es):
+def test_simple_groups(db, es_clear):
     _handle_events([
         (['C', 'A', 'Cites', 'B', '2018-01-01'], _scholix_data('A', 'B')),
         (['C', 'A1', 'Cites', 'B', '2018-01-01'], _scholix_data('A1', 'B')),
@@ -133,7 +125,7 @@ def test_simple_groups(es):
     # src = get_group_from_id('A')
     # trg = get_group_from_id('B')
     # (src_doc, src_rel_doc), (trg_doc, trg_rel_doc) = update_indices(src, trg)
-    # es.indices.refresh()
+    # current_search_client.indices.refresh()
 
     # all_obj_docs = ObjectDoc.all()
     # all_obj_rel_docs = ObjectRelationshipsDoc.all()
@@ -143,7 +135,7 @@ def test_simple_groups(es):
     # _assert_equal_doc_and_model(trg_doc, trg_rel_doc, trg)
 
 
-def test_simple_relationship(es):
+def test_simple_relationship(db, es_clear):
 
     rels = [
         ('A', Relation.Cites, 'B'),
@@ -160,7 +152,7 @@ def test_simple_relationship(es):
     src = get_group_from_id('A')
     trg = get_group_from_id('B')
     (src_doc, src_rel_doc), (trg_doc, trg_rel_doc) = update_indices(src, trg)
-    es.indices.refresh()
+    current_search_client.indices.refresh()
 
     all_obj_docs = ObjectDoc.all()
     all_obj_rel_docs = ObjectRelationshipsDoc.all()

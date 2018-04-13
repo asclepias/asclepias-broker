@@ -7,14 +7,15 @@
 
 """Test marshmallow loaders."""
 
-import arrow
 from datetime import datetime
+
+import arrow
 import pytest
 
-from asclepias_broker.models import (Event, EventType, Identifier, Relation,
-                                        Relationship)
-from asclepias_broker.schemas.loaders import (EventSchema, IdentifierSchema,
-                                              RelationshipSchema)
+from asclepias_broker.models import Event, EventType, Identifier, Relation, \
+    Relationship
+from asclepias_broker.schemas.loaders import EventSchema, IdentifierSchema, \
+    RelationshipSchema
 from asclepias_broker.schemas.scholix import SCHOLIX_RELATIONS
 
 
@@ -94,7 +95,7 @@ def ev_obj(type_, time, payload):
     (('10.1234/1', 'foo'), None, {'IDScheme': ['Invalid scheme']}),
     (('http://id.com/123', 'URL'), ('http://id.com/123', 'url'), {}),
 ])
-def test_identifier_schema(in_id, out_id, out_error):
+def test_identifier_schema(in_id, out_id, out_error, db, es):
     identifier, errors = IdentifierSchema().load(id_dict(*in_id))
     if out_error:
         assert errors == out_error
@@ -115,7 +116,7 @@ def test_identifier_schema(in_id, out_id, out_error):
         {'Source': {'IDScheme': ['Invalid scheme']}},
     ),
 ])
-def test_relationship_schema(in_rel, out_rel, out_error):
+def test_relationship_schema(in_rel, out_rel, out_error, db, es):
     relationship, errors = RelationshipSchema().load(rel_dict(*in_rel))
     if out_error:
         assert errors == out_error
@@ -141,7 +142,7 @@ def test_relationship_schema(in_rel, out_rel, out_error):
         {'EventType': ['Not a valid choice.']},
     ),
 ])
-def test_event_schema(in_ev, out_ev, out_error):
+def test_event_schema(in_ev, out_ev, out_error, db, es):
     ev_payload = ev_dict(*in_ev)
     event, errors = EventSchema().load(ev_payload)
     if out_error:

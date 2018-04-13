@@ -14,7 +14,7 @@ from uuid import uuid4
 from faker import Faker
 
 from .dsl import ObjectDoc, ObjectRelationshipsDoc
-from ..api import RelationshipsAPI
+from ..api import RelationshipAPI
 
 
 #
@@ -46,7 +46,7 @@ def benchmark_get_citations(N=100, **kwargs):
 
     def _f():
         o = ObjectDoc.get(random.choice(ids))
-        return len(RelationshipsAPI.get_citations(random.choice([i.ID for i in o.Identifier])))
+        return len(RelationshipAPI.get_citations(random.choice([i.ID for i in o.Identifier])))
     return min(timeit.Timer(_f).repeat(3, number=N)) / N
 
 
