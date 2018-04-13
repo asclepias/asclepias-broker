@@ -34,6 +34,8 @@
     },
     "Payload": {
       "type": "array",
+      "minItems": 1,
+      "maxItems": 200,
       "description": "Payload information specific to the EventType. An array, containing one or more payloads of the structure matching with the EventType.",
       "items": {
         "$ref": "scholix-v3.json"

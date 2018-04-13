@@ -13,11 +13,15 @@ from invenio_rest.errors import RESTException
 from webargs import fields, validate
 from webargs.flaskparser import use_kwargs
 
+from marshmallow.exceptions import ValidationError as MarshmallowValidationError
+from jsonschema.exceptions import ValidationError as JSONValidationError
+
 from asclepias_broker.api import RelationshipAPI, EventAPI
 
 from .models import Identifier
 
 blueprint = Blueprint('asclepias_ui', __name__, template_folder='templates')
+
 
 #
 # UI Views
@@ -72,11 +76,23 @@ class ObjectNotFoundRESTError(RESTException):
         super(ObjectNotFoundRESTError, self).__init__(**kwargs)
         self.description = 'No object found with identifier [{}]'.format(identifier)
 
+class PayloadValidationRESTError(RESTException):
+    code = 400
+
+    def __init__(self, error_message, code=None, **kwargs):
+        if code:
+            self.code = code
+        super(PayloadValidationRESTError, self).__init__(**kwargs)
+        self.description = error_message
+
 
 class EventResource(MethodView):
     def post(self):
-        EventAPI.handle_event(request.json)
-        return "OK", 200
+        try:
+            EventAPI.handle_event(request.json)
+        except JSONValidationError as e:
+            raise PayloadValidationRESTError(e.message, code=422)
+        return "Accepted", 202
 
 
 class RelationshipResource(ContentNegotiatedMethodView):
