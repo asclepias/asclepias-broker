@@ -327,7 +327,7 @@ def merge_version_groups(group_a: Group, group_b: Group):
 
 def get_or_create_groups(identifier: Identifier) -> Tuple[Group, Group]:
     """Given an Identifier, fetch or create its Identity and Version groups."""
-    id2g = Identitfier2Group.query.filter(
+    id2g = Identifier2Group.query.filter(
         Identifier2Group.identifier==identifier).one_or_none()
     if not id2g:
         group = Group(type=GroupType.Identity, id=uuid.uuid4())

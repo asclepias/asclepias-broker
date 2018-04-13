@@ -60,7 +60,7 @@ class ObjectType(InnerDoc):
 class ObjectDoc(BaseDoc):
 
     class Meta:
-        index = 'objects'
+        index = 'objects-v1.0.0'
 
     Title = Text()
     Type = Object(ObjectType, multi=False)
@@ -99,7 +99,7 @@ class RelationshipObject(InnerDoc):
 class ObjectRelationshipsDoc(BaseDoc):
 
     class Meta:
-        index = 'relationships'
+        index = 'object-relationships-v1.0.0'
 
     cites = Nested(RelationshipObject, multi=True)
     isCitedBy = Nested(RelationshipObject, multi=True)

@@ -9,6 +9,7 @@ from flask import Blueprint, abort, current_app, jsonify, render_template, \
     request
 from flask.views import MethodView
 from invenio_rest import ContentNegotiatedMethodView
+from invenio_rest.errors import RESTException
 from webargs import fields, validate
 from webargs.flaskparser import use_kwargs
 
@@ -59,7 +60,17 @@ def relationships():
 #
 # REST API Views
 #
-api_blueprint = Blueprint('asclepias_api', __name__, url_prefix='/api')
+api_blueprint = Blueprint('asclepias_api', __name__)
+
+
+class ObjectNotFoundRESTError(RESTException):
+    """Object not found."""
+
+    code = 404
+
+    def __init__(self, identifier, **kwargs):
+        super(ObjectNotFoundRESTError, self).__init__(**kwargs)
+        self.description = 'No object found with identifier [{}]'.format(identifier)
 
 
 class EventResource(MethodView):
@@ -88,12 +99,13 @@ class RelationshipResource(ContentNegotiatedMethodView):
             missing='identity'),
     })
     def get(self, id_, scheme, relation, type_, from_, to, group_by):
-        # TODO: Serialize using marshmallow (.schemas.scholix)
+        # TODO: Serialize using marshmallow (.schemas.scholix). This involves
+        # passing `serializers` for the superclass' constructor.
         src_doc, relationships = RelationshipAPI.get_relationships(
             id_, scheme, relation, target_type=type_, from_=from_, to=to,
             group_by=group_by)
         if not src_doc:
-            return jsonify(message='No object found with identifier "{}"'.format(id_)), 404
+            raise ObjectNotFoundRESTError(id_)
         source = (src_doc and src_doc.to_dict()) or {}
         return jsonify({
             'Source': source,

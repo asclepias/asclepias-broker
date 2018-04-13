@@ -14,8 +14,7 @@ def to_model(model_cls):
     def inner(Cls):
         class ToModelSchema(Cls):
 
-            def __init__(self, *args, check_existing=False,
-                         **kwargs):
+            def __init__(self, *args, check_existing=False, **kwargs):
                 kwargs.setdefault('context', {})
                 kwargs['context'].setdefault('check_existing', check_existing)
                 super().__init__(*args, **kwargs)
