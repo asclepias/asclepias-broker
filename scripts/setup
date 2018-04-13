@@ -16,7 +16,6 @@ invenio db destroy --yes-i-know
 invenio db init create
 curl -XDELETE localhost:9200/*
 invenio index init --force
-invenio index queue init
 
 # Create admin role to rectict access
 invenio users create test@test.ch -a --password=123456
