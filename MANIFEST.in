@@ -5,28 +5,28 @@
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-# TODO: Generate this manifest file by running the following commands:
-#
-#  git init
-#  git add -A
-#  pip install -e .[all]
-#  check-manifest -u
-
-# Check manifest will not automatically add these two files:
 include .dockerignore
 include .editorconfig
 include .tx/config
-prune docs/_build
-recursive-include asclepias_broker *.po *.pot *.mo
-
-# added by check_manifest.py
 include *.rst
 include *.sh
 include *.txt
 include *.yml
+include docker/haproxy/Dockerfile
+include docker/nginx/Dockerfile
+include docker/postgres/Dockerfile
 include Dockerfile
 include LICENSE
 include pytest.ini
+include scripts/bootstrap
+include scripts/console
+include scripts/server
+include scripts/setup
+include scripts/update
+prune docs/_build
+recursive-include asclepias_broker *.html
+recursive-include asclepias_broker *.json
+recursive-include asclepias_broker *.po *.pot *.mo
 recursive-include docker *.cfg
 recursive-include docker *.conf
 recursive-include docker *.crt
@@ -39,12 +39,8 @@ recursive-include docs *.py
 recursive-include docs *.rst
 recursive-include docs *.txt
 recursive-include docs Makefile
+recursive-include examples *.json
+recursive-include examples *.py
+recursive-include examples *.sh
+recursive-include tests *.json
 recursive-include tests *.py
-include docker/haproxy/Dockerfile
-include docker/nginx/Dockerfile
-include docker/postgres/Dockerfile
-include scripts/bootstrap
-include scripts/console
-include scripts/server
-include scripts/setup
-include scripts/update
