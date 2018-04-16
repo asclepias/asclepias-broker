@@ -31,6 +31,7 @@ tests_require = [
     'pytest-mock>=1.6.0',
     'pytest-pep8>=1.0.6',
     'pytest-random-order>=0.5.4',
+    'requests>=2.18.4',
 ]
 
 extras_require = {
@@ -48,27 +49,16 @@ setup_requires = [
     'pytest-runner>=3.0.0,<5',
 ]
 
-db_version = '~=1.0.0'
-search_version = '~=1.0.0'
-
 install_requires = [
-    'flask-babelex>=0.9.3',
-    'Flask-Debugtoolbar>=0.10.1',
+    'arrow>=0.12.1',
     'faker>=0.8.13',
+    'Flask-Debugtoolbar>=0.10.1',
     'idutils>=1.0.0',
+    'invenio[base,auth,{db},{es}]==3.0.0rc1'.format(
+        db=DATABASE, es=ELASTICSEARCH),
     'jsonschema>=2.6.0',
     'marshmallow>=2.15.0',
-    'arrow>=0.12.1',
     'webargs>=2.1.0',
-    'requests>=2.18.4',
-    'invenio[base,auth]==3.0.0rc1',
-    'invenio-admin~=1.0.0',
-    'invenio-cache>=1.0.0',
-    'invenio-rest>=1.0.0',
-    'invenio-app~=1.0.0',
-    'invenio-db[{db},versioning]{version}'.format(db=DATABASE, version=db_version),
-    'invenio-search[{es}]{version}'.format(es=ELASTICSEARCH, version=search_version),
-    'redis>=2.10.5',
 ]
 
 packages = find_packages()
