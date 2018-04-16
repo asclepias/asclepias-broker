@@ -36,7 +36,15 @@ def test_simple_citations(live_server, data_dir, app):
     assert len(d['Relationship']) == 3
 
 
-def test_invalid_payload(live_server, app, es_clear):
+def test_example_events(live_server, example_events, app, es):
+    """Load the example events from asclepias_broker/examples."""
+    event_url = url_for('asclepias_api.event', _external=True)
+    for data in example_events:
+        resp = requests.post(event_url, json=data)
+        assert resp.status_code == 202
+
+
+def test_invalid_payload(live_server, app, es):
     """Test error handling for ingestion."""
     event_url = url_for('asclepias_api.event', _external=True)
     # Completely invalid JSON structure

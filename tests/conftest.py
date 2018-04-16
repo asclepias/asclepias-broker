@@ -37,11 +37,18 @@ def base_dir(tests_dir):
 
 
 @pytest.fixture
-def schema_dir(base_dir):
-    return os.path.join(base_dir, 'asclepias_broker', 'jsonschema')
+def examples_dir(base_dir):
+    return os.path.join(base_dir, 'examples')
 
 
 @pytest.fixture
-def event_schema(schema_dir):
-    with open(os.path.join(schema_dir, 'event.json'), 'r') as fp:
-        return json.load(fp)
+def example_events(examples_dir):
+    filenames = [
+        'ads-events.json',
+        'test-events.json',
+    ]
+    data = []
+    for fn in filenames:
+        with open(os.path.join(examples_dir, fn), 'r') as fp:
+            data.append(json.load(fp))
+    return data
