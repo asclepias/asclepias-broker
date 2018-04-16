@@ -9,7 +9,7 @@ from itertools import groupby
 
 from invenio_db import db
 
-from ..mappings import ObjectDoc, ObjectRelationshipsDoc
+from ..mappings import ObjectDoc
 from ..models import Group, GroupRelationship, GroupType, Identifier, \
     Identifier2Group, Relation
 from ..schemas.loaders import from_datacite_relation

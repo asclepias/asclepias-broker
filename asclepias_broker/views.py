@@ -8,15 +8,16 @@
 from flask import Blueprint, abort, jsonify, render_template, request, url_for
 from flask.views import MethodView
 from invenio_rest import ContentNegotiatedMethodView
-from invenio_rest.errors import RESTException
+from invenio_rest.errors import FieldError, RESTException, RESTValidationError
 from webargs import fields, validate
-from webargs.flaskparser import use_kwargs
+from webargs.flaskparser import parser, use_kwargs
 
 from asclepias_broker.api import EventAPI, RelationshipAPI
 
 from .models import Identifier
 
 blueprint = Blueprint('asclepias_ui', __name__, template_folder='templates')
+
 
 #
 # UI Views
@@ -39,7 +40,8 @@ def citations(pid_value):
             expand_target=True)
         target = citations[0]
         citations = citations[1:]
-        return render_template('citations.html', target=target, citations=citations)
+        return render_template(
+            'citations.html', target=target, citations=citations)
 
 
 @blueprint.route('/relationships')
@@ -53,7 +55,8 @@ def relationships():
         return abort(404)
     else:
         citations = RelationshipAPI.get_citations2(identifier, relation)
-        return render_template('gcitations.html', target=identifier, citations=citations)
+        return render_template(
+            'gcitations.html', target=identifier, citations=citations)
 
 
 #
@@ -69,7 +72,8 @@ class ObjectNotFoundRESTError(RESTException):
 
     def __init__(self, identifier, **kwargs):
         super(ObjectNotFoundRESTError, self).__init__(**kwargs)
-        self.description = 'No object found with identifier [{}]'.format(identifier)
+        self.description = \
+            'No object found with identifier [{}]'.format(identifier)
 
 
 class EventResource(MethodView):
@@ -139,6 +143,13 @@ class RelationshipResource(ContentNegotiatedMethodView):
             'Links': links,
             'Total': relationships['total'],
         })
+
+
+@parser.error_handler
+def validation_error_handler(error):
+    raise RESTValidationError(
+        errors=[FieldError(k, v) for k, v in error.messages.items()],
+    )
 
 
 #
