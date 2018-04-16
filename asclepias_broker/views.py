@@ -15,9 +15,6 @@ from webargs.flaskparser import parser, use_kwargs
 from marshmallow.exceptions import ValidationError as MarshmallowValidationError
 from jsonschema.exceptions import ValidationError as JSONValidationError
 
-from marshmallow.exceptions import ValidationError as MarshmallowValidationError
-from jsonschema.exceptions import ValidationError as JSONValidationError
-
 from asclepias_broker.api import RelationshipAPI, EventAPI
 
 from .models import Identifier

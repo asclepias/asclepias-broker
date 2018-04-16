@@ -18,7 +18,7 @@ from asclepias_broker.models import Relationship, Relation, Identifier,\
     Group, GroupType, GroupMetadata, Identifier2Group, GroupM2M,\
     GroupRelationship, GroupRelationshipM2M, Relationship2GroupRelationship, \
     GroupRelationshipMetadata
-from asclepias_broker.tasks import get_or_create_groups
+from asclepias_broker.api.ingestion import get_or_create_groups
 from asclepias_broker.jsonschemas import SCHOLIX_SCHEMA
 
 import jsonschema

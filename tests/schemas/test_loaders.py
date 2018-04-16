@@ -92,10 +92,10 @@ def ev_obj(type_, time, payload):
 
 @pytest.mark.parametrize(('in_id', 'out_id', 'out_error'), [
     (('10.1234/1', 'DOI'), ('10.1234/1', 'doi'), {}),
-    (('10.1234/1', 'foo'), None, {'IDScheme': ['Invalid scheme']}),
+    (('10.1234/1', 'foo'), None, {'IDScheme': ["Invalid scheme 'foo'"]}),
     (('http://id.com/123', 'URL'), ('http://id.com/123', 'url'), {}),
 ])
-def test_identifier_schema(in_id, out_id, out_error, db, es):
+def test_identifier_schema(in_id, out_id, out_error, db, es_clear):
     identifier, errors = IdentifierSchema().load(id_dict(*in_id))
     if out_error:
         assert errors == out_error
@@ -113,10 +113,10 @@ def test_identifier_schema(in_id, out_id, out_error, db, es):
     (
         (('10.1234/A', 'invalid_scheme'), 'Cites', ('10.1234/B', 'DOI')),
         None,
-        {'Source': {'IDScheme': ['Invalid scheme']}},
+        {'Source': {'IDScheme': ["Invalid scheme 'invalid_scheme'"]}},
     ),
 ])
-def test_relationship_schema(in_rel, out_rel, out_error, db, es):
+def test_relationship_schema(in_rel, out_rel, out_error, db, es_clear):
     relationship, errors = RelationshipSchema().load(rel_dict(*in_rel))
     if out_error:
         assert errors == out_error
@@ -142,7 +142,7 @@ def test_relationship_schema(in_rel, out_rel, out_error, db, es):
         {'EventType': ['Not a valid choice.']},
     ),
 ])
-def test_event_schema(in_ev, out_ev, out_error, db, es):
+def test_event_schema(in_ev, out_ev, out_error, db, es_clear):
     ev_payload = ev_dict(*in_ev)
     event, errors = EventSchema().load(ev_payload)
     if out_error:

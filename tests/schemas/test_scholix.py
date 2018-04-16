@@ -12,7 +12,7 @@ import pytest
 from asclepias_broker.models import Identifier, Relation, Relationship
 from asclepias_broker.schemas.scholix import SCHOLIX_RELATIONS, \
     RelationshipSchema
-from asclepias_broker.tasks import update_metadata
+from asclepias_broker.api.ingestion import update_metadata
 # from ..helpers import create_objects_from_relations
 
 
@@ -57,6 +57,7 @@ def rel_obj(source, relation, target):
     ),
 ])
 def off_test_relationship_schema(input_rel, output_rel, output_error):
+    # TODO: remove of fix this test
     rels, payload = input_rel
     create_objects_from_relations(rels)
     relationship_obj = Relationship.query.one()

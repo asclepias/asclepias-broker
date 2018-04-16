@@ -9,22 +9,14 @@ from invenio_db import db
 
 from ..models import ObjectEvent, PayloadType
 from ..schemas.loaders import EventSchema, RelationshipSchema
-from ..tasks import update_groups, update_indices, update_metadata
+from .ingestion import update_groups, update_metadata
+from ..indexer import update_indices
+from ..tasks import process_event
 from ..jsonschemas import EVENT_SCHEMA
 import jsonschema
 
 from marshmallow.exceptions import ValidationError as MarshmallowValidationError
 from jsonschema.exceptions import ValidationError as JSONValidationError
-
-
-def get_or_create(model, **kwargs):
-    instance = model.query.filter_by(**kwargs)
-    if instance:
-        return instance
-    else:
-        instance = model(**kwargs)
-        db.session.add(instance)
-        return instance
 
 
 class EventAPI:
@@ -34,49 +26,28 @@ class EventAPI:
         jsonschema.validate(event, EVENT_SCHEMA)
 
         event_type = event['EventType']
+        # TODO: Remove relationship_deleted handler and simplify the code here
         handlers = {
             "RelationshipCreated": cls.relationship_created,
             "RelationshipDeleted": cls.relationship_deleted,
         }
         handler = handlers[event_type]
-        with db.session.begin_nested():
-            handler(event)
-        db.session.commit()
+        handler(event)
 
     @classmethod
     def create_event(cls, event):
-        # TODO: Skip existing events?
-        # TODO: Check `errors`
         event_obj, errors = EventSchema(check_existing=True).load(event)
         if errors:
             raise MarshmallowValidationError(errors)
+
+        # Validate the entries in the payload
+        for payload in event['Payload']:
+            errors = RelationshipSchema(check_existing=True).validate(payload)
+            if errors:
+                raise MarshmallowValidationError(errors)
+
         db.session.add(event_obj)
         return event_obj
-
-    @classmethod
-    def create_relation_object_events(cls, event, relationship, payload_idx):
-        # Create the Relation entry
-        rel_obj = get_or_create(
-            ObjectEvent,
-            event_id=event.id,
-            object_uuid=relationship.id,
-            payload_type=PayloadType.Relationship,
-            payload_index=payload_idx)
-
-        # Create entries for source and target
-        src_obj = get_or_create(
-            ObjectEvent,
-            event_id=event.id,
-            object_uuid=relationship.source.id,
-            payload_type=PayloadType.Identifier,
-            payload_index=payload_idx)
-        tar_obj = get_or_create(
-            ObjectEvent,
-            event_id=event.id,
-            object_uuid=relationship.target.id,
-            payload_type=PayloadType.Identifier,
-            payload_index=payload_idx)
-        return rel_obj, src_obj, tar_obj
 
     @classmethod
     def relationship_created(cls, event):
@@ -86,29 +57,10 @@ class EventAPI:
     def relationship_deleted(cls, event):
         cls._handle_relationship_event(event, delete=True)
 
-    # TODO: Test if this generalization works as expected
     @classmethod
     def _handle_relationship_event(cls, event, delete=False):
         event_obj = cls.create_event(event)
-        for payload_idx, payload in enumerate(event['Payload']):
-            with db.session.begin_nested():
-                relationship, errors = RelationshipSchema(check_existing=True).load(payload)
-                if errors:
-                    raise MarshmallowValidationError(errors)
-                if relationship.id:
-                    relationship.deleted = delete
-                db.session.add(relationship)
-                # We need ORM relationship with IDs, since Event has
-                # 'weak' (non-FK) relations to the objects, hence we need
-                # to know the ID upfront
-                relationship = relationship.fetch_or_create_id()
-                cls.create_relation_object_events(
-                    event_obj, relationship, payload_idx)
-
-                # TODO: This should be a task after the ingestion commit
-                groups = update_groups(relationship)
-                src_grp, tar_grp, merged_grp = groups
-                # Update metadata
-                update_metadata(relationship, payload)
-                # Index the groups and relationships
-                update_indices(src_grp, tar_grp, merged_grp)
+        event_uuid = str(event_obj.id)
+        db.session.commit()
+        # TODO: process_event.delay
+        process_event(event_uuid, delete=delete)

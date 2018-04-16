@@ -17,7 +17,7 @@ from asclepias_broker.models import Relationship, Relation, Identifier,\
     GroupRelationshipM2M, Relationship2GroupRelationship, GroupMetadata,\
     GroupRelationshipMetadata
 
-from asclepias_broker.tasks import get_or_create_groups, merge_version_groups, \
+from asclepias_broker.api.ingestion import get_or_create_groups, merge_version_groups, \
     merge_identity_groups, get_group_from_id
 
 from helpers import generate_payloads, assert_grouping, \

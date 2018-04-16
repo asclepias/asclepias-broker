@@ -90,7 +90,7 @@ from helpers import generate_payloads
          [{'A', 'B', 'C'}, {'X', 'Y', 'Z'}]),
     ]
     )
-def test_identities(events, result_sets, db):
+def test_identities(events, result_sets, db, es):
     # NOTE: We assume that only on identifier scheme being used so just using
     # identifier values is enough when comparing sets.
     for ev in generate_payloads(events):

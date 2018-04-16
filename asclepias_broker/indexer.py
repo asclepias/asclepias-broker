@@ -8,6 +8,7 @@
 from collections import defaultdict
 from copy import deepcopy
 from typing import Iterable
+from itertools import chain
 from uuid import UUID
 from invenio_db import db
 
@@ -81,3 +82,35 @@ def index_group_relationships(group_id: UUID) -> ObjectRelationshipsDoc:
     rel_doc = ObjectRelationshipsDoc(meta={'id': str(group_id)}, **doc)
     rel_doc.save()
     return rel_doc
+
+
+def update_indices(src_group: Group, trg_group: Group,
+                   merged_group: Group=None):
+    # `src_group` and `trg_group` were merged into `merged_group`.
+    if merged_group:
+        # Delete Source and Traget groups
+        delete_identity_group(src_group)
+        delete_identity_group(trg_group)
+
+        # Index the merged object and its relationships
+        obj_doc = index_identity_group(merged_group)
+        obj_rel_doc = index_group_relationships(merged_group.id)
+
+        # Update all group relationships of the merged group
+        # TODO: This can be optimized to avoid fetching a lot of the same
+        # GroupMetadata, by keeping a temporary cache of them...
+        relationships = chain.from_iterable(obj_rel_doc.to_dict().values())
+        target_ids = [r.get('TargetID') for r in relationships]
+        for i in target_ids:
+            index_group_relationships(i)
+
+        return (obj_doc, obj_rel_doc), (obj_doc, obj_rel_doc)
+
+    # No groups were merged, this is a simple relationship
+
+    # Index Source and Target objects and their relationships
+    src_doc = index_identity_group(src_group)
+    trg_doc = index_identity_group(trg_group)
+    src_rel_doc = index_group_relationships(src_group.id)
+    trg_rel_doc = index_group_relationships(trg_group.id)
+    return (src_doc, src_rel_doc), (trg_doc, trg_rel_doc)

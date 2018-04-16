@@ -140,11 +140,12 @@ class EventSchema(Schema):
 
     def get_time(self, obj):
         try:
-            arrow.get(obj).datetime
+            return arrow.get(obj).datetime
         except ParserError as e:
             raise ValidationError("Invalid time format: {0}. ISO 8601 UTC "
                                   "timestamp required.".format(obj))
 
+    # TODO Remove
     #@validates('time', pass_original=True)
     #def validate_iso_time(self, value):
     #    import wdb; wdb.set_trace()
