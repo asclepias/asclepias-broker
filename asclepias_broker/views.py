@@ -5,13 +5,12 @@
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-from flask import Blueprint, abort, current_app, jsonify, render_template, \
-    request
+from flask import Blueprint, abort, jsonify, render_template, request, url_for
 from flask.views import MethodView
 from invenio_rest import ContentNegotiatedMethodView
-from invenio_rest.errors import RESTException
+from invenio_rest.errors import FieldError, RESTException, RESTValidationError
 from webargs import fields, validate
-from webargs.flaskparser import use_kwargs
+from webargs.flaskparser import parser, use_kwargs
 
 from marshmallow.exceptions import ValidationError as MarshmallowValidationError
 from jsonschema.exceptions import ValidationError as JSONValidationError
@@ -44,7 +43,8 @@ def citations(pid_value):
             expand_target=True)
         target = citations[0]
         citations = citations[1:]
-        return render_template('citations.html', target=target, citations=citations)
+        return render_template(
+            'citations.html', target=target, citations=citations)
 
 
 @blueprint.route('/relationships')
@@ -58,7 +58,8 @@ def relationships():
         return abort(404)
     else:
         citations = RelationshipAPI.get_citations2(identifier, relation)
-        return render_template('gcitations.html', target=identifier, citations=citations)
+        return render_template(
+            'gcitations.html', target=identifier, citations=citations)
 
 
 #
@@ -74,7 +75,8 @@ class ObjectNotFoundRESTError(RESTException):
 
     def __init__(self, identifier, **kwargs):
         super(ObjectNotFoundRESTError, self).__init__(**kwargs)
-        self.description = 'No object found with identifier [{}]'.format(identifier)
+        self.description = \
+            'No object found with identifier [{}]'.format(identifier)
 
 class PayloadValidationRESTError(RESTException):
     code = 400
@@ -107,8 +109,8 @@ class RelationshipResource(ContentNegotiatedMethodView):
         ),
         # TODO: Convert to datetime...
         'type_': fields.Str(load_from='type', missing=None),
-        'from_': fields.Str(load_from='from', missing=None),
-        'to': fields.Str(missing=None),
+        'from_': fields.DateTime(load_from='from', missing=None),
+        'to': fields.DateTime(missing=None),
         'group_by': fields.Str(
             load_from='groupBy',
             validate=validate.OneOf(['identity', 'version']),
@@ -117,19 +119,52 @@ class RelationshipResource(ContentNegotiatedMethodView):
     def get(self, id_, scheme, relation, type_, from_, to, group_by):
         # TODO: Serialize using marshmallow (.schemas.scholix). This involves
         # passing `serializers` for the superclass' constructor.
+        page = request.values.get('page', 1, type=int)
+        size = request.values.get('size', 10, type=int)
         src_doc, relationships = RelationshipAPI.get_relationships(
             id_, scheme, relation, target_type=type_, from_=from_, to=to,
-            group_by=group_by)
+            group_by=group_by, page=page, size=size)
         if not src_doc:
             raise ObjectNotFoundRESTError(id_)
         source = (src_doc and src_doc.to_dict()) or {}
+
+        urlkwargs = {
+            '_external': True,
+            'size': size, 'id': id_, 'scheme': scheme, 'relation': relation,
+        }
+        if type_:
+            urlkwargs['type'] = type_
+        if from_:
+            urlkwargs['from'] = from_
+        if to:
+            urlkwargs['to'] = to
+        if group_by:
+            urlkwargs['groupBy'] = group_by
+
+        endpoint = '.relationships'
+        links = {'self': url_for(endpoint, page=page, **urlkwargs)}
+        if page > 1:
+            links['prev'] = url_for(endpoint, page=page - 1, **urlkwargs)
+        # TODO: add max_window_size in config
+        MAX_WINDOW_SIZE = 10000
+        if size * page < relationships['total'] and \
+                size * page < MAX_WINDOW_SIZE:
+            links['next'] = url_for(endpoint, page=page + 1, **urlkwargs)
         return jsonify({
             'Source': source,
-            'Relationship': [{'Target': t.to_dict(), 'LinkHistory': h}
-                             for t, h in relationships],
+            'Relationship': relationships['hits'],
             'Relation': relation,
             'GroupBy': group_by,
+            'Links': links,
+            'Total': relationships['total'],
         })
+
+
+@parser.error_handler
+def validation_error_handler(error):
+    raise RESTValidationError(
+        errors=[FieldError(k, v) for k, v in error.messages.items()],
+    )
 
 
 #
