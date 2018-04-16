@@ -39,7 +39,6 @@ def test_invalid_payload(live_server, app, es):
     # Completely invalid JSON structure
     data = {'invalid': 'true'}
     resp = requests.post(event_url, json=data)
-    import ipdb; ipdb.set_trace()
     assert resp.status_code == 422
     data = {
         "ID": "41bcdb2c-9fb4-4948-a2ca-434493dc83b3",
@@ -90,5 +89,4 @@ def test_invalid_payload(live_server, app, es):
         data_big['Payload'].append(pl)
     resp = requests.post(event_url, json=data_big)
     assert resp.status_code == 422
-    import ipdb; ipdb.set_trace()
 
