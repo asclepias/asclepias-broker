@@ -8,12 +8,13 @@
 """Asynchronous tasks."""
 
 from invenio_db import db
-from .models import Event, ObjectEvent, PayloadType
-from .schemas.loaders import RelationshipSchema
+from marshmallow.exceptions import \
+    ValidationError as MarshmallowValidationError
+
 from .api.ingestion import update_groups, update_metadata
 from .indexer import update_indices
-
-from marshmallow.exceptions import ValidationError as MarshmallowValidationError
+from .models import Event, ObjectEvent, PayloadType
+from .schemas.loaders import RelationshipSchema
 
 
 def get_or_create(model, **kwargs):
@@ -50,7 +51,8 @@ def create_relation_object_events(event, relationship, payload_idx):
         payload_index=payload_idx)
     return rel_obj, src_obj, tar_obj
 
-#@shared_task
+
+# @shared_task
 def process_event(event_uuid: str, delete=False):
     # TODO: Should we detect and skip duplicated events?
     event = Event.get(event_uuid)
@@ -59,7 +61,8 @@ def process_event(event_uuid: str, delete=False):
         for payload_idx, payload in enumerate(event.payload['Payload']):
             # TODO: marshmallow validation of all payloads
             # should be done on first event ingestion (check)
-            relationship, errors = RelationshipSchema(check_existing=True).load(payload)
+            relationship, errors = \
+                RelationshipSchema(check_existing=True).load(payload)
             # Errors should never happen as the payload is validated
             # with RelationshipSchema on the event ingestion
             if errors:

@@ -9,13 +9,13 @@ from flask import Blueprint, abort, jsonify, render_template, request, url_for
 from flask.views import MethodView
 from invenio_rest import ContentNegotiatedMethodView
 from invenio_rest.errors import FieldError, RESTException, RESTValidationError
+from jsonschema.exceptions import ValidationError as JSONValidationError
+from marshmallow.exceptions import \
+    ValidationError as MarshmallowValidationError
 from webargs import fields, validate
 from webargs.flaskparser import parser, use_kwargs
 
-from marshmallow.exceptions import ValidationError as MarshmallowValidationError
-from jsonschema.exceptions import ValidationError as JSONValidationError
-
-from asclepias_broker.api import RelationshipAPI, EventAPI
+from asclepias_broker.api import EventAPI, RelationshipAPI
 
 from .models import Identifier
 

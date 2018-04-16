@@ -15,8 +15,8 @@ from invenio_db import db
 from sqlalchemy import JSON, Boolean, Column, Enum, ForeignKey, Integer, String
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship as orm_relationship
 from sqlalchemy.orm import backref
+from sqlalchemy.orm import relationship as orm_relationship
 from sqlalchemy.orm.attributes import flag_modified
 from sqlalchemy.schema import Index, PrimaryKeyConstraint, UniqueConstraint
 from sqlalchemy.types import DateTime

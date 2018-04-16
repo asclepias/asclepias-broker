@@ -9,19 +9,18 @@ import json
 import sys
 import time
 import uuid
-
 from typing import List, Tuple
 
+import jsonschema
 from invenio_db import db
 
-from asclepias_broker.models import Relationship, Relation, Identifier,\
-    Group, GroupType, GroupMetadata, Identifier2Group, GroupM2M,\
-    GroupRelationship, GroupRelationshipM2M, Relationship2GroupRelationship, \
-    GroupRelationshipMetadata
 from asclepias_broker.api.ingestion import get_or_create_groups
 from asclepias_broker.jsonschemas import SCHOLIX_SCHEMA
-
-import jsonschema
+from asclepias_broker.models import Group, GroupM2M, GroupMetadata, \
+    GroupRelationship, GroupRelationshipM2M, GroupRelationshipMetadata, \
+    GroupType, Identifier, Identifier2Group, Relation, Relationship, \
+    Relationship2GroupRelationship
+from asclepias_broker.tasks import get_or_create_groups
 
 #
 # Events generation helpers

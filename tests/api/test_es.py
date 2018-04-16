@@ -13,14 +13,14 @@ from copy import deepcopy
 import arrow
 import sqlalchemy as sa
 from helpers import create_objects_from_relations, generate_payloads
+from invenio_search import current_search_client
 
 from asclepias_broker.api import EventAPI
+from asclepias_broker.api.ingestion import get_group_from_id
+from asclepias_broker.indexer import update_indices
 from asclepias_broker.mappings.dsl import DB_RELATION_TO_ES, ObjectDoc, \
     ObjectRelationshipsDoc
 from asclepias_broker.models import GroupRelationship, GroupType, Relation
-from asclepias_broker.api.ingestion import get_group_from_id
-from asclepias_broker.indexer import update_indices
-from invenio_search import current_search_client
 
 
 def _handle_events(evtsrc):

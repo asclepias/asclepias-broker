@@ -7,21 +7,17 @@
 
 """Test broker model."""
 import pytest
-
+from helpers import assert_grouping, create_objects_from_relations, \
+    generate_payloads
 from invenio_db import db
 
 from asclepias_broker.api import EventAPI
-
-from asclepias_broker.models import Relationship, Relation, Identifier,\
-    Group, GroupType, Identifier2Group, GroupM2M, GroupRelationship,\
-    GroupRelationshipM2M, Relationship2GroupRelationship, GroupMetadata,\
-    GroupRelationshipMetadata
-
-from asclepias_broker.api.ingestion import get_or_create_groups, merge_version_groups, \
-    merge_identity_groups, get_group_from_id
-
-from helpers import generate_payloads, assert_grouping, \
-    create_objects_from_relations
+from asclepias_broker.api.ingestion import get_group_from_id, \
+    get_or_create_groups, merge_identity_groups, merge_version_groups
+from asclepias_broker.models import Group, GroupM2M, GroupMetadata, \
+    GroupRelationship, GroupRelationshipM2M, GroupRelationshipMetadata, \
+    GroupType, Identifier, Identifier2Group, Relation, Relationship, \
+    Relationship2GroupRelationship
 
 
 def _handle_events(evtsrc):

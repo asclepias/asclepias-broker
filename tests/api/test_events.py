@@ -8,9 +8,9 @@
 """Test citation queries."""
 import json
 import os
+from copy import deepcopy
 
 import requests
-from copy import deepcopy
 from flask import url_for
 
 from asclepias_broker.jsonschemas import EVENT_SCHEMA

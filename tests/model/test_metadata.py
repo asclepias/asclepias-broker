@@ -7,11 +7,11 @@
 
 """Test broker metadata model."""
 import pytest
-from jsonschema.exceptions import ValidationError
 from invenio_db import db
+from jsonschema.exceptions import ValidationError
 
-from asclepias_broker.models import Group, GroupMetadata, \
-    GroupRelationship, GroupRelationshipMetadata, GroupType, Relation
+from asclepias_broker.models import Group, GroupMetadata, GroupRelationship, \
+    GroupRelationshipMetadata, GroupType, Relation
 
 
 def update_and_compare(m, payload, expected=None):

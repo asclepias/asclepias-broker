@@ -5,18 +5,18 @@
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
+import jsonschema
 from invenio_db import db
+from jsonschema.exceptions import ValidationError as JSONValidationError
+from marshmallow.exceptions import \
+    ValidationError as MarshmallowValidationError
 
+from ..indexer import update_indices
+from ..jsonschemas import EVENT_SCHEMA
 from ..models import ObjectEvent, PayloadType
 from ..schemas.loaders import EventSchema, RelationshipSchema
-from .ingestion import update_groups, update_metadata
-from ..indexer import update_indices
 from ..tasks import process_event
-from ..jsonschemas import EVENT_SCHEMA
-import jsonschema
-
-from marshmallow.exceptions import ValidationError as MarshmallowValidationError
-from jsonschema.exceptions import ValidationError as JSONValidationError
+from .ingestion import update_groups, update_metadata
 
 
 class EventAPI:

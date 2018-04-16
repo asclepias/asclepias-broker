@@ -9,7 +9,6 @@ import json
 import os
 
 import pytest
-
 from invenio_app.factory import create_api
 
 

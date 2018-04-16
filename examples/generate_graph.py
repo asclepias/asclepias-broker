@@ -1,7 +1,9 @@
-import random
 import json
+import random
 from collections import defaultdict
+
 from helpers import generate_payloads
+
 
 def generate_full_graph():
     # N_nodes = (N_parents * (N_children + 1)) * (N_ids + 1)

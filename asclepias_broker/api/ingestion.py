@@ -11,7 +11,6 @@ import uuid
 from typing import Tuple
 
 from invenio_db import db
-
 from sqlalchemy.orm import aliased
 
 from ..models import Group, GroupM2M, GroupMetadata, GroupRelationship, \

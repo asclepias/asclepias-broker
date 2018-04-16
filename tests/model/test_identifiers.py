@@ -7,12 +7,10 @@
 
 """Test broker model."""
 import pytest
+from helpers import generate_payloads
 
 from asclepias_broker.api import EventAPI
-
 from asclepias_broker.models import Identifier
-
-from helpers import generate_payloads
 
 
 @pytest.mark.parametrize(

@@ -7,12 +7,12 @@
 
 from collections import defaultdict
 from copy import deepcopy
-from typing import Iterable
 from itertools import chain
+from typing import Iterable
 from uuid import UUID
-from invenio_db import db
 
 import sqlalchemy as sa
+from invenio_db import db
 
 from .mappings.dsl import DB_RELATION_TO_ES, ObjectDoc, ObjectRelationshipsDoc
 from .models import Group, GroupRelationship, GroupType, Identifier, Relation

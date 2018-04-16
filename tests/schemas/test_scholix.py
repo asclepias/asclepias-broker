@@ -9,10 +9,11 @@
 
 import pytest
 
+from asclepias_broker.api.ingestion import update_metadata
 from asclepias_broker.models import Identifier, Relation, Relationship
 from asclepias_broker.schemas.scholix import SCHOLIX_RELATIONS, \
     RelationshipSchema
-from asclepias_broker.api.ingestion import update_metadata
+
 # from ..helpers import create_objects_from_relations
 
 

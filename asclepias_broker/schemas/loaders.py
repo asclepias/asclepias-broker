@@ -7,18 +7,19 @@
 
 """Marshmallow loaders."""
 
+from copy import deepcopy
+from typing import Tuple
+
 import arrow
 import idutils
-from copy import deepcopy
 from arrow.parser import ParserError
-from marshmallow import (Schema, fields, missing, post_load, pre_load,
-                         validates_schema, validates)
+from marshmallow import Schema, fields, missing, post_load, pre_load, \
+    validates, validates_schema
 from marshmallow.exceptions import ValidationError
 from marshmallow.validate import OneOf
 
 from ..models import Event, EventType, Identifier, Relation, Relationship
 from .utils import to_model
-from typing import Tuple
 
 DATACITE_RELATION_MAP = {
     'Cites': [

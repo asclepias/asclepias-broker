@@ -13,8 +13,8 @@ from uuid import uuid4
 
 from faker import Faker
 
-from .dsl import ObjectDoc, ObjectRelationshipsDoc
 from ..api import RelationshipAPI
+from .dsl import ObjectDoc, ObjectRelationshipsDoc
 
 
 #
