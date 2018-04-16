@@ -15,6 +15,9 @@ from webargs.flaskparser import parser, use_kwargs
 from marshmallow.exceptions import ValidationError as MarshmallowValidationError
 from jsonschema.exceptions import ValidationError as JSONValidationError
 
+from marshmallow.exceptions import ValidationError as MarshmallowValidationError
+from jsonschema.exceptions import ValidationError as JSONValidationError
+
 from asclepias_broker.api import RelationshipAPI, EventAPI
 
 from .models import Identifier
@@ -87,6 +90,15 @@ class PayloadValidationRESTError(RESTException):
         super(PayloadValidationRESTError, self).__init__(**kwargs)
         self.description = error_message
 
+class PayloadValidationRESTError(RESTException):
+    code = 400
+
+    def __init__(self, error_message, code=None, error_payload=None, **kwargs):
+        if code:
+            self.code = code
+        super(PayloadValidationRESTError, self).__init__(**kwargs)
+        self.description = error_message
+
 
 class EventResource(MethodView):
     def post(self):
@@ -94,6 +106,9 @@ class EventResource(MethodView):
             EventAPI.handle_event(request.json)
         except JSONValidationError as e:
             raise PayloadValidationRESTError(e.message, code=422)
+        except MarshmallowValidationError as e:
+            msg = "Validation error: " + str(e.messages)
+            raise PayloadValidationRESTError(msg, code=422)
         return "Accepted", 202
 
 

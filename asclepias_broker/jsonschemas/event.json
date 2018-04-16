@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://raw.githubusercontent.com/asclepias/event-model/master/jsonschema/event.json",
+  "id": "https://raw.githubusercontent.com/asclepias/asclepias-broker/master/asclepias_broker/jsonschemas/event.json",
   "title": "Event message schema.",
   "description": "Schema of the event message.",
   "additionalProperties": false,

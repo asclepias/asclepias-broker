@@ -10,8 +10,9 @@
 import arrow
 import idutils
 from copy import deepcopy
+from arrow.parser import ParserError
 from marshmallow import (Schema, fields, missing, post_load, pre_load,
-                         validates_schema)
+                         validates_schema, validates)
 from marshmallow.exceptions import ValidationError
 from marshmallow.validate import OneOf
 
@@ -80,7 +81,8 @@ class IdentifierSchema(Schema):
         scheme = data['scheme'].lower()
         schemes = idutils.detect_identifier_schemes(value)
         if schemes and scheme not in schemes:
-            raise ValidationError('Invalid scheme', 'IDScheme')
+            raise ValidationError("Invalid scheme '{}'".format(data['scheme']),
+                                  'IDScheme')
 
 
 @to_model(Relationship)
@@ -137,7 +139,20 @@ class EventSchema(Schema):
         return self.EVENT_TYPE_MAP.get(obj, missing)
 
     def get_time(self, obj):
-        return arrow.get(obj).datetime
+        try:
+            arrow.get(obj).datetime
+        except ParserError as e:
+            raise ValidationError("Invalid time format: {0}. ISO 8601 UTC "
+                                  "timestamp required.".format(obj))
+
+    #@validates('time', pass_original=True)
+    #def validate_iso_time(self, value):
+    #    import wdb; wdb.set_trace()
+    #    try:
+    #        arrow.get(value['Time']).datetime
+    #    except ParserError as e:
+    #        raise ValidationError(
+    #            "Invalid time format: '{0}'. ISO 8601 UTC timestamp required.")
 
     def get_payload(self, obj):
         return self.context['original_payload']

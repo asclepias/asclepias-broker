@@ -48,6 +48,8 @@ class EventAPI:
         # TODO: Skip existing events?
         # TODO: Check `errors`
         event_obj, errors = EventSchema(check_existing=True).load(event)
+        if errors:
+            raise MarshmallowValidationError(errors)
         db.session.add(event_obj)
         return event_obj
 
@@ -92,8 +94,7 @@ class EventAPI:
             with db.session.begin_nested():
                 relationship, errors = RelationshipSchema(check_existing=True).load(payload)
                 if errors:
-                    # TODO: Add better error handling
-                    raise ValidationError(errors)
+                    raise MarshmallowValidationError(errors)
                 if relationship.id:
                     relationship.deleted = delete
                 db.session.add(relationship)
