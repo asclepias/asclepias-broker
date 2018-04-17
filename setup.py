@@ -31,7 +31,6 @@ tests_require = [
     'pytest-mock>=1.6.0',
     'pytest-pep8>=1.0.6',
     'pytest-random-order>=0.5.4',
-    'requests>=2.18.4',
 ]
 
 extras_require = {

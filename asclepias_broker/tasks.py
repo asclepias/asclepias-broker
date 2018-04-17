@@ -54,6 +54,7 @@ def create_relation_object_events(event, relationship, payload_idx):
         payload_index=payload_idx)
     return rel_obj, src_obj, tar_obj
 
+
 @shared_task(ignore_result=True)
 def process_event(event_uuid: str, delete=False):
     """Process an event's payloads."""

@@ -11,6 +11,8 @@ import os
 
 import pytest
 from invenio_app.factory import create_api
+# TODO: fix this in ```pytest-invenio``
+from pytest_invenio.fixtures import celery_config
 
 
 @pytest.fixture(scope='module')

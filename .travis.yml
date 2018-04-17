@@ -37,7 +37,7 @@ env:
   # - REQUIREMENTS=release E2E="no"
   # - REQUIREMENTS=release E2E="yes" E2E_OUTPUT="base64"
   - REQUIREMENTS=devel E2E="no" SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://postgres@localhost:5432/asclepias"
-  - REQUIREMENTS=devel E2E="yes" E2E_OUTPUT="base64" SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://postgres@localhost:5432/asclepias"
+  # - REQUIREMENTS=devel E2E="yes" E2E_OUTPUT="base64" SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://postgres@localhost:5432/asclepias"
 
 python:
   - "3.5"

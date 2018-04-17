@@ -7,29 +7,29 @@
 
 """Test citation queries."""
 import json
-import os
 from copy import deepcopy
 
-import requests
 from flask import url_for
 
 from asclepias_broker.jsonschemas import EVENT_SCHEMA
 
 
-def test_example_events(live_server, example_events, app, es):
+def test_example_events(client, example_events, db, es):
     """Load the example events from asclepias_broker/examples."""
     event_url = url_for('asclepias_api.event', _external=True)
     for data in example_events:
-        resp = requests.post(event_url, json=data)
+        resp = client.post(event_url, data=json.dumps(data),
+                           content_type='application/json')
         assert resp.status_code == 202
 
 
-def test_invalid_payload(live_server, app, es):
+def test_invalid_payload(client, db, es):
     """Test error handling for ingestion."""
     event_url = url_for('asclepias_api.event', _external=True)
     # Completely invalid JSON structure
     data = {'invalid': 'true'}
-    resp = requests.post(event_url, json=data)
+    resp = client.post(event_url, data=json.dumps(data),
+                       content_type='application/json')
     assert resp.status_code == 422
     data = {
         "ID": "41bcdb2c-9fb4-4948-a2ca-434493dc83b3",
@@ -75,37 +75,42 @@ def test_invalid_payload(live_server, app, es):
     data_valid = deepcopy(data)
     # At least one payload is required
     data['Payload'] = []
-    resp = requests.post(event_url, json=data)
+    resp = client.post(event_url, data=json.dumps(data),
+                       content_type='application/json')
     assert resp.status_code == 422
-    assert 'is too short' in resp.text
+    assert 'is too short' in resp.json['message']
 
     data = deepcopy(data_valid)
     # Fetch the maxItems constraint from schema
     maxitems = int(EVENT_SCHEMA['properties']['Payload']['maxItems'])
     # Go over maximum limit of payloads per request
     data['Payload'] = data_valid['Payload'] * (maxitems + 1)
-    resp = requests.post(event_url, json=data)
+    resp = client.post(event_url, data=json.dumps(data),
+                       content_type='application/json')
     assert resp.status_code == 422
-    assert 'is too long' in resp.text
+    assert 'is too long' in resp.json['message']
 
     data = deepcopy(data_valid)
     # Unknown event type
     data['EventType'] = 'UnknownEventType'
-    resp = requests.post(event_url, json=data)
+    resp = client.post(event_url, data=json.dumps(data),
+                       content_type='application/json')
     assert resp.status_code == 422
-    assert resp.json()['message'].startswith(
+    assert resp.json['message'].startswith(
         "'UnknownEventType' is not one of")
 
     data = deepcopy(data_valid)
     # Not matching identifier scheme
     data['Payload'][0]['Source']['Identifier']['IDScheme'] = 'unknown'
-    resp = requests.post(event_url, json=data)
+    resp = client.post(event_url, data=json.dumps(data),
+                       content_type='application/json')
     assert resp.status_code == 422
-    assert resp.json()['message'].startswith(
-        "Validation error") and 'Invalid scheme' in resp.json()['message']
+    assert resp.json['message'].startswith(
+        "Validation error") and 'Invalid scheme' in resp.json['message']
 
     data = deepcopy(data_valid)
     data['Time'] = 'abc'
-    resp = requests.post(event_url, json=data)
+    resp = client.post(event_url, data=json.dumps(data),
+                       content_type='application/json')
     assert resp.status_code == 422
-    assert "Invalid time format" in resp.json()['message']
+    assert "Invalid time format" in resp.json['message']
