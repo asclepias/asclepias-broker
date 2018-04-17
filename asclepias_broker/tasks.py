@@ -7,13 +7,11 @@
 
 """Asynchronous tasks."""
 
+from celery import shared_task
 from invenio_db import db
 from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
 
-from celery import shared_task
-from .models import Event, ObjectEvent, PayloadType
-from .schemas.loaders import RelationshipSchema
 from .api.ingestion import update_groups, update_metadata
 from .indexer import update_indices
 from .models import Event, ObjectEvent, PayloadType
