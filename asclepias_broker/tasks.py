@@ -8,6 +8,7 @@
 """Asynchronous tasks."""
 
 from invenio_db import db
+from celery import shared_task
 from .models import Event, ObjectEvent, PayloadType
 from .schemas.loaders import RelationshipSchema
 from .api.ingestion import update_groups, update_metadata
@@ -50,7 +51,7 @@ def create_relation_object_events(event, relationship, payload_idx):
         payload_index=payload_idx)
     return rel_obj, src_obj, tar_obj
 
-#@shared_task
+@shared_task(ignore_result=True)
 def process_event(event_uuid: str, delete=False):
     # TODO: Should we detect and skip duplicated events?
     event = Event.get(event_uuid)
