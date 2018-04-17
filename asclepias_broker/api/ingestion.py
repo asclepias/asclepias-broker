@@ -393,11 +393,12 @@ def update_groups(relationship, delete=False):
     src_idg, src_vg = get_or_create_groups(relationship.source)
     tar_idg, tar_vg = get_or_create_groups(relationship.target)
     merged_group = None
+    merged_version_group = None
 
     if relationship.relation == Relation.IsIdenticalTo:
         merged_group = merge_identity_groups(src_idg, tar_idg)
     elif relationship.relation == Relation.HasVersion:
-        merge_version_groups(src_vg, tar_vg)
+        merged_version_group = merge_version_groups(src_vg, tar_vg)
     else:  # Relation.Cites, Relation.IsSupplementTo, Relation.IsRelatedTo
         grp_rel = (
             GroupRelationship.query
@@ -416,7 +417,7 @@ def update_groups(relationship, delete=False):
         else:
             add_group_relationship(relationship, src_idg, tar_idg, src_vg,
                                    tar_vg)
-    return src_idg, tar_idg, merged_group
+    return (src_idg, tar_idg, merged_group), (src_vg, tar_vg, merged_version_group)
 
 
 # TODO: When merging/splitting groups there is some merging/duplicating of
