@@ -81,9 +81,10 @@ def process_event(event_uuid: str, delete=False):
             create_relation_object_events(event, relationship, payload_idx)
 
             groups = update_groups(relationship)
-            src_grp, tar_grp, merged_grp = groups
+            (src_grp, tar_grp, merged_grp), (src_v_grp, tar_v_grp, merged_v_grp) = groups
 
             update_metadata(relationship, payload)
 
             update_indices(src_grp, tar_grp, merged_grp)
+            update_indices(src_v_grp, tar_v_grp, merged_v_grp)
     db.session.commit()
