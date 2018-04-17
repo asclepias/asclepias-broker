@@ -4,6 +4,7 @@
 #
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
+"""Test helpers."""
 
 import json
 import sys
@@ -18,9 +19,8 @@ from asclepias_broker.api.ingestion import get_or_create_groups
 from asclepias_broker.jsonschemas import SCHOLIX_SCHEMA
 from asclepias_broker.models import Group, GroupM2M, GroupMetadata, \
     GroupRelationship, GroupRelationshipM2M, GroupRelationshipMetadata, \
-    GroupType, Identifier, Identifier2Group, Relation, Relationship, \
+    GroupType, Identifier, Identifier2Group, Relationship, \
     Relationship2GroupRelationship
-from asclepias_broker.tasks import get_or_create_groups
 
 #
 # Events generation helpers
@@ -70,8 +70,10 @@ INPUT_ITEMS_SCHEMA = {
                 'Target': {
                     '$ref': '#definitions/ObjMeta'
                 },
-                'LinkProvider': SCHOLIX_SCHEMA['definitions']['PersonOrOrgType'],
-                'LinkPublicationDate': SCHOLIX_SCHEMA['definitions']['DateType'],
+                'LinkProvider':
+                    SCHOLIX_SCHEMA['definitions']['PersonOrOrgType'],
+                'LinkPublicationDate':
+                    SCHOLIX_SCHEMA['definitions']['DateType'],
             }
         }
     },
@@ -94,6 +96,7 @@ class Event:
     """Event creation helper class."""
 
     def __init__(self, **kwargs):
+        """Intialize an event."""
         self.id = kwargs.get('id', str(uuid.uuid4()))
         self.time = kwargs.get('time', str(int(time.time())))
         self.payloads = kwargs.get('payload', [])
@@ -129,6 +132,7 @@ class Event:
 
     def add_payload(self, source, relation, target, publication_date,
                     metadata=None):
+        """Add a payload to the event."""
         metadata = metadata or {}
         self.payloads.append({
             'Source': self._gen_object(source, metadata.get('Source', {})),
@@ -142,6 +146,7 @@ class Event:
 
     @property
     def event(self):
+        """Get the serialized event."""
         return {
             'ID': self.id,
             'EventType': self.event_type,
@@ -153,6 +158,7 @@ class Event:
 
 
 def generate_payloads(input_items, event_schema=None):
+    """Generate event payloads."""
     # jsonschema.validate(input_items, INPUT_ITEMS_SCHEMA)
     events = []
     for item in input_items:
@@ -179,7 +185,7 @@ def generate_payloads(input_items, event_schema=None):
 
 
 def create_objects_from_relations(relationships: List[Tuple],
-        metadata: List[Tuple[dict]]=None):
+                                  metadata: List[Tuple[dict]]=None):
     """Given a list of relationships, create all corresponding DB objects.
 
     Optional 'metadata' list can be passed, which contains corresponding
@@ -202,15 +208,13 @@ def create_objects_from_relations(relationships: List[Tuple],
     if not metadata:
         metadata = [({}, {}, {}) for _ in range(len(relationships))]
     assert len(relationships) == len(metadata)
-    identifiers = sorted(set(sum([[a,b] for a, _, b in relationships],[])))
-    groups = []  # Cointains pairs of (Identifier2Group, Group2Group)
+    identifiers = sorted(set(sum([[a, b] for a, _, b in relationships], [])))
+    groups = []  # Contains pairs of (Identifier2Group, Group2Group)
     for i in identifiers:
         id_ = Identifier(value=i, scheme='doi')
         db.session.add(id_)
         groups.append(get_or_create_groups(id_))
     rel_obj = []
-    id_gr_relationships = []
-    ver_gr_relationships = []
     for (src, rel, tar), (src_m, rel_m, tar_m) in zip(relationships, metadata):
         src_, tar_ = Identifier.get(src, 'doi'), \
             Identifier.get(tar, 'doi')
@@ -219,22 +223,23 @@ def create_objects_from_relations(relationships: List[Tuple],
         rel_obj.append(r)
         s_id_gr, s_ver_gr = groups[identifiers.index(src)]
         t_id_gr, t_ver_gr = groups[identifiers.index(tar)]
-        id_gr_rel = GroupRelationship(source=s_id_gr,
-            target=t_id_gr, relation=rel, type=GroupType.Identity,
-            id=uuid.uuid4())
+        id_gr_rel = GroupRelationship(
+            source=s_id_gr, target=t_id_gr, relation=rel,
+            type=GroupType.Identity, id=uuid.uuid4())
         s_id_gr.data.update(src_m, validate=False)
         t_id_gr.data.update(tar_m, validate=False)
 
         grm = GroupRelationshipMetadata(group_relationship_id=id_gr_rel.id)
         db.session.add(grm)
         grm.update(rel_m, validate=False)
-        db.session.add(Relationship2GroupRelationship(relationship=r,
-            group_relationship=id_gr_rel))
+        db.session.add(Relationship2GroupRelationship(
+            relationship=r, group_relationship=id_gr_rel))
         db.session.add(id_gr_rel)
-        ver_gr_rel = GroupRelationship(source=s_ver_gr,
-            target=t_ver_gr, relation=rel, type=GroupType.Version)
-        db.session.add(GroupRelationshipM2M(relationship=ver_gr_rel,
-                                         subrelationship=id_gr_rel))
+        ver_gr_rel = GroupRelationship(
+            source=s_ver_gr, target=t_ver_gr, relation=rel,
+            type=GroupType.Version)
+        db.session.add(GroupRelationshipM2M(
+            relationship=ver_gr_rel, subrelationship=id_gr_rel))
         db.session.add(ver_gr_rel)
     db.session.commit()
 
@@ -256,7 +261,8 @@ def assert_grouping(grouping):
     relationship_types = [None if isinstance(r[0], str) else group_types[r[0]]
                           for r in relationships]
 
-    id_groups = [g for g, t in zip(groups, group_types) if t == GroupType.Identity]
+    id_groups = [g for g, t in zip(groups, group_types)
+                 if t == GroupType.Identity]
     uniqe_ids = set(sum(id_groups, []))
 
     # id_map is a mapping of str -> Identifier
@@ -277,13 +283,16 @@ def assert_grouping(grouping):
     rel_map = []
     for r in relationships:
         obj_a, relation, obj_b = r
-        if isinstance(obj_a, str) and isinstance(obj_b, str):  # Identifiers relation
+
+        if isinstance(obj_a, str) and isinstance(obj_b, str):
+            # Identifiers relation
             rel_map.append(
                 Relationship.query.filter_by(
                     source=id_map[obj_a], target=id_map[obj_b],
                     relation=relation).one()
             )
-        elif isinstance(obj_a, int) and isinstance(obj_b, int):  # Groups relation
+        elif isinstance(obj_a, int) and isinstance(obj_b, int):
+            # Groups relation
             rel_map.append(
                 GroupRelationship.query.filter_by(
                     source=group_map[obj_a], target=group_map[obj_b],
@@ -321,7 +330,7 @@ def assert_grouping(grouping):
     assert Relationship.query.count() == len(id_rels)
 
     grp_rels = [r for r, t in zip(rel_map, relationship_types)
-               if t is not None]
+                if t is not None]
     # Make sure that all loaded groups relationships are unique
     assert len(set(map(lambda x: x.id, grp_rels))) == len(grp_rels)
     assert GroupRelationship.query.count() == len(grp_rels)
@@ -351,6 +360,7 @@ def assert_grouping(grouping):
                 assert GroupRelationshipM2M.query.filter_by(
                     relationship=rel_map[group_rel],
                     subrelationship=rel_map[group_subrel]).one()
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:

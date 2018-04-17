@@ -4,6 +4,7 @@
 #
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
+"""Views for receiving and querying events and relationships."""
 
 from flask import Blueprint, abort, jsonify, render_template, request, url_for
 from flask.views import MethodView
@@ -27,12 +28,14 @@ blueprint = Blueprint('asclepias_ui', __name__, template_folder='templates')
 #
 @blueprint.route('/list')
 def listpids():
+    """Renders all identifiers in the system."""
     pids = Identifier.query
     return render_template('list.html', pids=pids)
 
 
 @blueprint.route('/citations/<path:pid_value>')
 def citations(pid_value):
+    """Renders all citations for an identifier."""
     identifier = Identifier.query.filter_by(
         scheme='doi', value=pid_value).first()
     if not identifier:
@@ -49,6 +52,7 @@ def citations(pid_value):
 
 @blueprint.route('/relationships')
 def relationships():
+    """Renders relationships for an identifiers from DB."""
     id_ = request.values['id']
     scheme = request.values['scheme']
     relation = request.values['relation']
@@ -69,19 +73,24 @@ api_blueprint = Blueprint('asclepias_api', __name__)
 
 
 class ObjectNotFoundRESTError(RESTException):
-    """Object not found."""
+    """Object not found error."""
 
     code = 404
 
     def __init__(self, identifier, **kwargs):
+        """Initialize the ObjectNotFound REST exception."""
         super(ObjectNotFoundRESTError, self).__init__(**kwargs)
         self.description = \
             'No object found with identifier [{}]'.format(identifier)
 
+
 class PayloadValidationRESTError(RESTException):
+    """Invalid payload error."""
+
     code = 400
 
     def __init__(self, error_message, code=None, **kwargs):
+        """Initialize the PayloadValidation REST exception."""
         if code:
             self.code = code
         super(PayloadValidationRESTError, self).__init__(**kwargs)
@@ -89,7 +98,10 @@ class PayloadValidationRESTError(RESTException):
 
 
 class EventResource(MethodView):
+    """Event resource."""
+
     def post(self):
+        """Submit an event."""
         try:
             EventAPI.handle_event(request.json)
         except JSONValidationError as e:
@@ -101,6 +113,8 @@ class EventResource(MethodView):
 
 
 class RelationshipResource(ContentNegotiatedMethodView):
+    """Relationship resource."""
+
     @use_kwargs({
         'id_': fields.Str(load_from='id', required=True),
         'scheme': fields.Str(missing='doi'),
@@ -120,6 +134,7 @@ class RelationshipResource(ContentNegotiatedMethodView):
             missing='identity'),
     })
     def get(self, id_, scheme, relation, type_, from_, to, group_by):
+        """Query relationships."""
         # TODO: Serialize using marshmallow (.schemas.scholix). This involves
         # passing `serializers` for the superclass' constructor.
         page = request.values.get('page', 1, type=int)
@@ -165,6 +180,7 @@ class RelationshipResource(ContentNegotiatedMethodView):
 
 @parser.error_handler
 def validation_error_handler(error):
+    """Handle and serialize errors from webargs validation."""
     raise RESTValidationError(
         errors=[FieldError(k, v) for k, v in error.messages.items()],
     )

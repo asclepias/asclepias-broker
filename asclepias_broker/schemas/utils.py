@@ -11,6 +11,7 @@ from marshmallow import post_load
 
 
 def to_model(model_cls):
+    """Marshmallow schema decorator for creating SQLAlchemy models."""
     def inner(Cls):
         class ToModelSchema(Cls):
 

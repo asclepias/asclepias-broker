@@ -4,10 +4,11 @@
 #
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
+"""Events API."""
+
 
 import jsonschema
 from invenio_db import db
-from jsonschema.exceptions import ValidationError as JSONValidationError
 from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
 
@@ -20,9 +21,11 @@ from .ingestion import update_groups, update_metadata
 
 
 class EventAPI:
+    """Event API."""
+
     @classmethod
     def handle_event(cls, event: dict):
-
+        """Handle an event payload."""
         jsonschema.validate(event, EVENT_SCHEMA)
 
         event_type = event['EventType']
@@ -36,6 +39,7 @@ class EventAPI:
 
     @classmethod
     def create_event(cls, event: dict):
+        """Create the event database model."""
         event_obj, errors = EventSchema(check_existing=True).load(event)
         if errors:
             raise MarshmallowValidationError(errors)
@@ -51,10 +55,12 @@ class EventAPI:
 
     @classmethod
     def relationship_created(cls, event: dict):
+        """Handle a relationship creation event."""
         cls._handle_relationship_event(event)
 
     @classmethod
     def relationship_deleted(cls, event: dict):
+        """Handle a relationship deletion event."""
         cls._handle_relationship_event(event, delete=True)
 
     @classmethod

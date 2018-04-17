@@ -108,27 +108,28 @@ def merge_group_relationships(group_a, group_b, merged_group):
 
             # Delete the duplicate pairs of relationship M2Ms before updating
             delete_duplicate_relationship_m2m(rel_a, rel_b)
+            rel_ids = [rel_a.id, rel_b.id]
             (
                 GroupRelationshipM2M.query
-                .filter(GroupRelationshipM2M.relationship_id.in_([rel_a.id, rel_b.id]))
+                .filter(GroupRelationshipM2M.relationship_id.in_(rel_ids))
                 .update({GroupRelationshipM2M.relationship_id: new_grp_rel.id},
-                    synchronize_session='fetch')
+                        synchronize_session='fetch')
             )
             (
                 GroupRelationshipM2M.query
-                .filter(GroupRelationshipM2M.subrelationship_id.in_([rel_a.id, rel_b.id]))
-                .update({GroupRelationshipM2M.subrelationship_id: new_grp_rel.id},
+                .filter(GroupRelationshipM2M.subrelationship_id.in_(rel_ids))
+                .update(
+                    {GroupRelationshipM2M.subrelationship_id: new_grp_rel.id},
                     synchronize_session='fetch')
             )
             if identity_groups:
                 cls = Relationship2GroupRelationship
-                delete_duplicate_relationship_m2m(rel_a, rel_b,
-                    cls=cls)
+                delete_duplicate_relationship_m2m(rel_a, rel_b, cls=cls)
                 (
                     cls.query
-                    .filter(cls.group_relationship_id.in_([rel_a.id, rel_b.id]))
+                    .filter(cls.group_relationship_id.in_(rel_ids))
                     .update({cls.group_relationship_id: new_grp_rel.id},
-                        synchronize_session='fetch')
+                            synchronize_session='fetch')
                 )
             del_rel.add(rel_a.id)
             del_rel.add(rel_b.id)
@@ -141,7 +142,7 @@ def merge_group_relationships(group_a, group_b, merged_group):
 
         queried_fk_inst = getattr(GroupRelationship, queried_fk)
         # Update the other non-duplicated relations
-        q = (
+        (
             GroupRelationship.query
             .filter(queried_fk_inst.in_(merge_groups_ids))
             .update({queried_fk_inst: merged_group.id},
@@ -164,8 +165,9 @@ def delete_duplicate_relationship_m2m(group_a, group_b,
         queried_fk = 'group_relationship_id'
         grouping_fk = 'relationship_id'
     else:
-        raise ValueError("Parameter 'cls' must be either "
-            "'GroupRelationshipM2M' or 'Relationship2GroupRelationship'.")
+        raise ValueError(
+            "Parameter 'cls' must be either 'GroupRelationshipM2M' or "
+            "'Relationship2GroupRelationship'.")
 
     for queried_fk, grouping_fk in [(queried_fk, grouping_fk),
                                     (grouping_fk, queried_fk), ]:
@@ -180,9 +182,10 @@ def delete_duplicate_relationship_m2m(group_a, group_b,
         duplicate_relations = (
             db.session.query(left_gr, right_gr)
             .filter(
-                # Because we join in the same table by grouping_fk, we will have
-                # pairs [(A,B), (B,A)] on the list. We can impose an inequality
-                # condition on one FK to reduce this to just one pair [(A,B)]
+                # Because we join in the same table by grouping_fk, we will
+                # have pairs [(A,B), (B,A)] on the list. We can impose an
+                # inequality condition on one FK to reduce this to just one
+                # pair [(A,B)]
                 left_queried_fk < right_queried_fk,
                 left_queried_fk.in_(merge_groups_ids),
                 right_queried_fk.in_(merge_groups_ids),
@@ -220,9 +223,10 @@ def delete_duplicate_group_m2m(group_a: Group, group_b: Group):
         duplicate_relations = (
             db.session.query(left_gr, right_gr)
             .filter(
-                # Because we join in the same table by grouping_fk, we will have
-                # pairs [(A,B), (B,A)] on the list. We impose an inequality
-                # condition on one FK to reduce this to just one pair [(A,B)]
+                # Because we join in the same table by grouping_fk, we will
+                # have pairs [(A,B), (B,A)] on the list. We impose an
+                # inequality condition on one FK to reduce this to just one
+                # pair [(A,B)]
                 left_queried_fk < right_queried_fk,
                 left_queried_fk.in_(merge_groups_ids),
                 right_queried_fk.in_(merge_groups_ids),
@@ -324,7 +328,7 @@ def merge_version_groups(group_a: Group, group_b: Group):
 def get_or_create_groups(identifier: Identifier) -> Tuple[Group, Group]:
     """Given an Identifier, fetch or create its Identity and Version groups."""
     id2g = Identifier2Group.query.filter(
-        Identifier2Group.identifier==identifier).one_or_none()
+        Identifier2Group.identifier == identifier).one_or_none()
     if not id2g:
         group = Group(type=GroupType.Identity, id=uuid.uuid4())
         db.session.add(group)
@@ -334,8 +338,8 @@ def get_or_create_groups(identifier: Identifier) -> Tuple[Group, Group]:
         db.session.add(id2g)
     g2g = (GroupM2M.query
            .join(Group, GroupM2M.group_id == Group.id)
-           .filter(GroupM2M.subgroup==id2g.group,
-                   Group.type==GroupType.Version)
+           .filter(GroupM2M.subgroup == id2g.group,
+                   Group.type == GroupType.Version)
            .one_or_none())
     if not g2g:
         group = Group(type=GroupType.Version, id=uuid.uuid4())
@@ -394,7 +398,7 @@ def update_groups(relationship, delete=False):
         merged_group = merge_identity_groups(src_idg, tar_idg)
     elif relationship.relation == Relation.HasVersion:
         merge_version_groups(src_vg, tar_vg)
-    else: # Relation.Cites, Relation.IsSupplementTo, Relation.IsRelatedTo
+    else:  # Relation.Cites, Relation.IsSupplementTo, Relation.IsRelatedTo
         grp_rel = (
             GroupRelationship.query
             .filter(GroupRelationship.source == src_idg,
@@ -418,6 +422,7 @@ def update_groups(relationship, delete=False):
 # TODO: When merging/splitting groups there is some merging/duplicating of
 # metadata as well
 def update_metadata(relationship: Relationship, payload):
+    """Updates the metadata of the source, target and relationship groups."""
     # Get identity groups for source and targer
     # TODO: Do something for this case?
     if relationship.relation == Relation.IsIdenticalTo:

@@ -6,10 +6,8 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Test broker model."""
-import pytest
 from helpers import assert_grouping, create_objects_from_relations, \
     generate_payloads
-from invenio_db import db
 
 from asclepias_broker.api import EventAPI
 from asclepias_broker.api.ingestion import get_group_from_id, \
@@ -34,8 +32,8 @@ def off_test_simple_id_group_merge(db):
     _handle_events(evtsrc)
     # {'A', 'B'}
     assert Group.query.count() == 2
-    vg = Group.query.filter_by(type=GroupType.Version).one()
-    vi = Group.query.filter_by(type=GroupType.Identity).one()
+    Group.query.filter_by(type=GroupType.Version).one()
+    Group.query.filter_by(type=GroupType.Identity).one()
     assert Identifier.query.count() == 2
     assert Relationship.query.count() == 1
     assert Identifier2Group.query.count() == 2
@@ -71,8 +69,9 @@ def test_get_or_create_groups(db):
     """Test creating groups (Identity and Version) for an identifier."""
     id1 = Identifier(value='A', scheme='doi')
     db.session.add(id1)
-    #id2 = Identifier(value='B', scheme='doi')
-    #rel = Relationship(source=id1, target=id2, relation=Relation.IsIdenticalTo)
+    # id2 = Identifier(value='B', scheme='doi')
+    # rel = Relationship(source=id1, target=id2,
+    #                    relation=Relation.IsIdenticalTo)
     assert not Group.query.count()
     assert not GroupM2M.query.count()
     assert not Identifier2Group.query.count()
@@ -372,7 +371,7 @@ def test_merge_identity_groups(db):
                           'Identifier': [{'ID': '0000-0001-2345-6789',
                                           'IDScheme': 'orcid'}]}]},
             {'LinkPublicationDate': '2018-01-01',
-              'LinkProvider': [{'Name': 'Foobar'}]},
+             'LinkProvider': [{'Name': 'Foobar'}]},
             {'Title': 'Title of C v1',
              'Type': {'Name': 'literature',
                       'SubType': 'journal article',
@@ -392,7 +391,7 @@ def test_merge_identity_groups(db):
                           'Identifier': [{'ID': '0000-0001-2345-6789',
                                           'IDScheme': 'orcid'}]}]},
             {'LinkPublicationDate': '2018-01-01',
-              'LinkProvider': [{'Name': 'Foobar'}]},
+             'LinkProvider': [{'Name': 'Foobar'}]},
             {'Title': 'Title of C v2',
              'Type': {'Name': 'literature',
                       'SubType': 'journal article',
@@ -412,7 +411,7 @@ def test_merge_identity_groups(db):
                           'Identifier': [{'ID': '0000-0001-2345-6789',
                                           'IDScheme': 'orcid'}]}]},
             {'LinkPublicationDate': '2018-01-01',
-              'LinkProvider': [{'Name': 'Foobar'}]},
+             'LinkProvider': [{'Name': 'Foobar'}]},
             {'Title': 'Title of A v2',
              'Type': {'Name': 'literature',
                       'SubType': 'journal article',
@@ -432,7 +431,7 @@ def test_merge_identity_groups(db):
                           'Identifier': [{'ID': '0000-0001-2345-6789',
                                           'IDScheme': 'orcid'}]}]},
             {'LinkPublicationDate': '2018-01-01',
-              'LinkProvider': [{'Name': 'Foobar'}]},
+             'LinkProvider': [{'Name': 'Foobar'}]},
             {'Title': 'Title of B v2',
              'Type': {'Name': 'literature',
                       'SubType': 'journal article',

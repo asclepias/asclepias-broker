@@ -54,13 +54,14 @@ INV_DATACITE_RELATION_MAP = dict(
 
 
 def from_datacite_relation(relation: str) -> Tuple[Relation, bool]:
+    """Get normalized relationship type value of a datacite relationship."""
     relation, inversed = INV_DATACITE_RELATION_MAP.get(
         relation, ('IsRelatedTo', False))
     return getattr(Relation, relation), inversed
 
 
-def from_scholix_relationship_type(rel_obj: dict) -> Tuple[Relation, bool]:
-    # TODO: Rename this function to "from_scholix_relation"
+def from_scholix_relation(rel_obj: dict) -> Tuple[Relation, bool]:
+    """Get normalized rleationship type value from a Scholix relationship."""
     datacite_subtype = rel_obj.get('SubType')
     if datacite_subtype and rel_obj.get('SubTypeSchema') == 'DataCite':
         relation = datacite_subtype
@@ -71,6 +72,7 @@ def from_scholix_relationship_type(rel_obj: dict) -> Tuple[Relation, bool]:
 
 @to_model(Identifier)
 class IdentifierSchema(Schema):
+    """Identifier loader schema."""
 
     value = fields.Str(required=True, load_from='ID')
     scheme = fields.Function(
@@ -78,6 +80,7 @@ class IdentifierSchema(Schema):
 
     @validates_schema
     def check_scheme(self, data):
+        """Validate the provided identifier scheme."""
         value = data['value']
         scheme = data['scheme'].lower()
         schemes = idutils.detect_identifier_schemes(value)
@@ -88,6 +91,7 @@ class IdentifierSchema(Schema):
 
 @to_model(Relationship)
 class RelationshipSchema(Schema):
+    """Relationship loader schema."""
 
     relation = fields.Method(
         deserialize='load_relation', load_from='RelationshipType')
@@ -96,17 +100,20 @@ class RelationshipSchema(Schema):
 
     @pre_load
     def remove_object_envelope(self, obj):
+        """Remove the envelope for the Source and Target identifier fields."""
         obj2 = deepcopy(obj)
         for k in ('Source', 'Target'):
             obj2[k] = obj[k]['Identifier']
         return obj2
 
     def load_relation(self, data):
-        rel_name, self._inversed = from_scholix_relationship_type(data)
+        """Load the relation type value."""
+        rel_name, self._inversed = from_scholix_relation(data)
         return rel_name
 
     @post_load
     def inverse(self, data):
+        """Normalize the relationship direction based on its type."""
         if self._inversed:
             data['Source'], data['Target'] = data['Target'], data['Source']
         return data
@@ -114,6 +121,7 @@ class RelationshipSchema(Schema):
 
 @to_model(Event)
 class EventSchema(Schema):
+    """Event loader schema."""
 
     EVENT_TYPE_MAP = {
         'RelationshipCreated': EventType.RelationshipCreated,
@@ -128,18 +136,21 @@ class EventSchema(Schema):
     creator = fields.Str(required=True, load_from='Creator')
     source = fields.Str(required=True, load_from='Source')
     payload = fields.Method(deserialize='get_payload', required=True,
-        load_from='Payload')
+                            load_from='Payload')
     time = fields.Method(deserialize='get_time', required=True,
-        load_from='Time')
+                         load_from='Time')
 
     @pre_load
     def store_original_payload(self, data):
+        """Store a copy the entire original payload."""
         self.context['original_payload'] = data
 
     def get_event_type(self, obj):
+        """Get the enum value for type of the event."""
         return self.EVENT_TYPE_MAP.get(obj, missing)
 
     def get_time(self, obj):
+        """Parse the time value of the event."""
         try:
             return arrow.get(obj).datetime
         except ParserError as e:
@@ -147,4 +158,5 @@ class EventSchema(Schema):
                                   "timestamp required.".format(obj))
 
     def get_payload(self, obj):
+        """Get the previously stored original payload."""
         return self.context['original_payload']

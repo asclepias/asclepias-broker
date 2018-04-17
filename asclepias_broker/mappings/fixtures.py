@@ -4,6 +4,7 @@
 #
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
+"""Fixtures and utilities for the Elasticsearch mappings."""
 
 import random
 import timeit
@@ -22,6 +23,7 @@ from .dsl import ObjectDoc, ObjectRelationshipsDoc
 #
 @contextmanager
 def progressbar(iterable, label, report_every, total_items):
+    """Context manager to keep track of long iteration procedures progress."""
     print(label, report_every, total_items)
     start = datetime.now()
     print('{label} started at: {start}'.format(label=label, start=start))
@@ -31,22 +33,29 @@ def progressbar(iterable, label, report_every, total_items):
             if i % int(report_every) == 0:
                 t = datetime.now()
                 d = t - start
-                rate = int(i/d.total_seconds()) if d.total_seconds() != 0 else None
-                time_left = timedelta(seconds=((total_items - i) / rate)) if rate else '???'
-                print('[{t}] - {i}...\t({d} - {rate} items/sec - ETA {time_left})'
-                      .format(t=t, i=i, d=d, rate=(rate or "???"), time_left=time_left))
+                rate = (int(i/d.total_seconds())
+                        if d.total_seconds() != 0 else None)
+                time_left = (timedelta(seconds=((total_items - i) / rate))
+                             if rate else '???')
+                rate_str = rate or "???"
+                print(
+                    '[{t}] - {i}..\t({d} - {rate} items/sec - ETA {time_left})'
+                    .format(t=t, i=i, d=d, rate=rate_str, time_left=time_left))
             yield v
     yield _gen()
     end = datetime.now()
-    print('{label} finished at: {end}, Total time: {total}'.format(label=label, end=end, total=(end-start)))
+    print('{label} finished at: {end}, Total time: {total}'
+          .format(label=label, end=end, total=(end-start)))
 
 
 def benchmark_get_citations(N=100, **kwargs):
+    """Run benchmarks for the citations query."""
     ids = [o._id for o in ObjectDoc.search().source(False).scan()]
 
     def _f():
         o = ObjectDoc.get(random.choice(ids))
-        return len(RelationshipAPI.get_citations(random.choice([i.ID for i in o.Identifier])))
+        return len(RelationshipAPI.get_citations(
+            random.choice([i.ID for i in o.Identifier])))
     return min(timeit.Timer(_f).repeat(3, number=N)) / N
 
 
@@ -75,11 +84,14 @@ PROVIDERS = ['Zenodo', 'ADS', 'INSPIRE', 'DLI']
 
 def _gen_identifier():
     base_value = uuid4()
-    ids = [{'ID': '{}{}'.format(faker.url(), base_value.hex), 'IDScheme': 'url'}]
+    ids = [{'ID': '{}{}'.format(faker.url(), base_value.hex),
+            'IDScheme': 'url'}]
     if random.random() > 0.3:  # doi
-        ids.append({'ID': '10.5072/{}'.format(base_value.hex), 'IDScheme': 'doi'})
+        ids.append({'ID': '10.5072/{}'.format(base_value.hex),
+                    'IDScheme': 'doi'})
     if random.random() > 0.8:  # second url
-        ids.append({'ID': '{}{}'.format(faker.url(), base_value.hex), 'IDScheme': 'url'})
+        ids.append({'ID': '{}{}'.format(faker.url(), base_value.hex),
+                    'IDScheme': 'url'})
     if random.random() > 0.8:  # PMID
         ids.append({'ID': str(base_value.node), 'IDScheme': 'pmid'})
     return ids
@@ -90,7 +102,7 @@ def _gen_object(names, ids):
         Title=faker.sentence(),
         Type=random.choice(OBJECT_TYPES),
         Identifier=ids,
-        Creator=[random.choice(names) for _ in range(random.randint(1,5))],
+        Creator=[random.choice(names) for _ in range(random.randint(1, 5))],
         PublicationDate=faker.date(),
     )
 
@@ -129,6 +141,7 @@ def _gen_relationship(source, target, rel_type=None):
 
 
 def seed_data(N=1000):
+    """Seed Elasticsearch with mock data."""
     # delete_all()
     # create_all()
 
@@ -136,7 +149,8 @@ def seed_data(N=1000):
     id_groups = [_gen_identifier() for _ in range(N)]
     object_ids = []
 
-    with progressbar(id_groups, 'Objects...', len(id_groups)/10, len(id_groups)) as progress:
+    with progressbar(id_groups, 'Objects...',
+                     len(id_groups)/10, len(id_groups)) as progress:
         for ids in progress:
             obj = _gen_object(names, ids)
             obj.save()
@@ -145,7 +159,8 @@ def seed_data(N=1000):
             rel.save()
             object_ids.append(obj._id)
 
-    with progressbar(range(N * 100), 'Relationships...', N, N * 100) as progress:
+    with progressbar(range(N * 100), 'Relationships...',
+                     N, N * 100) as progress:
         for _ in progress:
             src_obj_id = random.choice(object_ids)
             trg_obj_id = random.choice(object_ids)
@@ -158,6 +173,7 @@ def seed_data(N=1000):
 
 
 def add_random_citations(objects, trg_obj: ObjectDoc, N=100):
+    """Add a random citations between two objects."""
     existing_citations = {c for _, c in trg_obj.Relationships.isCitedBy}
     for _ in range(N):
         src_obj = random.choice(objects)
@@ -168,11 +184,13 @@ def add_random_citations(objects, trg_obj: ObjectDoc, N=100):
                                 rel_type=RELATION_TYPES[0])  # citation type
         rel.save()
 
-        relations = getattr(src_obj.Relationships, str(rel.RelationshipType.Name), [])
+        relations = getattr(src_obj.Relationships,
+                            str(rel.RelationshipType.Name), [])
         relations.append({'RelationshipID': rel._id, 'TargetID': trg_obj._id})
         src_obj.Relationships[str(rel.RelationshipType.Name)] = relations
         src_obj.save()
-        relations = getattr(trg_obj.Relationships, str(rel.InverseRelation), [])
+        relations = getattr(trg_obj.Relationships,
+                            str(rel.InverseRelation), [])
         relations.append({'RelationshipID': rel._id, 'TargetID': src_obj._id})
         trg_obj.Relationships[str(rel.InverseRelation)] = relations
         trg_obj.save()

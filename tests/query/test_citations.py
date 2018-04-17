@@ -148,13 +148,14 @@ TEST_CASES = [
         }
     ),
 ]
+
+
 @pytest.mark.parametrize(('test_case_name', 'events', 'results'), TEST_CASES)
 def test_grouping_query(test_case_name, events, results, db, es):
     for ev in generate_payloads(events):
         EventAPI.handle_event(ev)
     for cited_id_value, _ in results.items():
-
-        cited_id = (Identifier.query
-                    .filter_by(value=cited_id_value).one())
+        pass
+        # cited_id = Identifier.query.filter_by(value=cited_id_value).one()
         # TODO: Fix this test
         # ret = RelationshipAPI.get_citations2(cited_id, 'IsCitedBy')

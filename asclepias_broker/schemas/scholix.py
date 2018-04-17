@@ -4,6 +4,7 @@
 #
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
+"""Scholix marshmallow serializer."""
 
 from marshmallow import Schema, fields, pre_dump, validate
 
@@ -12,6 +13,7 @@ SCHOLIX_RELATIONS = {'References', 'IsReferencedBy', 'IsSupplementTo',
 
 
 class IdentifierSchema(Schema):
+    """Scholix identifier schema."""
 
     ID = fields.String(required=True, attribute='value')
     IDScheme = fields.String(required=True, attribute='scheme')
@@ -19,16 +21,18 @@ class IdentifierSchema(Schema):
 
 
 class PersonOrOrgSchema(Schema):
+    """Scholix person or organization schema."""
 
     Name = fields.String()
     Identifier = fields.Nested(IdentifierSchema, many=True)
 
 
 class ObjectSchema(Schema):
+    """Scholix object schema."""
 
     @pre_dump
     def identifier_envelope(self, obj):
-        # wtf..
+        """Put identifier in an envelope."""
         obj.Identifier = obj
         return obj
 
@@ -41,6 +45,7 @@ class ObjectSchema(Schema):
 
 
 class RelationshipTypeSchema(Schema):
+    """Scholix relationship type schema."""
 
     Name = fields.String(
         required=True, validate=validate.OneOf(SCHOLIX_RELATIONS))
@@ -49,6 +54,7 @@ class RelationshipTypeSchema(Schema):
 
     @pre_dump
     def dump_rel_type(self, obj):
+        """Dump the relationship type in its fields."""
         if obj.name not in SCHOLIX_RELATIONS:
             obj.Name = 'IsRelatedTo'
             obj.SubType = obj.name
@@ -59,6 +65,7 @@ class RelationshipTypeSchema(Schema):
 
 
 class RelationshipSchema(Schema):
+    """Scholix relationship schema."""
 
     LinkPublicationDate = fields.Date(
         required=True, attribute='data.LinkPublicationDate')

@@ -18,6 +18,7 @@ from .schemas.loaders import RelationshipSchema
 
 
 def get_or_create(model, **kwargs):
+    """Get or a create a database model."""
     instance = model.query.filter_by(**kwargs)
     if instance:
         return instance
@@ -28,6 +29,7 @@ def get_or_create(model, **kwargs):
 
 
 def create_relation_object_events(event, relationship, payload_idx):
+    """Create the object event models."""
     # Create the Relation entry
     rel_obj = get_or_create(
         ObjectEvent,
@@ -54,6 +56,7 @@ def create_relation_object_events(event, relationship, payload_idx):
 
 # @shared_task
 def process_event(event_uuid: str, delete=False):
+    """Process an event's payloads."""
     # TODO: Should we detect and skip duplicated events?
     event = Event.get(event_uuid)
     # TODO: event.payload contains the whole event, not just payload - refactor

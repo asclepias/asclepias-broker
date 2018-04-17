@@ -77,16 +77,22 @@ def _build_object_relationships(group_id):
 
 
 def _assert_equal_rels(model, doc):
-    for rt in ('cites', 'isCitedBy', 'isSupplementTo', 'isSupplementedBy', 'isRelatedTo'):
+    for rt in ('cites', 'isCitedBy', 'isSupplementTo', 'isSupplementedBy',
+               'isRelatedTo'):
         model_rels = model.get(rt, [])
         es_rels = getattr(doc, rt, [])
         assert len(model_rels) == len(es_rels)
         model_rels_set = {
-            (r['TargetID'], frozenset((h['LinkProvider']['Name'], arrow.get(h['LinkPublicationDate'])) for h in r['History']))
+            (r['TargetID'],
+             frozenset((h['LinkProvider']['Name'],
+                        arrow.get(h['LinkPublicationDate']))
+                       for h in r['History']))
             for r in model_rels
         }
         es_rels_set = {
-            (r.TargetID, frozenset((h.LinkProvider.Name, arrow.get(h.LinkPublicationDate)) for h in r.History))
+            (r.TargetID,
+             frozenset((h.LinkProvider.Name, arrow.get(h.LinkPublicationDate))
+                       for h in r.History))
             for r in es_rels
         }
         assert model_rels_set == es_rels_set
@@ -111,8 +117,10 @@ def test_simple_groups(db, es_clear):
         (['C', 'A', 'Cites', 'B', '2018-01-01'], _scholix_data('A', 'B')),
         (['C', 'A1', 'Cites', 'B', '2018-01-01'], _scholix_data('A1', 'B')),
         (['C', 'C', 'Cites', 'B', '2018-01-01'], _scholix_data('C', 'B')),
-        # (['C', 'B', 'IsIdenticalTo', 'B1', '2018-01-01'], _scholix_data('B', 'B1')),
-        (['C', 'A1', 'IsIdenticalTo', 'A', '2018-01-01'], _scholix_data('A1', 'A')),
+        # (['C', 'B', 'IsIdenticalTo', 'B1', '2018-01-01'],
+        #  _scholix_data('B', 'B1')),
+        (['C', 'A1', 'IsIdenticalTo', 'A', '2018-01-01'],
+         _scholix_data('A1', 'A')),
     ])
 
     # metadata = [

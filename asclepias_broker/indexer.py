@@ -4,6 +4,7 @@
 #
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
+"""Elasticsearch indexing module."""
 
 from collections import defaultdict
 from copy import deepcopy
@@ -12,7 +13,6 @@ from typing import Iterable
 from uuid import UUID
 
 import sqlalchemy as sa
-from invenio_db import db
 
 from .mappings.dsl import DB_RELATION_TO_ES, ObjectDoc, ObjectRelationshipsDoc
 from .models import Group, GroupRelationship, GroupType, Identifier, Relation
@@ -54,6 +54,7 @@ def _build_object_relationships(group_id: UUID,
 
 
 def delete_identity_group(id_group, with_relationships=True):
+    """Delete an identity group and its relationships document indices."""
     obj_doc = ObjectDoc.get(str(id_group.id), ignore=404)
     if obj_doc:
         obj_doc.delete(ignore=404)
@@ -65,6 +66,7 @@ def delete_identity_group(id_group, with_relationships=True):
 
 
 def index_identity_group(id_group: Group) -> ObjectDoc:
+    """Index an identity group."""
     # Build source object identifiers
     doc = deepcopy((id_group.data and id_group.data.json) or {})
 
@@ -77,6 +79,7 @@ def index_identity_group(id_group: Group) -> ObjectDoc:
 
 
 def index_group_relationships(group_id: UUID) -> ObjectRelationshipsDoc:
+    """Index the relationships of an identity group."""
     rels = _get_group_relationships(group_id)
     doc = _build_object_relationships(group_id, rels)
     rel_doc = ObjectRelationshipsDoc(meta={'id': str(group_id)}, **doc)
@@ -86,6 +89,7 @@ def index_group_relationships(group_id: UUID) -> ObjectRelationshipsDoc:
 
 def update_indices(src_group: Group, trg_group: Group,
                    merged_group: Group=None):
+    """Updates Elasticsearch indices with the updated groups."""
     # `src_group` and `trg_group` were merged into `merged_group`.
     if merged_group:
         # Delete Source and Traget groups
