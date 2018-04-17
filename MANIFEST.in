@@ -20,6 +20,7 @@ include LICENSE
 include pytest.ini
 include scripts/bootstrap
 include scripts/console
+include scripts/recreate
 include scripts/server
 include scripts/setup
 include scripts/update
