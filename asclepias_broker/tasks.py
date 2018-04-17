@@ -11,6 +11,9 @@ from invenio_db import db
 from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
 
+from celery import shared_task
+from .models import Event, ObjectEvent, PayloadType
+from .schemas.loaders import RelationshipSchema
 from .api.ingestion import update_groups, update_metadata
 from .indexer import update_indices
 from .models import Event, ObjectEvent, PayloadType
@@ -53,8 +56,7 @@ def create_relation_object_events(event, relationship, payload_idx):
         payload_index=payload_idx)
     return rel_obj, src_obj, tar_obj
 
-
-# @shared_task
+@shared_task(ignore_result=True)
 def process_event(event_uuid: str, delete=False):
     """Process an event's payloads."""
     # TODO: Should we detect and skip duplicated events?

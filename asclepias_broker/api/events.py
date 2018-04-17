@@ -68,5 +68,4 @@ class EventAPI:
         event_obj = cls.create_event(event)
         event_uuid = str(event_obj.id)
         db.session.commit()
-        # TODO: process_event.delay
-        process_event(event_uuid)
+        process_event.delay(event_uuid)
