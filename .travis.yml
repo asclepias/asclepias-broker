@@ -30,6 +30,9 @@ services:
   - redis
   - rabbitmq
 
+addons:
+  postgresql: "9.6"
+
 env:
   # - REQUIREMENTS=release E2E="no"
   # - REQUIREMENTS=release E2E="yes" E2E_OUTPUT="base64"
