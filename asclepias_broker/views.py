@@ -87,15 +87,6 @@ class PayloadValidationRESTError(RESTException):
         super(PayloadValidationRESTError, self).__init__(**kwargs)
         self.description = error_message
 
-class PayloadValidationRESTError(RESTException):
-    code = 400
-
-    def __init__(self, error_message, code=None, error_payload=None, **kwargs):
-        if code:
-            self.code = code
-        super(PayloadValidationRESTError, self).__init__(**kwargs)
-        self.description = error_message
-
 
 class EventResource(MethodView):
     def post(self):

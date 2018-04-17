@@ -21,7 +21,7 @@ from jsonschema.exceptions import ValidationError as JSONValidationError
 
 class EventAPI:
     @classmethod
-    def handle_event(cls, event):
+    def handle_event(cls, event: dict):
 
         jsonschema.validate(event, EVENT_SCHEMA)
 
@@ -35,7 +35,7 @@ class EventAPI:
         handler(event)
 
     @classmethod
-    def create_event(cls, event):
+    def create_event(cls, event: dict):
         event_obj, errors = EventSchema(check_existing=True).load(event)
         if errors:
             raise MarshmallowValidationError(errors)
@@ -50,17 +50,17 @@ class EventAPI:
         return event_obj
 
     @classmethod
-    def relationship_created(cls, event):
+    def relationship_created(cls, event: dict):
         cls._handle_relationship_event(event)
 
     @classmethod
-    def relationship_deleted(cls, event):
+    def relationship_deleted(cls, event: dict):
         cls._handle_relationship_event(event, delete=True)
 
     @classmethod
-    def _handle_relationship_event(cls, event, delete=False):
+    def _handle_relationship_event(cls, event: dict, delete=False):
         event_obj = cls.create_event(event)
         event_uuid = str(event_obj.id)
         db.session.commit()
         # TODO: process_event.delay
-        process_event(event_uuid, delete=delete)
+        process_event(event_uuid)

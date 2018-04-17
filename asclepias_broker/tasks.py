@@ -64,7 +64,6 @@ def process_event(event_uuid: str, delete=False):
             # with RelationshipSchema on the event ingestion
             if errors:
                 raise MarshmallowValidationError(errors)
-            # TODO: Remove deletion of events for now
             if relationship.id:
                 relationship.deleted = delete
             db.session.add(relationship)
@@ -74,11 +73,10 @@ def process_event(event_uuid: str, delete=False):
             relationship = relationship.fetch_or_create_id()
             create_relation_object_events(event, relationship, payload_idx)
 
-            # TODO: This should be a task after the ingestion commit
             groups = update_groups(relationship)
             src_grp, tar_grp, merged_grp = groups
-            # Update metadata
+
             update_metadata(relationship, payload)
-            # Index the groups and relationships
+
             update_indices(src_grp, tar_grp, merged_grp)
     db.session.commit()
