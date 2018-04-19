@@ -80,10 +80,10 @@ def process_event(event_uuid: str, delete=False):
             relationship = relationship.fetch_or_create_id()
             create_relation_object_events(event, relationship, payload_idx)
 
-            groups = update_groups(relationship)
-            src_grp, tar_grp, merged_grp = groups
+            id_groups, version_groups = update_groups(relationship)
 
             update_metadata(relationship, payload)
 
-            update_indices(src_grp, tar_grp, merged_grp)
+            update_indices(*id_groups)
+            update_indices(*version_groups)
     db.session.commit()

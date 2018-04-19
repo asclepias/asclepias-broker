@@ -271,12 +271,17 @@ class Group(db.Model, Timestamp):
     id = Column(UUIDType, default=uuid.uuid4, primary_key=True)
     type = Column(Enum(GroupType), nullable=False)
 
-    # TODO: See if this works...
-    # identifiers = orm_relationship(
-    #     Identifier,
-    #     secondary=lambda: Identifier2Group,
-    #     back_populates='groups',
-    #     viewonly=True)
+    identifiers = orm_relationship(
+        Identifier,
+        secondary=lambda: Identifier2Group.__table__,
+        backref='groups',
+        viewonly=True)
+
+    groups = orm_relationship(
+        'Group',
+        secondary=lambda: GroupM2M.__table__,
+        primaryjoin=lambda: (Group.id == GroupM2M.group_id),
+        secondaryjoin=lambda: (Group.id == GroupM2M.subgroup_id))
 
     def __repr__(self):
         """String representation of the group."""
@@ -311,6 +316,14 @@ class GroupRelationship(db.Model, Timestamp):
     target = orm_relationship(
         Group, foreign_keys=[target_id], backref='targets')
 
+    relationships = orm_relationship(
+        'GroupRelationship',
+        secondary=lambda: GroupRelationshipM2M.__table__,
+        primaryjoin=lambda: (GroupRelationship.id ==
+                             GroupRelationshipM2M.relationship_id),
+        secondaryjoin=lambda: (GroupRelationship.id ==
+                               GroupRelationshipM2M.subrelationship_id))
+
     # TODO:
     # We don't store 'deleted' as in the relation as most likely don't need
     # that as 'ground truth' in precomputed groups anyway
@@ -319,12 +332,6 @@ class GroupRelationship(db.Model, Timestamp):
         """String representation of the group relationship."""
         return ('<{self.source} {self.relation.name} {self.target}>'
                 .format(self=self))
-
-    # relationships = orm_relationship(
-    #     Relationship,
-    #     secondary=lambda: Relationship2GroupRelationship,
-    #     back_populates='group_relationships',
-    #     viewonly=True)
 
 
 class Identifier2Group(db.Model, Timestamp):
