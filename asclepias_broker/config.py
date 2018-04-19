@@ -105,7 +105,7 @@ SQLALCHEMY_DATABASE_URI = \
 # Search
 # ======
 
-SEARCH_MAPPINGS = ['objects', 'object-relationships']
+SEARCH_MAPPINGS = ['relationships']
 
 
 # JSONSchemas

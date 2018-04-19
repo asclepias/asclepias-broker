@@ -108,8 +108,7 @@ setup(
             'asclepias_broker_tasks = asclepias_broker.tasks',
         ],
         'invenio_search.mappings': [
-            'objects = asclepias_broker.mappings',
-            'object-relationships = asclepias_broker.mappings',
+            'relationships = asclepias_broker.mappings',
         ],
 
     },

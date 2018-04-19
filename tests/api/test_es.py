@@ -114,13 +114,13 @@ def _assert_equal_doc_and_model(doc, rel_doc, model):
 
 def test_simple_groups(db, es_clear):
     _handle_events([
-        (['C', 'A', 'Cites', 'B', '2018-01-01'], _scholix_data('A', 'B')),
-        (['C', 'A1', 'Cites', 'B', '2018-01-01'], _scholix_data('A1', 'B')),
-        (['C', 'C', 'Cites', 'B', '2018-01-01'], _scholix_data('C', 'B')),
+        (['C', '10.100/zenodo.123', 'Cites', 'B', '2018-01-01'], _scholix_data('A', 'B')),
+        #(['C', 'A1', 'Cites', 'B', '2018-01-01'], _scholix_data('A1', 'B')),
+        #(['C', 'C', 'Cites', 'B', '2018-01-01'], _scholix_data('C', 'B')),
         # (['C', 'B', 'IsIdenticalTo', 'B1', '2018-01-01'],
         #  _scholix_data('B', 'B1')),
-        (['C', 'A1', 'IsIdenticalTo', 'A', '2018-01-01'],
-         _scholix_data('A1', 'A')),
+        #(['C', 'A1', 'IsIdenticalTo', 'A', '2018-01-01'],
+        # _scholix_data('A1', 'A')),
     ])
 
     # metadata = [
@@ -156,11 +156,11 @@ def test_simple_relationship(db, es_clear):
 
     create_objects_from_relations(rels, metadata)
 
-    assert len(ObjectDoc.all()) == 0
+    #assert len(ObjectDoc.all()) == 0
 
     src = get_group_from_id('A')
     trg = get_group_from_id('B')
-    (src_doc, src_rel_doc), (trg_doc, trg_rel_doc) = update_indices(src, trg)
+    update_indices(src, trg)
     current_search_client.indices.refresh()
 
     all_obj_docs = ObjectDoc.all()

@@ -61,6 +61,7 @@ def process_event(event_uuid: str, delete=False):
     # TODO: Should we detect and skip duplicated events?
     event = Event.get(event_uuid)
     # TODO: event.payload contains the whole event, not just payload - refactor
+    groups_ids = []
     with db.session.begin_nested():
         for payload_idx, payload in enumerate(event.payload['Payload']):
             # TODO: marshmallow validation of all payloads
@@ -84,6 +85,7 @@ def process_event(event_uuid: str, delete=False):
 
             update_metadata(relationship, payload)
 
-            update_indices(*id_groups)
-            update_indices(*version_groups)
+            groups_ids.append([str(g.id) if g else g for g in id_groups+version_groups])
     db.session.commit()
+    for ids in groups_ids:
+        update_indices(*ids)
