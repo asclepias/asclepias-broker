@@ -11,6 +11,7 @@ from itertools import groupby
 from invenio_db import db
 
 from ..mappings import ObjectDoc
+from elasticsearch_dsl import Search, Q
 from ..models import Group, GroupRelationship, GroupType, Identifier, \
     Identifier2Group, Relation
 from ..schemas.loaders import from_datacite_relation

@@ -401,9 +401,10 @@ class GroupM2M(db.Model, Timestamp):
     subgroup_id = Column(UUIDType, ForeignKey(Group.id, onupdate='CASCADE',
                                               ondelete='CASCADE'),
                          nullable=False)
-
-    group = orm_relationship(Group, foreign_keys=[group_id])
-    subgroup = orm_relationship(Group, foreign_keys=[subgroup_id])
+    group = orm_relationship(Group, foreign_keys=[group_id],
+                             backref='subgroupsm2m')
+    subgroup = orm_relationship(Group, foreign_keys=[subgroup_id],
+                                backref='supergroupsm2m')
 
     def __repr__(self):
         """String representation of the model."""

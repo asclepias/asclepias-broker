@@ -209,4 +209,3 @@ def update_indices(src_ig, trg_ig, mrg_ig, src_vg, trg_vg, mrg_vg):
         index_identity_group_relationships(src_ig, src_vg)
         index_identity_group_relationships(trg_ig, trg_vg,
                                            exclude_group_ids=(src_ig, src_vg))
-    import ipdb; ipdb.set_trace()

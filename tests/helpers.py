@@ -156,31 +156,32 @@ class Event:
             'Payload': self.payloads,
         }
 
+def generate_payload(item, event_schema=None):
+    if len(item) == 2 and isinstance(item[1], dict):  # Relation + Metadata
+        evt = Event(event_type=EVENT_TYPE_MAP[item[0][0]])
+        payload, metadata = item
+        op, src, rel, trg, at = payload
+        evt.add_payload(src, rel, trg, at, metadata)
+    else:
+        if isinstance(item[0], str):  # Single payload
+            payloads = [item]
+        else:
+            payloads = item
+        evt = Event(event_type=EVENT_TYPE_MAP[payloads[0][0]])
+
+        for op, src, rel, trg, at in payloads:
+            evt.add_payload(src, rel, trg, at)
+    if event_schema:
+        jsonschema.validate(evt.event, event_schema)
+    return evt.event
 
 def generate_payloads(input_items, event_schema=None):
     """Generate event payloads."""
     # jsonschema.validate(input_items, INPUT_ITEMS_SCHEMA)
     events = []
     for item in input_items:
-
-        if len(item) == 2 and isinstance(item[1], dict):  # Relation + Metadata
-            evt = Event(event_type=EVENT_TYPE_MAP[item[0][0]])
-            payload, metadata = item
-            op, src, rel, trg, at = payload
-            evt.add_payload(src, rel, trg, at, metadata)
-            events.append(evt.event)
-        else:
-            if isinstance(item[0], str):  # Single payload
-                payloads = [item]
-            else:
-                payloads = item
-            evt = Event(event_type=EVENT_TYPE_MAP[payloads[0][0]])
-
-            for op, src, rel, trg, at in payloads:
-                evt.add_payload(src, rel, trg, at)
-            events.append(evt.event)
-    if event_schema:
-        jsonschema.validate(events, {'type': 'array', 'items': event_schema})
+        event = generate_payload(item, event_schema=event_schema)
+        events.append(event)
     return events
 
 
