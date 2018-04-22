@@ -51,7 +51,7 @@
             },
             "Type": {
               "properties": {
-                "Type": {
+                "Name": {
                   "type": "keyword"
                 },
                 "SubType": {
@@ -136,7 +136,7 @@
             },
             "Type": {
               "properties": {
-                "Type": {
+                "Name": {
                   "type": "keyword"
                 },
                 "SubType": {
