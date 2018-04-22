@@ -6,22 +6,18 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Elasticsearch indexing module."""
 
-from collections import defaultdict
 from copy import deepcopy
-from itertools import chain
-from typing import Iterable
-from uuid import UUID
-from invenio_db import db
-from sqlalchemy.orm import aliased
+
 import idutils
-
-from invenio_search import current_search_client
-
-from elasticsearch_dsl import Search, Q
 import sqlalchemy as sa
+from invenio_db import db
+from invenio_search import current_search_client
+from invenio_search.api import RecordsSearch
+from sqlalchemy.orm import aliased
 
-from .mappings.dsl import DB_RELATION_TO_ES, ObjectDoc, ObjectRelationshipsDoc
-from .models import Group, GroupRelationship, GroupType, Identifier, Relation, GroupRelationshipM2M, GroupM2M
+from .models import Group, GroupM2M, GroupRelationship, GroupRelationshipM2M, \
+    GroupType
+
 
 def build_id_info(id_):
     """Build information for the Identifier."""
@@ -36,6 +32,7 @@ def build_id_info(id_):
     except Exception:
         pass
     return data
+
 
 def build_group_metadata(group: Group) -> dict:
     """Build the metadata for a group object."""
@@ -72,7 +69,7 @@ def index_documents(docs):
 
 
 def index_identity_group_relationships(ig_id: str, vg_id: str,
-        exclude_group_ids: tuple=None):
+                                       exclude_group_ids: tuple=None):
     """Build the relationship docs for Identity relations."""
     # Build the documents for incoming Version2Identity relations
 
@@ -148,7 +145,8 @@ def index_identity_group_relationships(ig_id: str, vg_id: str,
     index_documents(docs)
 
 
-def index_version_group_relationships(group_id: str, exclude_group_id: str=None):
+def index_version_group_relationships(group_id: str,
+                                      exclude_group_id: str=None):
     """Build the relationship docs for Version relations."""
     if exclude_group_id:
         filter_cond = sa.or_(
@@ -184,11 +182,12 @@ def index_version_group_relationships(group_id: str, exclude_group_id: str=None)
 
 def delete_group_relations(group_id):
     """Delete all relations for given group ID from ES."""
-    q = Search(index='relationships').query('term', Source__ID=group_id)
-    q.delete()
+    q = RecordsSearch(index='relationships').query('term', Source__ID=group_id)
+    # Ignore versioning conflicts when deleting
+    q.params(conflicts='proceed').delete()
 
-    q = Search(index='relationships').query('term', Target__ID=group_id)
-    q.delete()
+    q = RecordsSearch(index='relationships').query('term', Target__ID=group_id)
+    q.params(conflicts='proceed').delete()
 
 
 def update_indices(src_ig, trg_ig, mrg_ig, src_vg, trg_vg, mrg_vg):
