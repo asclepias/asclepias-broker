@@ -84,8 +84,8 @@ def process_event(event_uuid: str, delete=False):
             id_groups, version_groups = update_groups(relationship)
 
             update_metadata(relationship, payload)
-
-            groups_ids.append([str(g.id) if g else g for g in id_groups+version_groups])
+            groups_ids.append(
+                [str(g.id) if g else g for g in id_groups + version_groups])
     db.session.commit()
     for ids in groups_ids:
         update_indices(*ids)

@@ -12,6 +12,12 @@ from __future__ import absolute_import, print_function
 from datetime import timedelta
 
 from invenio_app.config import APP_DEFAULT_SECURE_HEADERS
+from invenio_records_rest.facets import terms_filter
+from invenio_records_rest.utils import deny_all
+from invenio_search.api import RecordsSearch
+
+from asclepias_broker.search import enum_term_filter, nested_range_filter, \
+    nested_terms_filter
 
 
 def _(x):
@@ -127,6 +133,92 @@ MAX_CONTENT_LENGTH = 100 * 1024 * 1024  # 100 MiB
 # ====
 #: Enable Cross-Origin Resource Sharing support.
 REST_ENABLE_CORS = True
+
+RECORDS_REST_ENDPOINTS = dict(
+    relid=dict(
+        pid_type='relid',
+        pid_minter='relid',
+        pid_fetcher='relid',
+        # TODO: Make our own search class
+        search_class=RecordsSearch,
+        indexer_class=None,
+        search_index='relationships',
+        search_type=None,
+        search_factory_imp='asclepias_broker.search.search_factory',
+        # Only the List GET view is available
+        create_permission_factory_imp=deny_all,
+        delete_permission_factory_imp=deny_all,
+        update_permission_factory_imp=deny_all,
+        read_permission_factory_imp=deny_all,
+        links_factory_imp=lambda p, **_: None,
+        record_serializers={
+            'application/json': ('invenio_records_rest.serializers'
+                                 ':json_v1_response'),
+        },
+        # TODO: Implement marshmallow serializers
+        search_serializers={
+            'application/json': ('invenio_records_rest.serializers'
+                                 ':json_v1_search'),
+        },
+        list_route='/relationships/',
+        item_route='/relationships/<pid(relid):pid_value>',
+        default_media_type='application/json',
+        max_result_window=10000,
+        error_handlers=dict(),
+    ),
+)
+
+
+RECORDS_REST_FACETS = dict(
+    relationships=dict(
+        aggs=dict(
+            type=dict(
+                terms=dict(field='Source.Type.Name')
+            ),
+        ),
+        # TODO: Investigate using a webargs-powered search_factory to better
+        # validate and build the query...
+        filters=dict(
+            id=nested_terms_filter('Target.Identifier.ID'),
+            scheme=nested_terms_filter('Target.Identifier.IDScheme'),
+            groupBy=enum_term_filter(
+                label='groupBy',
+                field='Grouping',
+                choices={'identity': 'identity', 'version': 'version'}
+            ),
+            **{'from': nested_range_filter(
+                'from', 'History.LinkPublicationDate', op='gte')},
+            to=nested_range_filter(
+                'to', 'History.LinkPublicationDate', op='lte'),
+            relation=enum_term_filter(
+                label='relation',
+                field='RelationshipType',
+                choices={
+                    'isCitedBy': 'Cites',
+                    'isSupplementedBy': 'IsSupplementTo',
+                    'isRelatedTo': 'IsRelatedTo'
+                }
+            ),
+            type=terms_filter('Source.Type.Name'),
+        ),
+    )
+)
+
+# TODO: See if this actually works
+RECORDS_REST_SORT_OPTIONS = dict(
+    relationships=dict(
+        mostrecent=dict(
+            fields=['Source.PublicationDate'],
+            default_order='desc',
+        ),
+    ),
+)
+
+RECORDS_REST_DEFAULT_SORT = {
+    'relationships': {
+        'noquery': 'mostrecent'
+    }
+}
 
 APP_DEFAULT_SECURE_HEADERS['force_https'] = True
 APP_DEFAULT_SECURE_HEADERS['session_cookie_secure'] = True
