@@ -10,8 +10,6 @@ from itertools import groupby
 
 from invenio_db import db
 
-from ..mappings import ObjectDoc
-from elasticsearch_dsl import Search, Q
 from ..models import Group, GroupRelationship, GroupType, Identifier, \
     Identifier2Group, Relation
 from ..schemas.loaders import from_datacite_relation
@@ -20,33 +18,6 @@ from .ingestion import get_group_from_id
 
 class RelationshipAPI:
     """Relationship API."""
-
-    @classmethod
-    def get_relationships(cls, id_: str, scheme: str, relation: str,
-                          target_type: str=None, from_: str=None, to: str=None,
-                          group_by: str=None, page: int=1, size: int=10):
-        """Query relationships of an identifier."""
-        src_doc = ObjectDoc.get_by_identifiers([id_])
-        rels = {'hits': [], 'total': 0}
-        if src_doc:
-            rel_hits = src_doc.relationships(
-                relation, from_=from_, to=to, page=page, size=size)
-            if rel_hits:
-                rels['total'] = rel_hits.total
-                histories = {r._source.TargetID: [h.to_dict()
-                                                  for h in r._source.History]
-                             for r in rel_hits}
-                if target_type:
-                    target_objects = (
-                        ObjectDoc.search()
-                        .query('ids', values=histories.keys())
-                        .query('term', **{'Type.Name': target_type})).scan()
-                else:
-                    target_objects = ObjectDoc.mget(histories.keys())
-                rels['hits'] = [
-                    {'Target': o.to_dict(), 'LinkHistory': histories[o._id]}
-                    for o in target_objects]
-        return src_doc, rels
 
     @classmethod
     def print_citations(self, pid_value):
