@@ -84,6 +84,14 @@ def assert_es_equals_db():
     assert set(es_norm_q) == set(db_norm_q)
 
 
+def run_events_and_compare(events):
+    current_search.flush_and_refresh('relationships')
+    for evtsrc in events:
+        event = generate_payload(evtsrc)
+        EventAPI.handle_event(event)
+        assert_es_equals_db()
+
+
 def test_simple_groups(db, es_clear):
     """Test simple grouping events."""
     events = [
@@ -98,8 +106,4 @@ def test_simple_groups(db, es_clear):
         (['C', 'X', 'IsIdenticalTo', 'Y', '2018-01-01'],
          _scholix_data('X', 'Y')),
     ]
-    current_search.flush_and_refresh('relationships')
-    for evtsrc in events:
-        event = generate_payload(evtsrc)
-        EventAPI.handle_event(event)
-        assert_es_equals_db()
+    run_events_and_compare(events)
