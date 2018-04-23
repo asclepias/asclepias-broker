@@ -156,7 +156,9 @@ class Event:
             'Payload': self.payloads,
         }
 
+
 def generate_payload(item, event_schema=None):
+    """Generate event payload."""
     if len(item) == 2 and isinstance(item[1], dict):  # Relation + Metadata
         evt = Event(event_type=EVENT_TYPE_MAP[item[0][0]])
         payload, metadata = item
@@ -174,6 +176,7 @@ def generate_payload(item, event_schema=None):
     if event_schema:
         jsonschema.validate(evt.event, event_schema)
     return evt.event
+
 
 def generate_payloads(input_items, event_schema=None):
     """Generate event payloads."""

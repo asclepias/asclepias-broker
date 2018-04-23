@@ -7,9 +7,9 @@
 
 """Test ElasticSearch indexing."""
 
-from elasticsearch_dsl import Search
 from helpers import generate_payload
 from invenio_search import current_search
+from invenio_search.api import RecordsSearch
 
 from asclepias_broker.api import EventAPI
 from asclepias_broker.models import GroupRelationship, GroupType
@@ -75,7 +75,7 @@ def assert_es_equals_db():
     current_search.flush_and_refresh('relationships')
 
     # Fetch all DB objects and all ES objects
-    es_q = list(Search(index='relationships').query().scan())
+    es_q = list(RecordsSearch(index='relationships').query().scan())
     db_q = GroupRelationship.query.all()
 
     # normalize and compare two sets
@@ -91,9 +91,12 @@ def test_simple_groups(db, es_clear):
         (['C', 'B', 'Cites', 'X', '2018-01-01'], _scholix_data('B', 'X')),
         (['C', 'C', 'Cites', 'X', '2018-01-01'], _scholix_data('C', 'X')),
         (['C', 'D', 'Cites', 'Y', '2018-01-01'], _scholix_data('C', 'X')),
-        (['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'], _scholix_data('A', 'B')),
-        (['C', 'B', 'IsIdenticalTo', 'C', '2018-01-01'], _scholix_data('B', 'C')),
-        (['C', 'X', 'IsIdenticalTo', 'Y', '2018-01-01'], _scholix_data('X', 'Y')),
+        (['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
+         _scholix_data('A', 'B')),
+        (['C', 'B', 'IsIdenticalTo', 'C', '2018-01-01'],
+         _scholix_data('B', 'C')),
+        (['C', 'X', 'IsIdenticalTo', 'Y', '2018-01-01'],
+         _scholix_data('X', 'Y')),
     ]
     current_search.flush_and_refresh('relationships')
     for evtsrc in events:
