@@ -16,6 +16,7 @@ readme = open('README.rst').read()
 
 DATABASE = "postgresql"
 ELASTICSEARCH = "elasticsearch6"
+INVENIO_EXTRAS = 'base,auth,{db},{es}'.format(db=DATABASE, es=ELASTICSEARCH)
 
 tests_require = [
     'check-manifest>=0.35',
@@ -23,14 +24,12 @@ tests_require = [
     'isort>=4.3',
     'mock>=2.0.0',
     'pydocstyle>=2.0.0',
-    'pytest>=3.3.1',
-    'pytest-cache>=1.0',
     'pytest-cov>=2.5.1',
-    'pytest-flask>=0.10.0',
     'pytest-invenio>=1.0.1,<1.1.0',
     'pytest-mock>=1.6.0',
     'pytest-pep8>=1.0.6',
     'pytest-random-order>=0.5.4',
+    'pytest>=3.3.1',
 ]
 
 extras_require = {
@@ -50,13 +49,11 @@ setup_requires = [
 
 install_requires = [
     'arrow>=0.12.1',
-    'faker>=0.8.13',
     'Flask-Debugtoolbar>=0.10.1',
     'idutils>=1.0.0',
     'invenio-records-rest>=1.0.1',
-    'invenio[base,auth,{db},{es}]==3.0.0rc1'.format(
-        db=DATABASE, es=ELASTICSEARCH),
-    'jsonschema>=2.6.0',
+    'invenio[{extras}]==3.0.0rc1'.format(extras=INVENIO_EXTRAS),
+    'jsonschema>=2.6.0',  # TODO: Investigate `invenio-jsonschemas` usage
     'marshmallow>=2.15.0',
     'webargs>=2.1.0',
 ]
