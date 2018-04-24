@@ -53,6 +53,7 @@ install_requires = [
     'faker>=0.8.13',
     'Flask-Debugtoolbar>=0.10.1',
     'idutils>=1.0.0',
+    'invenio-records-rest>=1.0.1',
     'invenio[base,auth,{db},{es}]==3.0.0rc1'.format(
         db=DATABASE, es=ELASTICSEARCH),
     'jsonschema>=2.6.0',
@@ -107,9 +108,14 @@ setup(
         'invenio_celery.tasks': [
             'asclepias_broker_tasks = asclepias_broker.tasks',
         ],
+        'invenio_pidstore.fetchers': [
+            'relid = asclepias_broker.pidstore:relid_fetcher',
+        ],
+        'invenio_pidstore.minters': [
+            'relid = asclepias_broker.pidstore:relid_minter',
+        ],
         'invenio_search.mappings': [
-            'objects = asclepias_broker.mappings',
-            'object-relationships = asclepias_broker.mappings',
+            'relationships = asclepias_broker.mappings',
         ],
 
     },

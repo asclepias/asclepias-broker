@@ -249,7 +249,7 @@ def merge_identity_groups(group_a: Group, group_b: Group):
     """
     # Nothing to do if groups are already merged
     if group_a == group_b:
-        return
+        return None, None
     if not (group_a.type == group_b.type == GroupType.Identity):
         raise ValueError("Can only merge Identity groups.")
 
