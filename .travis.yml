@@ -44,7 +44,7 @@ python:
 
 before_install:
   - mkdir /tmp/elasticsearch
-  - wget -O - https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.3.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
+  - wget -O - https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.4.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
   - "/tmp/elasticsearch/bin/elasticsearch > /tmp/local-es.log &"
   # Gecko webdriver: https://github.com/mozilla/geckodriver/releases/
   - "PATH=$PATH:$HOME/webdrivers"
