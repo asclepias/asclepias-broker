@@ -15,6 +15,7 @@ from marshmallow.exceptions import \
 
 from asclepias_broker.api import EventAPI, RelationshipAPI
 
+from .errors import PayloadValidationRESTError
 from .models import Identifier
 
 blueprint = Blueprint('asclepias_ui', __name__, template_folder='templates')
@@ -69,31 +70,6 @@ def relationships():
 api_blueprint = Blueprint('asclepias_api', __name__)
 
 
-class ObjectNotFoundRESTError(RESTException):
-    """Object not found error."""
-
-    code = 404
-
-    def __init__(self, identifier, **kwargs):
-        """Initialize the ObjectNotFound REST exception."""
-        super(ObjectNotFoundRESTError, self).__init__(**kwargs)
-        self.description = \
-            'No object found with identifier [{}]'.format(identifier)
-
-
-class PayloadValidationRESTError(RESTException):
-    """Invalid payload error."""
-
-    code = 400
-
-    def __init__(self, error_message, code=None, **kwargs):
-        """Initialize the PayloadValidation REST exception."""
-        if code:
-            self.code = code
-        super(PayloadValidationRESTError, self).__init__(**kwargs)
-        self.description = error_message
-
-
 class EventResource(MethodView):
     """Event resource."""
 
@@ -107,81 +83,6 @@ class EventResource(MethodView):
             msg = "Validation error: " + str(e.messages)
             raise PayloadValidationRESTError(msg, code=422)
         return "Accepted", 202
-
-
-# class RelationshipResource(ContentNegotiatedMethodView):
-#     """Relationship resource."""
-
-#     @use_kwargs({
-#         'id_': fields.Str(load_from='id', required=True),
-#         'scheme': fields.Str(missing='doi'),
-#         'relation': fields.Str(
-#             required=True,
-#             validate=validate.OneOf([
-#                 'isCitedBy', 'cites', 'isSupplementTo', 'isSupplementedBy',
-#             ])
-#         ),
-#         'type_': fields.Str(load_from='type', missing=None),
-#         'from_': fields.DateTime(load_from='from', missing=None),
-#         'to': fields.DateTime(missing=None),
-#         'group_by': fields.Str(
-#             load_from='groupBy',
-#             validate=validate.OneOf(['identity', 'version']),
-#             missing='identity'),
-#     })
-#     def get(self, id_, scheme, relation, type_, from_, to, group_by):
-#         """Query relationships."""
-#         # TODO: Serialize using marshmallow (.schemas.scholix). This involves
-#         # passing `serializers` for the superclass' constructor.
-#         page = request.values.get('page', 1, type=int)
-#         size = request.values.get('size', 10, type=int)
-#         src_doc, relationships = RelationshipAPI.get_relationships(
-#             id_, scheme, relation, target_type=type_, from_=from_, to=to,
-#             group_by=group_by, page=page, size=size)
-#         if not src_doc:
-#             raise ObjectNotFoundRESTError(id_)
-#         source = (src_doc and src_doc.to_dict()) or {}
-
-#         urlkwargs = {
-#             '_external': True,
-#             'size': size, 'id': id_, 'scheme': scheme, 'relation': relation,
-#         }
-#         if type_:
-#             urlkwargs['type'] = type_
-#         if from_:
-#             urlkwargs['from'] = from_
-#         if to:
-#             urlkwargs['to'] = to
-#         if group_by:
-#             urlkwargs['groupBy'] = group_by
-
-#         endpoint = '.relationships'
-#         links = {'self': url_for(endpoint, page=page, **urlkwargs)}
-#         if page > 1:
-#             links['prev'] = url_for(endpoint, page=page - 1, **urlkwargs)
-#         # TODO: add max_window_size in config
-#         MAX_WINDOW_SIZE = 10000
-#         if size * page < relationships['total'] and \
-#                 size * page < MAX_WINDOW_SIZE:
-#             links['next'] = url_for(endpoint, page=page + 1, **urlkwargs)
-#         return jsonify({
-#             'Source': source,
-#             'Relationship': relationships['hits'],
-#             'Relation': relation,
-#             'GroupBy': group_by,
-#             'Links': links,
-#             'Total': relationships['total'],
-#         })
-# relationships_view = RelationshipResource.as_view('relationships')
-# api_blueprint.add_url_rule('/relationships', view_func=relationships_view)
-
-
-# @parser.error_handler
-# def validation_error_handler(error):
-#     """Handle and serialize errors from webargs validation."""
-#     raise RESTValidationError(
-#         errors=[FieldError(k, v) for k, v in error.messages.items()],
-#     )
 
 
 #
