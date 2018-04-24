@@ -160,7 +160,7 @@ RECORDS_REST_ENDPOINTS = dict(
             'application/json': ('invenio_records_rest.serializers'
                                  ':json_v1_search'),
         },
-        list_route='/relationships/',
+        list_route='/relationships',
         item_route='/relationships/<pid(relid):pid_value>',
         default_media_type='application/json',
         max_result_window=10000,
