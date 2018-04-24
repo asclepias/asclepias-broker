@@ -57,11 +57,7 @@ SETTINGS_TEMPLATE = 'invenio_theme/page_settings.html'
 #: Site name
 THEME_SITENAME = _('Asclepias Broker')
 #: Use default frontpage.
-THEME_FRONTPAGE = True
-#: Frontpage title.
-THEME_FRONTPAGE_TITLE = _('Asclepias Broker')
-#: Frontpage template.
-THEME_FRONTPAGE_TEMPLATE = 'asclepias_broker/frontpage.html'
+THEME_FRONTPAGE = False
 
 
 # Email configuration
@@ -82,6 +78,11 @@ SECURITY_EMAIL_SENDER = SUPPORT_EMAIL
 SECURITY_EMAIL_SUBJECT_REGISTER = _(
     "Welcome to Asclepias Broker!")
 ACCOUNTS_SESSION_REDIS_URL = 'redis://localhost:6379/1'
+
+SECURITY_REGISTERABLE = False
+SECURITY_RECOVERABLE = False
+SECURITY_CONFIRMABLE = False
+SECURITY_CHANGEABLE = False
 
 # Celery configuration
 # ====================
