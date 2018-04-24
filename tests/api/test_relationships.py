@@ -8,6 +8,10 @@
 """Test search endpoint."""
 
 from flask import url_for
+from helpers import generate_payload
+from invenio_search import current_search
+
+from asclepias_broker.api import EventAPI
 
 
 def test_invalid_search_parameters(client):
@@ -43,3 +47,55 @@ def test_invalid_search_parameters(client):
     params['relation'] = 'isCitedBy'
     resp = client.get(search_url, query_string=params)
     assert resp.status_code == 200
+
+
+def _normalize_results(results):
+    normalized = set()
+    for hit in results['hits']['hits']:
+        rel = hit['metadata']
+        src_ids = frozenset(i['ID'] for i in rel['Source']['Identifier'])
+        trg_ids = frozenset(i['ID'] for i in rel['Target']['Identifier'])
+        normalized.add((src_ids, rel['RelationshipType'], trg_ids))
+    return normalized
+
+
+def _process_events(events):
+    for e in events:
+        EventAPI.handle_event(generate_payload(e))
+        current_search.flush_and_refresh('relationships')
+
+
+def test_simple_citations(client, db, es_clear):
+    search_url = url_for('invenio_records_rest.relid_list')
+    params = {'id': 'X', 'scheme': 'doi', 'relation': 'isCitedBy'}
+
+    _process_events([
+        ['C', 'A', 'Cites', 'X', '2018-01-01']
+    ])
+
+    resp = client.get(search_url, query_string=params)
+    assert resp.status_code == 200
+    assert resp.json['hits']['total'] == 1
+    assert _normalize_results(resp.json) == {
+        (frozenset('A'), 'Cites', frozenset('X')),
+    }
+
+    _process_events([
+        ['C', src, 'Cites', 'X', '2018-01-01']
+        for src in ('B', 'C', 'D', 'E', 'F', 'G')
+    ])
+
+    citations_sources = ('A', 'B', 'C', 'D', 'E', 'F', 'G')
+    resp = client.get(search_url, query_string=params)
+    assert resp.status_code == 200
+    assert resp.json['hits']['total'] == 7
+    assert _normalize_results(resp.json) == {
+        (frozenset(src), 'Cites', frozenset('X'))
+        for src in citations_sources
+    }
+
+    for i in citations_sources:
+        params['id'] = i
+        resp = client.get(search_url, query_string=params)
+        assert resp.status_code == 200
+        assert resp.json['hits']['total'] == 0
