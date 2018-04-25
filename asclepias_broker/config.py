@@ -9,6 +9,7 @@
 
 from __future__ import absolute_import, print_function
 
+import os
 from datetime import timedelta
 
 from invenio_app.config import APP_DEFAULT_SECURE_HEADERS
@@ -112,6 +113,28 @@ SQLALCHEMY_DATABASE_URI = \
 # Search
 # ======
 
+if os.environ.get('ELASTICSEARCH_USER') and \
+   os.environ.get('ELASTICSEARCH_PASSWORD'):
+    es_params = dict(
+        http_auth=(os.environ.get('ELASTICSEARCH_USER'),
+                   os.environ.get('ELASTICSEARCH_PASSWORD')),
+        use_ssl=str(os.environ.get('ELASTICSEARCH_USE_SSL')).lower()
+        in ('true'),
+        verify_certs=str(os.environ.get('ELASTICSEARCH_VERIFY_CERTS')).lower()
+        in ('true'),
+    )
+else:
+    es_params = {}
+
+SEARCH_ELASTIC_HOSTS = [
+    dict(
+        host=os.environ.get('ELASTICSEARCH_HOST',
+                            'localhost'),
+        port=int(os.environ.get('ELASTICSEARCH_PORT',
+                                '9200')),
+        **es_params
+    )
+]
 SEARCH_MAPPINGS = ['relationships']
 
 
