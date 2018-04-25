@@ -55,6 +55,7 @@ install_requires = [
     'invenio[{extras}]==3.0.0rc1'.format(extras=INVENIO_EXTRAS),
     'jsonschema>=2.6.0',  # TODO: Investigate `invenio-jsonschemas` usage
     'marshmallow>=2.15.0',
+    'uWSGI>=2.0.17',
     'webargs>=2.1.0',
 ]
 
