@@ -8,18 +8,14 @@
 
 set -e
 
-docker-compose up -d
-
 # TODO: Clean redis
-
 invenio db destroy --yes-i-know
 invenio db init create
-curl -XDELETE localhost:9200/*
+invenio index destroy --yes-i-know --force
 invenio index init --force
 
-# Create admin role to rectict access
-invenio users create test@test.ch -a --password=123456
-invenio users create admin@test.ch -a --password=123456
+# Create admin user and role to restrict access
+invenio users create admin@asclepias.org -a --password=123456
 invenio roles create admin
-invenio roles add admin@test.ch admin
+invenio roles add admin@asclepias.org admin
 invenio access allow superuser-access role admin
