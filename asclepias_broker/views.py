@@ -64,6 +64,12 @@ def relationships():
             'gcitations.html', target=identifier, citations=citations)
 
 
+@blueprint.route('/ping')
+def ping():
+    """Load balancer ping view."""
+    return 'OK'
+
+
 #
 # REST API Views
 #
