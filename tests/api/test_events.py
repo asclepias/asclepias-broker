@@ -61,81 +61,63 @@ def test_invalid_payload(client, db, es, auth_headers):
     data = {'invalid': 'true'}
     resp = client.post(event_url, data=json.dumps(data), headers=auth_headers)
     assert resp.status_code == 422
-    data = {
-        "ID": "41bcdb2c-9fb4-4948-a2ca-434493dc83b3",
-        "EventType": "RelationshipCreated",
-        "Time": "2018-01-01T08:00:00Z",
-        "Creator": "ACME Inc.",
-        "Source": "Test",
-        "Payload": [
-            {
-                "Source": {
-                    "Identifier": {
-                        "ID": "10.1234/foobar.1234",
-                        "IDScheme": "doi"
-                    },
-                    "Type": {
-                        "Name": "unknown"
-                    }
+    data_valid = [
+        {
+            "Source": {
+                "Identifier": {
+                    "ID": "10.1234/foobar.1234",
+                    "IDScheme": "doi"
                 },
-                "RelationshipType": {
-                    "Name": "IsRelatedTo",
-                    "SubType": "IsIdenticalTo",
-                    "SubTypeSchema": "DataCite"
+                "Type": {
+                    "Name": "unknown"
+                }
+            },
+            "RelationshipType": {
+                "Name": "IsRelatedTo",
+                "SubType": "IsIdenticalTo",
+                "SubTypeSchema": "DataCite"
+            },
+            "Target": {
+                "Identifier": {
+                    "ID": "https://example.com/record/12345",
+                    "IDScheme": "url"
                 },
-                "Target": {
-                    "Identifier": {
-                        "ID": "https://example.com/record/12345",
-                        "IDScheme": "url"
-                    },
-                    "Type": {
-                        "Name": "unknown"
-                    }
-                },
-                "LinkPublicationDate": "2018-01-01",
-                "LinkProvider": [
-                    {
-                        "Name": "Link Provider Ltd."
-                    }
-                ]
-            }
-        ]
-    }
-    # Make a copy of valid event payload for modification
-    data_valid = deepcopy(data)
+                "Type": {
+                    "Name": "unknown"
+                }
+            },
+            "LinkPublicationDate": "2018-01-01",
+            "LinkProvider": [
+                {
+                    "Name": "Link Provider Ltd."
+                }
+            ]
+        }
+    ]
     # At least one payload is required
-    data['Payload'] = []
-    resp = client.post(event_url, data=json.dumps(data), headers=auth_headers)
+    data = []
+    resp = client.post(event_url, data=json.dumps(data), headers=auth_headers,
+                       content_type='application/json')
     assert resp.status_code == 422
     assert 'is too short' in resp.json['message']
 
     data = deepcopy(data_valid)
     # Fetch the maxItems constraint from schema
-    maxitems = int(EVENT_SCHEMA['properties']['Payload']['maxItems'])
+    maxitems = int(EVENT_SCHEMA['maxItems'])
+
     # Go over maximum limit of payloads per request
-    data['Payload'] = data_valid['Payload'] * (maxitems + 1)
-    resp = client.post(event_url, data=json.dumps(data), headers=auth_headers)
+    data = data * (maxitems + 1)
+    resp = client.post(event_url, data=json.dumps(data), headers=auth_headers,
+                       content_type='application/json')
     assert resp.status_code == 422
     assert 'is too long' in resp.json['message']
 
-    data = deepcopy(data_valid)
-    # Unknown event type
-    data['EventType'] = 'UnknownEventType'
-    resp = client.post(event_url, data=json.dumps(data), headers=auth_headers)
-    assert resp.status_code == 422
-    assert resp.json['message'].startswith(
-        "'UnknownEventType' is not one of")
-
-    data = deepcopy(data_valid)
     # Not matching identifier scheme
-    data['Payload'][0]['Source']['Identifier']['IDScheme'] = 'unknown'
-    resp = client.post(event_url, data=json.dumps(data), headers=auth_headers)
+    # TODO: For now we accept all IDSchemes
+    data = deepcopy(data_valid)
+    data[0]['Source']['Identifier']['IDScheme'] = 'unknown'
+    resp = client.post(event_url, data=json.dumps(data), headers=auth_headers,
+                       content_type='application/json')
     assert resp.status_code == 422
     assert resp.json['message'].startswith(
         "Validation error") and 'Invalid scheme' in resp.json['message']
-
-    data = deepcopy(data_valid)
-    data['Time'] = 'abc'
-    resp = client.post(event_url, data=json.dumps(data), headers=auth_headers)
-    assert resp.status_code == 422
-    assert "Invalid time format" in resp.json['message']

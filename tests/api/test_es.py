@@ -27,18 +27,21 @@ def _rel_data():
             'LinkPublicationDate': '2018-01-01'}
 
 
-def _scholix_data(src_id, trg_id):
-    return {
-        'Source': _group_data(src_id),
-        'Target': _group_data(trg_id),
-        **_rel_data(),
-    }
+def _rel_with_metadata(src_id, relation, trg_id):
+    return (
+        src_id, relation, trg_id,
+        {
+            'Source': _group_data(src_id),
+            'Target': _group_data(trg_id),
+            **_rel_data(),
+        }
+    )
 
 
 def run_events_and_compare(events):
     current_search.flush_and_refresh('relationships')
-    for evtsrc in events:
-        event = generate_payload(evtsrc)
+    for ev in events:
+        event = generate_payload(ev)
         EventAPI.handle_event(event)
         assert_es_equals_db()
 
@@ -46,15 +49,11 @@ def run_events_and_compare(events):
 def test_simple_groups(db, es_clear):
     """Test simple grouping events."""
     events = [
-        (['C', 'A', 'Cites', 'X', '2018-01-01'], _scholix_data('A', 'X')),
-        (['C', 'B', 'Cites', 'X', '2018-01-01'], _scholix_data('B', 'X')),
-        (['C', 'C', 'Cites', 'X', '2018-01-01'], _scholix_data('C', 'X')),
-        (['C', 'D', 'Cites', 'Y', '2018-01-01'], _scholix_data('C', 'X')),
-        (['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
-         _scholix_data('A', 'B')),
-        (['C', 'B', 'IsIdenticalTo', 'C', '2018-01-01'],
-         _scholix_data('B', 'C')),
-        (['C', 'X', 'IsIdenticalTo', 'Y', '2018-01-01'],
-         _scholix_data('X', 'Y')),
+        _rel_with_metadata('A', 'Cites', 'X'),
+        _rel_with_metadata('B', 'Cites', 'X'),
+        _rel_with_metadata('C', 'Cites', 'X'),
+        _rel_with_metadata('A', 'IsIdenticalTo', 'B'),
+        _rel_with_metadata('B', 'IsIdenticalTo', 'C'),
+        _rel_with_metadata('X', 'IsIdenticalTo', 'Y'),
     ]
     run_events_and_compare(events)

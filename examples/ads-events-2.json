@@ -1,0 +1,1906 @@
+[
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170707530E",
+        "ID": "2017arXiv170707530E"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.27878",
+        "ID": "10.5281/zenodo.27878"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017GMD....10.2495N",
+        "ID": "2017GMD....10.2495N"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.572395",
+        "ID": "10.5281/zenodo.572395"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017A&A...603A.119H",
+        "ID": "2017A&A...603A.119H"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1205.004",
+        "ID": "1205.004"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017MNRAS.468.2582W",
+        "ID": "2017MNRAS.468.2582W"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1010.077",
+        "ID": "1010.077"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170701518L",
+        "ID": "2017arXiv170701518L"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1306.007",
+        "ID": "1306.007"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170608965W",
+        "ID": "2017arXiv170608965W"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1207.005",
+        "ID": "1207.005"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017PhRvB..96b4504B",
+        "ID": "2017PhRvB..96b4504B"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.220867",
+        "ID": "10.5281/zenodo.220867"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170706627J",
+        "ID": "2017arXiv170706627J"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1402.026",
+        "ID": "1402.026"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017JAP...121x5307S",
+        "ID": "2017JAP...121x5307S"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.59293",
+        "ID": "10.5281/zenodo.59293"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017ApJ...844....4L",
+        "ID": "2017ApJ...844....4L"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.18579",
+        "ID": "10.5281/zenodo.18579"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017HESS...21.3307H",
+        "ID": "2017HESS...21.3307H"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.821559",
+        "ID": "10.5281/zenodo.821559"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017ApJ...844....6Z",
+        "ID": "2017ApJ...844....6Z"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1411.009",
+        "ID": "1411.009"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017MNRAS.468.2910B",
+        "ID": "2017MNRAS.468.2910B"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.11813",
+        "ID": "10.5281/zenodo.11813"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170700009B",
+        "ID": "2017arXiv170700009B"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1502.007",
+        "ID": "1502.007"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017ApJ...844...84H",
+        "ID": "2017ApJ...844...84H"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1609.024",
+        "ID": "1609.024"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017ApJ...843....6J",
+        "ID": "2017ApJ...843....6J"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.572990",
+        "ID": "10.5281/zenodo.572990"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017NHESS..17..993B",
+        "ID": "2017NHESS..17..993B"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.29385",
+        "ID": "10.5281/zenodo.29385"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170707003F",
+        "ID": "2017arXiv170707003F"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1408.015",
+        "ID": "1408.015"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017MNRAS.469...95C",
+        "ID": "2017MNRAS.469...95C"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1608.018",
+        "ID": "1608.018"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170701615H",
+        "ID": "2017arXiv170701615H"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.251456",
+        "ID": "10.5281/zenodo.251456"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170701937C",
+        "ID": "2017arXiv170701937C"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1704.001",
+        "ID": "1704.001"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2015SoEn..115..354A",
+        "ID": "2015SoEn..115..354A"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.13348",
+        "ID": "10.5281/zenodo.13348"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017MNRAS.470.2034D",
+        "ID": "2017MNRAS.470.2034D"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.45906",
+        "ID": "10.5281/zenodo.45906"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017A&A...604A..16F",
+        "ID": "2017A&A...604A..16F"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1303.024",
+        "ID": "1303.024"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170800839B",
+        "ID": "2017arXiv170800839B"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1603.004",
+        "ID": "1603.004"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170309710F",
+        "ID": "2017arXiv170309710F"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.806847",
+        "ID": "10.5281/zenodo.806847"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017JOSS....2.....X",
+        "ID": "2017JOSS....2.....X"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.54844",
+        "ID": "10.5281/zenodo.54844"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2016JOSS....1.....R",
+        "ID": "2016JOSS....1.....R"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.159604",
+        "ID": "10.5281/zenodo.159604"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170608980S",
+        "ID": "2017arXiv170608980S"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1502.021",
+        "ID": "1502.021"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017MNRAS.470.1687B",
+        "ID": "2017MNRAS.470.1687B"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1210.002",
+        "ID": "1210.002"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017MNRAS.469.1054A",
+        "ID": "2017MNRAS.469.1054A"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1109.003",
+        "ID": "1109.003"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017ApJ...844..134L",
+        "ID": "2017ApJ...844..134L"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1306.007",
+        "ID": "1306.007"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170708122S",
+        "ID": "2017arXiv170708122S"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1208.017",
+        "ID": "1208.017"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2016JOSS....1.....V",
+        "ID": "2016JOSS....1.....V"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.55270",
+        "ID": "10.5281/zenodo.55270"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170607837L",
+        "ID": "2017arXiv170607837L"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.21703",
+        "ID": "10.5281/zenodo.21703"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2016JOSS....1.....M",
+        "ID": "2016JOSS....1.....M"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.12825",
+        "ID": "10.5281/zenodo.12825"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017MNRAS.469..425W",
+        "ID": "2017MNRAS.469..425W"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1407.005",
+        "ID": "1407.005"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170703487T",
+        "ID": "2017arXiv170703487T"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.60206",
+        "ID": "10.5281/zenodo.60206"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2015arXiv151104836L",
+        "ID": "2015arXiv151104836L"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.11377",
+        "ID": "10.5281/zenodo.11377"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170705394B",
+        "ID": "2017arXiv170705394B"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.248351",
+        "ID": "10.5281/zenodo.248351"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017PASA...34...16S",
+        "ID": "2017PASA...34...16S"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1107.011",
+        "ID": "1107.011"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017MNRAS.468.4748C",
+        "ID": "2017MNRAS.468.4748C"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1208.017",
+        "ID": "1208.017"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170706474A",
+        "ID": "2017arXiv170706474A"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.249479",
+        "ID": "10.5281/zenodo.249479"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017ApJ...843....2H",
+        "ID": "2017ApJ...843....2H"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1204.007",
+        "ID": "1204.007"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017PhRvX...7b1044V",
+        "ID": "2017PhRvX...7b1044V"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1208.017",
+        "ID": "1208.017"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017HESS...21.3125L",
+        "ID": "2017HESS...21.3125L"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.60764",
+        "ID": "10.5281/zenodo.60764"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017ApJ...843...63F",
+        "ID": "2017ApJ...843...63F"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1109.001",
+        "ID": "1109.001"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2016JOSS....1.....H",
+        "ID": "2016JOSS....1.....H"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.58511",
+        "ID": "10.5281/zenodo.58511"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017JOSS....2.....V",
+        "ID": "2017JOSS....2.....V"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.61570",
+        "ID": "10.5281/zenodo.61570"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170709281H",
+        "ID": "2017arXiv170709281H"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.581178",
+        "ID": "10.5281/zenodo.581178"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017arXiv170309716D",
+        "ID": "2017arXiv170309716D"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1501.016",
+        "ID": "1501.016"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017NatSR...7.4060C",
+        "ID": "2017NatSR...7.4060C"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "doi",
+        "IDURL": "https://doi.org/10.5281/zenodo.167858",
+        "ID": "10.5281/zenodo.167858"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017MNRAS.470.4720B",
+        "ID": "2017MNRAS.470.4720B"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1603.013",
+        "ID": "1603.013"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017MNRAS.470.1673L",
+        "ID": "2017MNRAS.470.1673L"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1311.011",
+        "ID": "1311.011"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017MNRAS.469.2024S",
+        "ID": "2017MNRAS.469.2024S"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1407.018",
+        "ID": "1407.018"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  },
+  {
+    "RelationshipType": {
+      "SubTypeSchema": "DataCite",
+      "SubType": "Cites",
+      "Name": "References"
+    },
+    "Source": {
+      "Identifier": {
+        "IDScheme": "ads",
+        "IDURL": "http://adsabs.harvard.edu/abs/2017MNRAS.468.4831K",
+        "ID": "2017MNRAS.468.4831K"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "Target": {
+      "Identifier": {
+        "IDScheme": "ascl",
+        "IDURL": "http://ascl.net/1305.002",
+        "ID": "1305.002"
+      },
+      "Type": {
+        "Name": "software"
+      }
+    },
+    "LinkPublicationDate": "2018-01-01",
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ]
+  }
+]

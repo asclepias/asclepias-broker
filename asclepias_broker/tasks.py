@@ -63,7 +63,7 @@ def process_event(event_uuid: str, delete=False):
     # TODO: event.payload contains the whole event, not just payload - refactor
     groups_ids = []
     with db.session.begin_nested():
-        for payload_idx, payload in enumerate(event.payload['Payload']):
+        for payload_idx, payload in enumerate(event.payload):
             # TODO: marshmallow validation of all payloads
             # should be done on first event ingestion (check)
             relationship, errors = \

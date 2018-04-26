@@ -52,7 +52,8 @@ def examples_dir(base_dir):
 def example_events(examples_dir):
     """Event payloads from the ``examples`` directory."""
     filenames = [
-        'ads-events.json',
+        'ads-events-1.json',
+        'ads-events-2.json',
         'test-events.json',
     ]
     data = []

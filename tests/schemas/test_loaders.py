@@ -14,7 +14,7 @@ import pytest
 
 from asclepias_broker.models import Event, EventType, Identifier, Relation, \
     Relationship
-from asclepias_broker.schemas.loaders import EventSchema, IdentifierSchema, \
+from asclepias_broker.schemas.loaders import IdentifierSchema, \
     RelationshipSchema
 from asclepias_broker.schemas.scholix import SCHOLIX_RELATIONS
 
@@ -123,30 +123,3 @@ def test_relationship_schema(in_rel, out_rel, out_error, db, es_clear):
     else:
         assert not errors
         compare_relationships(relationship, rel_obj(*out_rel))
-
-
-@pytest.mark.parametrize(('in_ev', 'out_ev', 'out_error'), [
-    (
-        ('RelationshipCreated', '1517270400', {'test': 'payload'}),
-        (EventType.RelationshipCreated, (2018, 1, 30)),
-        {},
-    ),
-    (
-        ('RelationshipDeleted', '1517270400', {'test': 'payload'}),
-        (EventType.RelationshipDeleted, (2018, 1, 30)),
-        {},
-    ),
-    (
-        ('invalid_event_type', '1517270400', {'test': 'payload'}),
-        None,
-        {'EventType': ['Not a valid choice.']},
-    ),
-])
-def test_event_schema(in_ev, out_ev, out_error, db, es_clear):
-    ev_payload = ev_dict(*in_ev)
-    event, errors = EventSchema().load(ev_payload)
-    if out_error:
-        assert errors == out_error
-    else:
-        assert not errors
-        compare_events(event, ev_obj(*out_ev, ev_payload))

@@ -91,10 +91,8 @@ class Identifier(db.Model, Timestamp):
                 self.id = uuid.uuid4()
         return self
 
-    def _get_related(self, condition, relationship, with_deleted=False):
+    def _get_related(self, condition, relationship):
         cond = condition & (Relationship.relation == relationship)
-        if not with_deleted:
-            cond &= (Relationship.deleted.is_(False))
         return Relationship.query.filter(cond)
 
     def _get_identities(self, as_relation=False):
@@ -163,13 +161,14 @@ class Relationship(db.Model, Timestamp):
     id = Column(UUIDType, default=uuid.uuid4, primary_key=True)
     source_id = Column(UUIDType,
                        ForeignKey(Identifier.id, onupdate='CASCADE',
-                                  ondelete='CASCADE'),
+                                  ondelete='CASCADE',
+                                  name='fk_relationship_source'),
                        nullable=False)
     target_id = Column(UUIDType, ForeignKey(Identifier.id, onupdate='CASCADE',
-                                            ondelete='CASCADE'),
+                                            ondelete='CASCADE',
+                                            name='fk_relationship_target'),
                        nullable=False)
     relation = Column(Enum(Relation))
-    deleted = Column(Boolean, default=False)
 
     source = orm_relationship(Identifier, foreign_keys=[source_id],
                               backref='sources')
@@ -215,8 +214,7 @@ class Relationship(db.Model, Timestamp):
         """String representation of the relationship."""
         return (
             '<{self.source.value} {self.relation.name} '
-            '{self.target.value}{deleted}>'
-            .format(self=self, deleted=" [D]" if self.deleted else "")
+            '{self.target.value}>'.format(self=self)
         )
 
 
@@ -225,13 +223,10 @@ class Event(db.Model, Timestamp):
 
     __tablename__ = 'event'
 
-    id = Column(UUIDType, primary_key=True)
-    description = Column(String, nullable=True)
-    event_type = Column(Enum(EventType))
-    creator = Column(String)
-    source = Column(String)
+    id = Column(UUIDType, default=uuid.uuid4, primary_key=True)
     payload = Column(JSONType)
-    time = Column(DateTime)
+    # TODO:
+    # add FK to user = ...
 
     @classmethod
     def get(cls, id=None, **kwargs):
@@ -240,7 +235,7 @@ class Event(db.Model, Timestamp):
 
     def __repr__(self):
         """String representation of the event."""
-        return "<{self.id}: {self.time}>".format(self=self)
+        return "<{self.id}: {self.created}>".format(self=self)
 
 
 class ObjectEvent(db.Model, Timestamp):

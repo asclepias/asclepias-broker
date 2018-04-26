@@ -8,7 +8,7 @@
 """Test citation queries."""
 
 import pytest
-from helpers import generate_payloads
+from helpers import generate_payload
 
 from asclepias_broker.api import EventAPI, RelationshipAPI
 from asclepias_broker.models import Identifier
@@ -17,7 +17,7 @@ TEST_CASES = [
     (
         'no_citations',
         [
-            ['C', 'A', 'IsSupplementTo', 'B', '2018-01-01'],
+            ['A', 'IsSupplementTo', 'B'],
         ],
         {
             'A': [set(), set()],
@@ -27,7 +27,7 @@ TEST_CASES = [
     (
         'one_identity',
         [
-            ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
+            ['A', 'IsIdenticalTo', 'B'],
         ],
         {
             'A': [set(), set()],
@@ -37,8 +37,8 @@ TEST_CASES = [
     (
         'two_identities',
         [
-            ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
-            ['C', 'B', 'IsIdenticalTo', 'C', '2018-01-01'],
+            ['A', 'IsIdenticalTo', 'B'],
+            ['B', 'IsIdenticalTo', 'C'],
         ],
         {
             'A': [set(), set()],
@@ -49,7 +49,7 @@ TEST_CASES = [
     (
         'one_citation',
         [
-            ['C', 'A', 'Cites', 'B', '2018-01-01'],
+            ['A', 'Cites', 'B'],
         ],
         {
             'A': [set(), set()],
@@ -59,8 +59,8 @@ TEST_CASES = [
     (
         'two_citations',
         [
-            ['C', 'A', 'Cites', 'B', '2018-01-01'],
-            ['C', 'C', 'Cites', 'B', '2018-01-01'],
+            ['A', 'Cites', 'B'],
+            ['C', 'Cites', 'B'],
         ],
         {
             'A': [set(), set()],
@@ -71,8 +71,8 @@ TEST_CASES = [
     (
         'one_indirect_citation',
         [
-            ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
-            ['C', 'C', 'Cites', 'B', '2018-01-01'],
+            ['A', 'IsIdenticalTo', 'B'],
+            ['C', 'Cites', 'B'],
         ],
         {
             'A': [{'C'}, {('C', 'B')}],
@@ -83,10 +83,10 @@ TEST_CASES = [
     (
         'two_indirect_citations',
         [
-            ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
-            ['C', 'C', 'IsIdenticalTo', 'A', '2018-01-01'],
-            ['C', 'X', 'Cites', 'B', '2018-01-01'],
-            ['C', 'Y', 'Cites', 'C', '2018-01-01'],
+            ['A', 'IsIdenticalTo', 'B'],
+            ['C', 'IsIdenticalTo', 'A'],
+            ['X', 'Cites', 'B'],
+            ['Y', 'Cites', 'C'],
         ],
         {
             'A': [{'X', 'Y'}, {('X', 'B'), ('Y', 'C')}],
@@ -99,11 +99,11 @@ TEST_CASES = [
     (
         'two_indirect_identical_citations',
         [
-            ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
-            ['C', 'C', 'IsIdenticalTo', 'A', '2018-01-01'],
-            ['C', 'X', 'Cites', 'B', '2018-01-01'],
-            ['C', 'Y', 'Cites', 'C', '2018-01-01'],
-            ['C', 'Y', 'IsIdenticalTo', 'X', '2018-01-01'],
+            ['A', 'IsIdenticalTo', 'B'],
+            ['C', 'IsIdenticalTo', 'A'],
+            ['X', 'Cites', 'B'],
+            ['Y', 'Cites', 'C'],
+            ['Y', 'IsIdenticalTo', 'X'],
         ],
         # NOTE: Since the `expand_target` is not called, this still counts two
         # unique citations.
@@ -121,8 +121,8 @@ TEST_CASES = [
 @pytest.mark.parametrize(('test_case_name', 'events', 'results'), TEST_CASES)
 def test_simple_citations(test_case_name, events, results, db, es):
     """Test simple citation queries."""
-    for ev in generate_payloads(events):
-        EventAPI.handle_event(ev)
+    for ev in events:
+        EventAPI.handle_event(generate_payload(ev))
     es.indices.refresh()
     for cited_id_value, (citation_result, relation_result) in results.items():
         cited_id = (Identifier.query
@@ -140,7 +140,7 @@ TEST_CASES = [
     (
         'one_citation',
         [
-            ['C', 'A', 'Cites', 'B', '2018-01-01'],
+            ['A', 'Cites', 'B'],
         ],
         {
             # 'A': [set(), set()],
@@ -152,8 +152,8 @@ TEST_CASES = [
 
 @pytest.mark.parametrize(('test_case_name', 'events', 'results'), TEST_CASES)
 def test_grouping_query(test_case_name, events, results, db, es):
-    for ev in generate_payloads(events):
-        EventAPI.handle_event(ev)
+    for ev in events:
+        EventAPI.handle_event(generate_payload(ev))
     for cited_id_value, _ in results.items():
         pass
         # cited_id = Identifier.query.filter_by(value=cited_id_value).one()

@@ -7,7 +7,7 @@
 
 """Test broker model."""
 from helpers import assert_grouping, create_objects_from_relations, \
-    generate_payloads
+    generate_payload
 
 from asclepias_broker.api import EventAPI
 from asclepias_broker.api.ingestion import get_group_from_id, \
@@ -18,16 +18,15 @@ from asclepias_broker.models import Group, GroupM2M, GroupMetadata, \
     Relationship2GroupRelationship
 
 
-def _handle_events(evtsrc):
-    events = generate_payloads(evtsrc)
+def _handle_events(events):
     for ev in events:
-        EventAPI.handle_event(ev)
+        EventAPI.handle_event(generate_payload(ev))
 
 
 def off_test_simple_id_group_merge(db):
     """Test simple ID groups merging."""
     evtsrc = [
-        ['C', 'A', 'IsIdenticalTo', 'B', '2018-01-01'],
+        ['A', 'IsIdenticalTo', 'B'],
     ]
     _handle_events(evtsrc)
     # {'A', 'B'}
@@ -38,7 +37,7 @@ def off_test_simple_id_group_merge(db):
     assert Relationship.query.count() == 1
     assert Identifier2Group.query.count() == 2
     evtsrc = [
-        ['C', 'A', 'IsIdenticalTo', 'C', '2018-01-01'],
+        ['A', 'IsIdenticalTo', 'C'],
     ]
     _handle_events(evtsrc)
     # {'A', 'B', 'C'}
@@ -47,7 +46,7 @@ def off_test_simple_id_group_merge(db):
     assert Identifier2Group.query.count() == 3
 
     evtsrc = [
-        ['C', 'D', 'IsIdenticalTo', 'E', '2018-01-01'],
+        ['D', 'IsIdenticalTo', 'E'],
     ]
     _handle_events(evtsrc)
     # {'A', 'B', 'C'}, {'D', 'E'}
@@ -56,7 +55,7 @@ def off_test_simple_id_group_merge(db):
     assert Identifier2Group.query.count() == 5
 
     evtsrc = [
-        ['C', 'A', 'IsIdenticalTo', 'D', '2018-01-01'],
+        ['A', 'IsIdenticalTo', 'D'],
     ]
     _handle_events(evtsrc)
     # {'A', 'B', 'C', 'D', 'E'}

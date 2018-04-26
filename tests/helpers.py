@@ -26,98 +26,32 @@ from asclepias_broker.models import Group, GroupM2M, GroupMetadata, \
 #
 # Events generation helpers
 #
-EVENT_TYPE_MAP = {'C': 'RelationshipCreated', 'D': 'RelationshipDeleted'}
-SCHOLIX_RELATIONS = {'References', 'IsReferencedBy', 'IsSupplementTo',
-                     'IsSupplementedBy'}
+SCHOLIX_RELATIONS_ENUM = SCHOLIX_SCHEMA['properties']['RelationshipType']['properties']['Name']['enum']  # noqa
+
 RELATIONS_ENUM = [
     'References', 'IsReferencedBy', 'IsSupplementTo', 'IsSupplementedBy',
     'IsIdenticalTo', 'Cites', 'IsCitedBy', 'IsVersionOf', 'HasVersion']
 
-INPUT_ITEMS_SCHEMA = {
-    'definitions': {
-        'Relationship': {
-            'type': 'array',
-            'items': [
-                {'type': 'string', 'title': 'Event type', 'enum': ['C', 'D']},
-                {'type': 'string', 'title': 'Source identifier'},
-                {'type': 'string', 'title': 'Relation',
-                 'enum': RELATIONS_ENUM},
-                {'type': 'string', 'title': 'Target identifier'},
-                {'type': 'string', 'title': 'Publication Date'},
-            ],
-        },
-        'ObjMeta': {
-            'type': 'object',
-            'properties': {
-                'Type': {
-                    'type': 'string',
-                    'enum': ['literature', 'dataset', 'unknown']
-                },
-                'Title': {
-                    'type': 'string'
-                },
-                'Creator': {
-                    'type': 'array',
-                    'items': SCHOLIX_SCHEMA['definitions']['PersonOrOrgType']
-                }
-            }
-        },
-        'Metadata': {
-            'type': 'object',
-            'properties': {
-                'Source': {
-                    '$ref': '#definitions/ObjMeta'
-                },
-                'Target': {
-                    '$ref': '#definitions/ObjMeta'
-                },
-                'LinkProvider':
-                    SCHOLIX_SCHEMA['definitions']['PersonOrOrgType'],
-                'LinkPublicationDate':
-                    SCHOLIX_SCHEMA['definitions']['DateType'],
-            }
-        }
-    },
-    'type': 'array',
-    'items': {
-        'oneOf': [
-            # Allow nested, multi-payload events
-            {'type': 'array', 'items': {'$ref': '#/definitions/Relationship'}},
-            {'type': 'array', 'items': [
-                    {'$ref': '#/definitions/Relationship'},
-                    {'$ref': '#/definitions/Metadata'},
-                ]},
-            {'$ref': '#/definitions/Relationship'},
-        ],
-    }
-}
 
+def generate_relationship(min_rel_tuple):
+    """
+    Generate full relationship object from minimal description.
 
-class Event:
-    """Event creation helper class."""
-
-    def __init__(self, **kwargs):
-        """Intialize an event."""
-        self.id = kwargs.get('id', str(uuid.uuid4()))
-        self.time = kwargs.get('time', str(int(time.time())))
-        self.payloads = kwargs.get('payload', [])
-        self.event_type = kwargs.get('event_type', 'RelationshipCreated')
-        self.creator = kwargs.get('creator', 'ACME Inc.')
-        self.source = kwargs.get('source', 'Test')
-
-    def _gen_identifier(self, identifier, scheme=None, url=None):
+    Generates full scholix relationship object from minimal relationship
+    description provided as a triplet (source, relation, target).
+    """
+    def _gen_identifier(identifier, scheme=None, url=None):
         d = {'ID': identifier, 'IDScheme': scheme or 'DOI'}
         if url:
             d['IDURL'] = url
         return d
 
-    def _gen_object(self, obj, metadata):
-        type_ = metadata.get('Type')
+    def _gen_object(obj, metadata):
         title = metadata.get('Title')
         creator = metadata.get('Creator')
         obj = {
-            'Identifier': self._gen_identifier(obj),
-            'Type': type_ or {'Name': 'unknown'},
+            'Identifier': _gen_identifier(obj),
+            'Type': metadata.get('Type', {'Name': 'unknown'}),
         }
         if title:
             obj['Title'] = title
@@ -125,68 +59,40 @@ class Event:
             obj['Creator'] = creator
         return obj
 
-    def _gen_relation(self, relation):
-        if relation not in SCHOLIX_RELATIONS:
+    def _gen_relation(relation):
+        assert relation in RELATIONS_ENUM
+        if relation not in SCHOLIX_RELATIONS_ENUM:
             return {'Name': 'IsRelatedTo', 'SubType': relation,
                     'SubTypeSchema': 'DataCite'}
         return {'Name': relation}
+    if len(min_rel_tuple) == 3:
+        source, relation, target = min_rel_tuple
+        metadata = {}
+    else:
+        source, relation, target, metadata = min_rel_tuple
 
-    def add_payload(self, source, relation, target, publication_date,
-                    metadata=None):
-        """Add a payload to the event."""
-        metadata = metadata or {}
-        self.payloads.append({
-            'Source': self._gen_object(source, metadata.get('Source', {})),
-            'RelationshipType': self._gen_relation(relation),
-            'Target': self._gen_object(target, metadata.get('Target', {})),
-            'LinkPublicationDate': publication_date,
-            'LinkProvider': [metadata.get('LinkProvider',
-                                          {'Name': 'Link Provider Ltd.'})]
-        })
-        return self
-
-    @property
-    def event(self):
-        """Get the serialized event."""
-        return {
-            'ID': self.id,
-            'EventType': self.event_type,
-            'Time': self.time,
-            'Creator': self.creator,
-            'Source': self.source,
-            'Payload': self.payloads,
-        }
+    return {
+        'Source': _gen_object(source, metadata.get('Source', {})),
+        'RelationshipType': _gen_relation(relation),
+        'Target': _gen_object(target, metadata.get('Target', {})),
+        'LinkPublicationDate': metadata.get('LinkPublicationDate',
+                                            '2018-01-01'),
+        'LinkProvider': [metadata.get('LinkProvider',
+                                      {'Name': 'Link Provider Ltd.'})]
+    }
 
 
 def generate_payload(item, event_schema=None):
     """Generate event payload."""
-    if len(item) == 2 and isinstance(item[1], dict):  # Relation + Metadata
-        evt = Event(event_type=EVENT_TYPE_MAP[item[0][0]])
-        payload, metadata = item
-        op, src, rel, trg, at = payload
-        evt.add_payload(src, rel, trg, at, metadata)
+    if isinstance(item[0], str):  # Single payload
+        payload = [item]
     else:
-        if isinstance(item[0], str):  # Single payload
-            payloads = [item]
-        else:
-            payloads = item
-        evt = Event(event_type=EVENT_TYPE_MAP[payloads[0][0]])
+        payload = item
 
-        for op, src, rel, trg, at in payloads:
-            evt.add_payload(src, rel, trg, at)
+    event = [generate_relationship(rel) for rel in payload]
     if event_schema:
-        jsonschema.validate(evt.event, event_schema)
-    return evt.event
-
-
-def generate_payloads(input_items, event_schema=None):
-    """Generate event payloads."""
-    # jsonschema.validate(input_items, INPUT_ITEMS_SCHEMA)
-    events = []
-    for item in input_items:
-        event = generate_payload(item, event_schema=event_schema)
-        events.append(event)
-    return events
+        jsonschema.validate(event, event_schema)
+    return event
 
 
 def create_objects_from_relations(relationships: List[Tuple],
@@ -365,60 +271,3 @@ def assert_grouping(grouping):
                 assert GroupRelationshipM2M.query.filter_by(
                     relationship=rel_map[group_rel],
                     subrelationship=rel_map[group_subrel]).one()
-
-
-def normalize_es_result(es_result):
-    """Turn a single ES result (relationship doc) into a normalized format."""
-    return (
-        ('RelationshipType', es_result['RelationshipType']),
-        ('Grouping', es_result['Grouping']),
-        ('ID', es_result['ID']),
-        ('SourceID', es_result['Source']['ID']),
-        ('TargetID', es_result['Target']['ID']),
-    )
-
-
-def normalize_db_result(db_result):
-    """Turn a single DB result (GroupRelationship) into a normalized format."""
-    # For Identity GroupRelationships and for SourceID we fetch a
-    # Version Group of the source
-    if db_result.type == GroupType.Identity:
-        source_id = db_result.source.supergroupsm2m[0].group.id
-    else:
-        source_id = db_result.source.id
-
-    return (
-        ('RelationshipType', db_result.relation.name),
-        ('Grouping', db_result.type.name.lower()),
-        ('ID', str(db_result.id)),
-        ('SourceID', str(source_id)),
-        ('TargetID', str(db_result.target.id)),
-    )
-
-
-def assert_es_equals_db():
-    """Assert that the relationships in ES the GroupRelationships in DB.
-
-    NOTE: This tests takes the state of the DB as the reference for comparison.
-    """
-    # Wait for ES to be available
-    current_search.flush_and_refresh('relationships')
-
-    # Fetch all DB objects and all ES objects
-    es_q = list(RecordsSearch(index='relationships').query().scan())
-    db_q = GroupRelationship.query.all()
-
-    # normalize and compare two sets
-    es_norm_q = list(map(normalize_es_result, es_q))
-    db_norm_q = list(map(normalize_db_result, db_q))
-    assert set(es_norm_q) == set(db_norm_q)
-
-
-if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print('Usage: python gen.py relations_input.json')
-        exit(1)
-    with open(sys.argv[1], 'r') as fp:
-        input_items = json.load(fp)
-    res = generate_payloads(input_items)
-    print(json.dumps(res, indent=2))

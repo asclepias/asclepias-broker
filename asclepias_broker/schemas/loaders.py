@@ -84,6 +84,7 @@ class IdentifierSchema(Schema):
         value = data['value']
         scheme = data['scheme'].lower()
         schemes = idutils.detect_identifier_schemes(value)
+        ## TODO: "pmid" scheme with value '11781516' collides (with ean8)
         if schemes and scheme not in schemes:
             raise ValidationError("Invalid scheme '{}'".format(data['scheme']),
                                   'IDScheme')
@@ -117,46 +118,3 @@ class RelationshipSchema(Schema):
         if self._inversed:
             data['Source'], data['Target'] = data['Target'], data['Source']
         return data
-
-
-@to_model(Event)
-class EventSchema(Schema):
-    """Event loader schema."""
-
-    EVENT_TYPE_MAP = {
-        'RelationshipCreated': EventType.RelationshipCreated,
-        'RelationshipDeleted': EventType.RelationshipDeleted,
-    }
-
-    id = fields.UUID(required=True, load_from='ID')
-    event_type = fields.Method(
-        deserialize='get_event_type', required=True, validate=OneOf(EventType),
-        load_from='EventType')
-    description = fields.Str(load_from='Description')
-    creator = fields.Str(required=True, load_from='Creator')
-    source = fields.Str(required=True, load_from='Source')
-    payload = fields.Method(deserialize='get_payload', required=True,
-                            load_from='Payload')
-    time = fields.Method(deserialize='get_time', required=True,
-                         load_from='Time')
-
-    @pre_load
-    def store_original_payload(self, data):
-        """Store a copy the entire original payload."""
-        self.context['original_payload'] = data
-
-    def get_event_type(self, obj):
-        """Get the enum value for type of the event."""
-        return self.EVENT_TYPE_MAP.get(obj, missing)
-
-    def get_time(self, obj):
-        """Parse the time value of the event."""
-        try:
-            return arrow.get(obj).datetime
-        except ParserError as e:
-            raise ValidationError("Invalid time format: {0}. ISO 8601 UTC "
-                                  "timestamp required.".format(obj))
-
-    def get_payload(self, obj):
-        """Get the previously stored original payload."""
-        return self.context['original_payload']

@@ -70,7 +70,7 @@ def test_simple_citations(client, db, es_clear):
     params = {'id': 'X', 'scheme': 'doi', 'relation': 'isCitedBy'}
 
     _process_events([
-        ['C', 'A', 'Cites', 'X', '2018-01-01']
+        ['A', 'Cites', 'X']
     ])
 
     resp = client.get(search_url, query_string=params)
@@ -81,7 +81,7 @@ def test_simple_citations(client, db, es_clear):
     }
 
     _process_events([
-        ['C', src, 'Cites', 'X', '2018-01-01']
+        [src, 'Cites', 'X']
         for src in ('B', 'C', 'D', 'E', 'F', 'G')
     ])
 
