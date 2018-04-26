@@ -17,7 +17,7 @@ from invenio_db import db
 from invenio_search import RecordsSearch, current_search
 
 from asclepias_broker.api.ingestion import get_or_create_groups
-from asclepias_broker.jsonschemas import SCHOLIX_SCHEMA
+from asclepias_broker.jsonschemas import SCHOLIX_SCHEMA, SCHOLIX_RELATIONS
 from asclepias_broker.models import Group, GroupM2M, GroupMetadata, \
     GroupRelationship, GroupRelationshipM2M, GroupRelationshipMetadata, \
     GroupType, Identifier, Identifier2Group, Relationship, \
@@ -26,11 +26,41 @@ from asclepias_broker.models import Group, GroupM2M, GroupMetadata, \
 #
 # Events generation helpers
 #
-SCHOLIX_RELATIONS_ENUM = SCHOLIX_SCHEMA['properties']['RelationshipType']['properties']['Name']['enum']  # noqa
-
-RELATIONS_ENUM = [
+DATACITE_RELATIONS = [
     'References', 'IsReferencedBy', 'IsSupplementTo', 'IsSupplementedBy',
     'IsIdenticalTo', 'Cites', 'IsCitedBy', 'IsVersionOf', 'HasVersion']
+
+
+def gen_identifier(identifier, scheme, url=None):
+    """Generate identifier dictionary."""
+    d = {'ID': identifier, 'IDScheme': scheme}
+    if url:
+        d['IDURL'] = url
+    return d
+
+
+def gen_relation(relation):
+    """Generate relation dictionary."""
+    assert relation in DATACITE_RELATIONS
+    if relation not in SCHOLIX_RELATIONS:
+        return {'Name': 'IsRelatedTo', 'SubType': relation,
+                'SubTypeSchema': 'DataCite'}
+    return {'Name': relation}
+
+
+def gen_object(identifier, metadata):
+    """Generate a object dicitonary (source or target)."""
+    title = metadata.get('Title')
+    creator = metadata.get('Creator')
+    obj = {
+        'Identifier': gen_identifier(identifier, 'doi'),
+        'Type': metadata.get('Type', {'Name': 'unknown'}),
+    }
+    if title:
+        obj['Title'] = title
+    if creator:
+        obj['Creator'] = creator
+    return obj
 
 
 def generate_relationship(min_rel_tuple):
@@ -60,8 +90,8 @@ def generate_relationship(min_rel_tuple):
         return obj
 
     def _gen_relation(relation):
-        assert relation in RELATIONS_ENUM
-        if relation not in SCHOLIX_RELATIONS_ENUM:
+        assert relation in DATACITE_RELATIONS
+        if relation not in SCHOLIX_RELATIONS:
             return {'Name': 'IsRelatedTo', 'SubType': relation,
                     'SubTypeSchema': 'DataCite'}
         return {'Name': relation}
@@ -271,3 +301,50 @@ def assert_grouping(grouping):
                 assert GroupRelationshipM2M.query.filter_by(
                     relationship=rel_map[group_rel],
                     subrelationship=rel_map[group_subrel]).one()
+
+
+def normalize_es_result(es_result):
+    """Turn a single ES result (relationship doc) into a normalized format."""
+    return (
+        ('RelationshipType', es_result['RelationshipType']),
+        ('Grouping', es_result['Grouping']),
+        ('ID', es_result['ID']),
+        ('SourceID', es_result['Source']['ID']),
+        ('TargetID', es_result['Target']['ID']),
+    )
+
+
+def normalize_db_result(db_result):
+    """Turn a single DB result (GroupRelationship) into a normalized format."""
+    # For Identity GroupRelationships and for SourceID we fetch a
+    # Version Group of the source
+    if db_result.type == GroupType.Identity:
+        source_id = db_result.source.supergroupsm2m[0].group.id
+    else:
+        source_id = db_result.source.id
+
+    return (
+        ('RelationshipType', db_result.relation.name),
+        ('Grouping', db_result.type.name.lower()),
+        ('ID', str(db_result.id)),
+        ('SourceID', str(source_id)),
+        ('TargetID', str(db_result.target.id)),
+    )
+
+
+def assert_es_equals_db():
+    """Assert that the relationships in ES the GroupRelationships in DB.
+
+    NOTE: This tests takes the state of the DB as the reference for comparison.
+    """
+    # Wait for ES to be available
+    current_search.flush_and_refresh('relationships')
+
+    # Fetch all DB objects and all ES objects
+    es_q = list(RecordsSearch(index='relationships').query().scan())
+    db_q = GroupRelationship.query.all()
+
+    # normalize and compare two sets
+    es_norm_q = list(map(normalize_es_result, es_q))
+    db_norm_q = list(map(normalize_db_result, db_q))
+    assert set(es_norm_q) == set(db_norm_q)

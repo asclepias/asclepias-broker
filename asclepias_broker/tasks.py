@@ -56,7 +56,7 @@ def create_relation_object_events(event, relationship, payload_idx):
 
 
 @shared_task(ignore_result=True)
-def process_event(event_uuid: str, delete=False):
+def process_event(event_uuid: str):
     """Process an event's payloads."""
     # TODO: Should we detect and skip duplicated events?
     event = Event.get(event_uuid)
@@ -72,8 +72,6 @@ def process_event(event_uuid: str, delete=False):
             # with RelationshipSchema on the event ingestion
             if errors:
                 raise MarshmallowValidationError(errors)
-            if relationship.id:
-                relationship.deleted = delete
             db.session.add(relationship)
             # We need ORM relationship with IDs, since Event has
             # 'weak' (non-FK) relations to the objects, hence we need

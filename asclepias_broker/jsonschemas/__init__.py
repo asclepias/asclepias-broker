@@ -20,3 +20,6 @@ with open(os.path.join(_CUR_DIR, 'scholix-v3.json'), 'r') as fp:
 
 with open(os.path.join(_CUR_DIR, 'event.json'), 'r') as fp:
     EVENT_SCHEMA = json.load(fp)
+
+SCHOLIX_RELATIONS = \
+    SCHOLIX_SCHEMA['properties']['RelationshipType']['properties']['Name']['enum']

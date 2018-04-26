@@ -17,77 +17,41 @@ from asclepias_broker.models import Event, EventType, Identifier, Relation, \
 from asclepias_broker.schemas.loaders import IdentifierSchema, \
     RelationshipSchema
 from asclepias_broker.schemas.scholix import SCHOLIX_RELATIONS
+from helpers import gen_identifier, gen_relation
 
 
 def compare_identifiers(a, b):
+    """Identifier comparator."""
     assert a.value == b.value
     assert a.scheme == b.scheme
 
 
 def compare_relationships(a, b):
+    """Relationship comparator."""
     assert a.relation == b.relation
     compare_identifiers(a.source, b.source)
     compare_identifiers(a.target, b.target)
 
 
-def compare_events(a, b):
-    assert a.event_type == b.event_type
-    assert a.description == b.description
-    assert a.creator == b.creator
-    assert a.source == b.source
-    assert a.payload == b.payload
-    assert a.time == b.time
-
-
-def id_dict(identifier, scheme):
-    return {'ID': identifier, 'IDScheme': scheme}
-
-
 def id_obj(identifier, scheme):
+    """Identifier DB object generator."""
     return Identifier(value=identifier, scheme=scheme)
 
 
-def relation_dict(type_):
-    if type_ not in SCHOLIX_RELATIONS:
-        return {'Name': 'IsRelatedTo', 'SubType': type_,
-                'SubTypeSchema': 'DataCite'}
-    return {'Name': type_}
-
-
 def rel_dict(source, relation, target):
+    """Relationship dictionary generator."""
     return {
-        'Source': {'Identifier': id_dict(*source)},
-        'RelationshipType': relation_dict(relation),
-        'Target': {'Identifier': id_dict(*target)},
+        'Source': {'Identifier': gen_identifier(*source)},
+        'RelationshipType': gen_relation(relation),
+        'Target': {'Identifier': gen_identifier(*target)},
     }
 
 
 def rel_obj(source, relation, target):
+    """Relationship DB object generator."""
     return Relationship(source=id_obj(*source),
                         target=id_obj(*target),
                         relation=relation)
-
-
-def ev_dict(type_, time, payload):
-    return {
-        'ID': '00000000-0000-0000-0000-000000000000',
-        'EventType': type_,
-        'Payload': payload,
-        'Creator': 'Test creator',
-        'Source': 'Test source',
-        'Time': time,
-    }
-
-
-def ev_obj(type_, time, payload):
-    return Event(
-        id='00000000-0000-0000-0000-000000000000',
-        event_type=type_,
-        creator='Test creator',
-        source='Test source',
-        time=arrow.get(datetime(*time)),
-        payload=payload,
-    )
 
 
 @pytest.mark.parametrize(('in_id', 'out_id', 'out_error'), [
@@ -96,7 +60,8 @@ def ev_obj(type_, time, payload):
     (('http://id.com/123', 'URL'), ('http://id.com/123', 'url'), {}),
 ])
 def test_identifier_schema(in_id, out_id, out_error, db, es_clear):
-    identifier, errors = IdentifierSchema().load(id_dict(*in_id))
+    """Test the schema for identifier."""
+    identifier, errors = IdentifierSchema().load(gen_identifier(*in_id))
     if out_error:
         assert errors == out_error
     else:
@@ -117,6 +82,7 @@ def test_identifier_schema(in_id, out_id, out_error, db, es_clear):
     ),
 ])
 def test_relationship_schema(in_rel, out_rel, out_error, db, es_clear):
+    """Test the schema for relationship."""
     relationship, errors = RelationshipSchema().load(rel_dict(*in_rel))
     if out_error:
         assert errors == out_error

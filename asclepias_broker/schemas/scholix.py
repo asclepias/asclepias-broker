@@ -8,8 +8,7 @@
 
 from marshmallow import Schema, fields, pre_dump, validate
 
-SCHOLIX_RELATIONS = {'References', 'IsReferencedBy', 'IsSupplementTo',
-                     'IsSupplementedBy'}
+from ..jsonschemas import SCHOLIX_RELATIONS
 
 
 class IdentifierSchema(Schema):
