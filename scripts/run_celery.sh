@@ -8,7 +8,7 @@
 
 set -e
 
-./bootstrap
+export FLASK_DEBUG=1
+export SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://asclepias:asclepias@localhost/asclepias'
 
-invenio alembic upgrade
-invenio index init --force
+celery worker -A invenio_app.celery -l INFO -f celerylog.log -c 1 --purge

@@ -8,4 +8,4 @@
 
 set -e
 
-invenio shell
+docker-compose up

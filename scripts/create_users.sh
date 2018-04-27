@@ -8,14 +8,9 @@
 
 set -e
 
-# TODO: Clean redis
-invenio db destroy --yes-i-know
-invenio db init create
-invenio index destroy --yes-i-know --force
-invenio index init --force
-
-# Create admin user and role to restrict access
-invenio users create admin@asclepias.org -a --password=123456
+# Create admin role to rectict access
+export SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://asclepias:asclepias@localhost/asclepias'
+invenio users create admin@cern.ch -a --password=123456
 invenio roles create admin
 invenio roles add admin@asclepias.org admin
 invenio access allow superuser-access role admin

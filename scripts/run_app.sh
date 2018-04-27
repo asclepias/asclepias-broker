@@ -9,5 +9,6 @@
 set -e
 
 export FLASK_DEBUG=1
+export SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://asclepias:asclepias@localhost/asclepias'
 
 invenio run
