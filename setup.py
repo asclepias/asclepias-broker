@@ -56,6 +56,8 @@ install_requires = [
     'jsonschema>=2.6.0',  # TODO: Investigate `invenio-jsonschemas` usage
     'marshmallow>=2.15.0',
     'uWSGI>=2.0.17',
+    'uwsgi-tools>=1.1.1',
+    'uwsgitop>=0.10',
     'webargs>=2.1.0',
 ]
 
