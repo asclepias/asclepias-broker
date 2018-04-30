@@ -135,6 +135,8 @@ SEARCH_ELASTIC_HOSTS = [
 ]
 SEARCH_MAPPINGS = ['relationships']
 
+ASCLEPIAS_SEARCH_INDEXING_ENABLED = False
+
 
 # JSONSchemas
 # ===========

@@ -55,12 +55,40 @@ def create_relation_object_events(event, relationship, payload_idx):
     return rel_obj, src_obj, tar_obj
 
 
+def compact_indexing_groups(groups_ids):
+    """Compact the collected group IDs into minimal set of UUIDs."""
+    # Compact operations
+    ig_to_vg_map = {}
+    id_groups_to_index = set()
+    ver_groups_to_index = set()
+    id_groups_to_delete = set()
+    ver_groups_to_delete = set()
+    for src_ig, trg_ig, mrg_ig, src_vg, trg_vg, mrg_vg in groups_ids:
+        ig_to_vg_map[src_ig] = src_vg
+        ig_to_vg_map[trg_ig] = trg_vg
+        ig_to_vg_map[mrg_ig] = mrg_vg
+        if not mrg_ig:
+            id_groups_to_index |= {src_ig, trg_ig}
+        else:
+            id_groups_to_index.add(mrg_ig)
+            id_groups_to_delete |= {src_ig, trg_ig}
+
+        if not mrg_vg:
+            ver_groups_to_index |= {src_vg, trg_vg}
+        else:
+            ver_groups_to_index.add(mrg_vg)
+            ver_groups_to_delete |= {src_vg, trg_vg}
+    id_groups_to_index -= id_groups_to_delete
+    ver_groups_to_index -= ver_groups_to_delete
+    return (id_groups_to_index, id_groups_to_delete, ver_groups_to_index,
+            ver_groups_to_delete, ig_to_vg_map)
+
+
 @shared_task(ignore_result=True)
-def process_event(event_uuid: str):
+def process_event(event_uuid: str, indexing_enabled=True):
     """Process an event's payloads."""
     # TODO: Should we detect and skip duplicated events?
     event = Event.get(event_uuid)
-    # TODO: event.payload contains the whole event, not just payload - refactor
     groups_ids = []
     with db.session.begin_nested():
         for payload_idx, payload in enumerate(event.payload):
@@ -85,30 +113,6 @@ def process_event(event_uuid: str):
                 [str(g.id) if g else g for g in id_groups + version_groups])
     db.session.commit()
 
-    # Compact operations
-    ig_to_vg_map = {}
-    id_groups_to_index = set()
-    ver_groups_to_index = set()
-    id_groups_to_delete = set()
-    ver_groups_to_delete = set()
-    for src_ig, trg_ig, mrg_ig, src_vg, trg_vg, mrg_vg in groups_ids:
-        ig_to_vg_map[src_ig] = src_vg
-        ig_to_vg_map[trg_ig] = trg_vg
-        ig_to_vg_map[mrg_ig] = mrg_vg
-        if not mrg_ig:
-            id_groups_to_index |= {src_ig, trg_ig}
-        else:
-            id_groups_to_index.add(mrg_ig)
-            id_groups_to_delete |= {src_ig, trg_ig}
-
-        if not mrg_vg:
-            ver_groups_to_index |= {src_vg, trg_vg}
-        else:
-            ver_groups_to_index.add(mrg_vg)
-            ver_groups_to_delete |= {src_vg, trg_vg}
-    id_groups_to_index -= id_groups_to_delete
-    ver_groups_to_index -= ver_groups_to_delete
-
-    update_indices(id_groups_to_index, id_groups_to_delete,
-                   ver_groups_to_index, ver_groups_to_delete,
-                   ig_to_vg_map)
+    if indexing_enabled:
+        compacted = compact_indexing_groups(groups_ids)
+        update_indices(*compacted)

@@ -756,40 +756,6 @@
     "Source": {
       "Identifier": {
         "IDScheme": "ads",
-        "IDURL": "http://adsabs.harvard.edu/abs/2017MNRAS.470.2034D",
-        "ID": "2017MNRAS.470.2034D"
-      },
-      "Type": {
-        "Name": "unknown"
-      }
-    },
-    "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
-    "Target": {
-      "Identifier": {
-        "IDScheme": "doi",
-        "IDURL": "https://doi.org/10.5281/zenodo.45906",
-        "ID": "10.5281/zenodo.45906"
-      },
-      "Type": {
-        "Name": "software"
-      }
-    },
-    "LinkPublicationDate": "2018-01-01",
-    "LinkProvider": [
-      {
-        "Name": "SAO/NASA Astrophysics Data System"
-      }
-    ]
-  },
-  {
-    "RelationshipType": {
-      "SubTypeSchema": "DataCite",
-      "SubType": "Cites",
-      "Name": "References"
-    },
-    "Source": {
-      "Identifier": {
-        "IDScheme": "ads",
         "IDURL": "http://adsabs.harvard.edu/abs/2017A&A...604A..16F",
         "ID": "2017A&A...604A..16F"
       },

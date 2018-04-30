@@ -79,6 +79,39 @@ def index_documents(docs, bulk=False):
                 index='relationships', doc_type='doc', body=doc)
 
 
+def build_doc(rel, src_grp=None, trg_grp=None, grouping=None):
+    """Build the ES document for a relationship."""
+    if rel.type == GroupType.Identity:
+        # Fetch the supergroup (Version) of the Identity relations for metadata
+        src_meta = build_group_metadata(rel.source.supergroupsm2m[0].group)
+    if src_grp:
+        src_meta = build_group_metadata(src_grp)
+    elif rel.type == GroupType.Identity:
+        pass
+    else:
+        src_meta = build_group_metadata(rel.source)
+
+    if trg_grp:
+        trg_meta = build_group_metadata(trg_grp)
+    else:
+        trg_meta = build_group_metadata(rel.target)
+
+    rel_meta = build_relationship_metadata(rel)
+    grouping = grouping or \
+        ('identity' if rel.type == GroupType.Identity else 'version')
+    return {
+        '_id': 'v:{}'.format(str(rel.id)),
+        '_source': {
+            "ID": str(rel.id),
+            "Grouping": grouping,
+            "RelationshipType": rel.relation.name,
+            "History": rel_meta,
+            "Source": src_meta,
+            "Target": trg_meta,
+        },
+    }
+
+
 def index_identity_group_relationships(ig_id: str, vg_id: str,
                                        exclude_group_ids: tuple=None):
     """Build the relationship docs for Identity relations."""
@@ -108,20 +141,8 @@ def index_identity_group_relationships(ig_id: str, vg_id: str,
 
     def _build_doc(row):
         _, rel, src_vg = row
-        src_meta = build_group_metadata(src_vg)
-        trg_meta = build_group_metadata(ig_obj)
-        rel_meta = build_relationship_metadata(rel)
-        return {
-            '_id': 'i:{}'.format(str(rel.id)),
-            '_source': {
-                "ID": str(rel.id),
-                "Grouping": "identity",
-                "RelationshipType": rel.relation.name,
-                "History": rel_meta,
-                "Source": src_meta,
-                "Target": trg_meta,
-            },
-        }
+        return build_doc(rel, src_grp=src_vg, trg_grp=ig_obj,
+                         grouping='identity')
 
     incoming_rel_docs = map(_build_doc, relationships)
 
@@ -149,20 +170,8 @@ def index_identity_group_relationships(ig_id: str, vg_id: str,
 
     def _build_doc(row):
         rel, trg_ig = row
-        src_meta = build_group_metadata(vg_obj)
-        trg_meta = build_group_metadata(trg_ig)
-        rel_meta = build_relationship_metadata(rel)
-        return {
-            '_id': 'i:{}'.format(str(rel.id)),
-            '_source': {
-                "ID": str(rel.id),
-                "Grouping": "identity",
-                "RelationshipType": rel.relation.name,
-                "History": rel_meta,
-                "Source": src_meta,
-                "Target": trg_meta,
-            },
-        }
+        return build_doc(rel, src_grp=vg_obj, trg_grp=trg_ig,
+                         grouping='identity')
 
     outgoing_rel_docs = map(_build_doc, relationships)
     index_documents(chain(incoming_rel_docs, outgoing_rel_docs), bulk=True)
@@ -188,20 +197,8 @@ def index_version_group_relationships(group_id: str,
     )
 
     def _build_doc(rel):
-        src_meta = build_group_metadata(rel.source)
-        trg_meta = build_group_metadata(rel.target)
-        rel_meta = build_relationship_metadata(rel)
-        return {
-            '_id': 'v:{}'.format(str(rel.id)),
-            '_source': {
-                "ID": str(rel.id),
-                "Grouping": "version",
-                "RelationshipType": rel.relation.name,
-                "History": rel_meta,
-                "Source": src_meta,
-                "Target": trg_meta,
-            },
-        }
+        return build_doc(rel, src_grp=rel.source, trg_grp=rel.target,
+                         grouping='version')
     index_documents(map(_build_doc, relationships), bulk=True)
 
 
@@ -221,3 +218,16 @@ def update_indices(idx_ig, del_ig, idx_vg, del_vg, ig_to_vg_map):
         index_version_group_relationships(group_id)
     for group_id in idx_ig:
         index_identity_group_relationships(group_id, ig_to_vg_map[group_id])
+
+
+def chunks(l, n, size):
+    """Yield successive n-sized chunks from l."""
+    for i in range(0, size, n):
+        yield l[i:i + n]
+
+
+def reindex_all_relationships():
+    """Reindex all relationships."""
+    q = GroupRelationship.query.yield_per(1000)
+    for chunk in chunks(q, 1000, q.count()):
+        index_documents(map(build_doc, chunk), bulk=True)

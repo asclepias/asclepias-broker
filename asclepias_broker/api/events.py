@@ -8,6 +8,7 @@
 
 
 import jsonschema
+from flask import current_app
 from invenio_db import db
 from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
@@ -37,4 +38,5 @@ class EventAPI:
         db.session.add(event_obj)
         db.session.commit()
         event_uuid = str(event_obj.id)
-        process_event.delay(event_uuid)
+        idx_enabled = current_app.config['ASCLEPIAS_SEARCH_INDEXING_ENABLED']
+        process_event.delay(event_uuid, indexing_enabled=idx_enabled)
