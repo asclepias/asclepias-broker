@@ -10,17 +10,19 @@ import json
 from copy import deepcopy
 
 from flask import url_for
+from helpers import assert_es_equals_db
 
 from asclepias_broker.jsonschemas import EVENT_SCHEMA
 
 
-def test_example_events(client, example_events, db, es):
+def test_example_events(client, example_events, db, es_clear):
     """Load the example events from asclepias_broker/examples."""
     event_url = url_for('asclepias_api.event', _external=True)
     for data in example_events:
         resp = client.post(event_url, data=json.dumps(data),
                            content_type='application/json')
         assert resp.status_code == 202
+    assert_es_equals_db()
 
 
 def test_invalid_payload(client, db, es):

@@ -12,12 +12,9 @@ from invenio_db import db
 from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
 
-from ..indexer import update_indices
 from ..jsonschemas import EVENT_SCHEMA
-from ..models import ObjectEvent, PayloadType
 from ..schemas.loaders import EventSchema, RelationshipSchema
 from ..tasks import process_event
-from .ingestion import update_groups, update_metadata
 
 
 class EventAPI:
