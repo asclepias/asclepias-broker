@@ -61,14 +61,9 @@ services:
       - "15672:15672"
       - "5672:5672"
   es:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.4
+    image: elasticsearch:5.6.4
     restart: "always"
     environment:
-      - xpack.security.enabled=false
-      - xpack.monitoring.enabled=false
-      - xpack.ml.enabled=false
-      - xpack.graph.enabled=false
-      - xpack.watcher.enabled=false
       - bootstrap.memory_lock=true
       - discovery.zen.minimum_master_nodes=1
       - discovery.type=single-node
@@ -82,7 +77,7 @@ services:
       - "9200:9200"
       - "9300:9300"
   kibana:
-    image: docker.elastic.co/kibana/kibana:5.6.4
+    image: kibana:5.6.4
     environment:
       - ELASTICSEARCH_URL=http://es:9200
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
