@@ -11,4 +11,4 @@ set -e
 export FLASK_DEBUG=1
 export SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://asclepias:asclepias@localhost/asclepias'
 
-celery worker -A invenio_app.celery -l INFO -f celerylog.log -c 1 --purge
+celery worker -A invenio_app.celery -l INFO -f celerylog.log -c 4 --purge
