@@ -7,9 +7,12 @@
 """Elasticsearch indexing module."""
 
 from copy import deepcopy
+from itertools import chain
 
 import idutils
 import sqlalchemy as sa
+from elasticsearch.helpers import bulk as bulk_index
+from elasticsearch_dsl import Q
 from invenio_db import db
 from invenio_search import current_search_client
 from invenio_search.api import RecordsSearch
@@ -61,11 +64,19 @@ def build_relationship_metadata(rel: GroupRelationship) -> dict:
         return deepcopy((rel.data and rel.data.json) or {})
 
 
-def index_documents(docs):
+def index_documents(docs, bulk=False):
     """Index a list of documents into ES."""
-    for doc in docs:
-        current_search_client.index(
-            index='relationships', doc_type='doc', body=doc)
+    if bulk:
+        bulk_index(
+            client=current_search_client,
+            actions=docs,
+            index='relationships',
+            doc_type='doc',
+        )
+    else:
+        for doc in docs:
+            current_search_client.index(
+                index='relationships', doc_type='doc', body=doc)
 
 
 def index_identity_group_relationships(ig_id: str, vg_id: str,
@@ -92,13 +103,15 @@ def index_identity_group_relationships(ig_id: str, vg_id: str,
         .join(GroupRelationship, GroupRelationship.source_id == id_grp_cls.id)
         .filter(*filter_cond)
     )
-    docs = []
+
     ig_obj = Group.query.get(ig_id)
-    for _, rel, src_vg in relationships:
+
+    def _build_doc(row):
+        _, rel, src_vg = row
         src_meta = build_group_metadata(src_vg)
         trg_meta = build_group_metadata(ig_obj)
         rel_meta = build_relationship_metadata(rel)
-        doc = {
+        return {
             "ID": str(rel.id),
             "Grouping": "identity",
             "RelationshipType": rel.relation.name,
@@ -106,7 +119,8 @@ def index_identity_group_relationships(ig_id: str, vg_id: str,
             "Source": src_meta,
             "Target": trg_meta,
         }
-        docs.append(doc)
+
+    incoming_rel_docs = map(_build_doc, relationships)
 
     # Build the documents for outgoing Version2Identity relations
     ver_grprel_cls = aliased(GroupRelationship, name='ver_grprel_cls')
@@ -129,11 +143,13 @@ def index_identity_group_relationships(ig_id: str, vg_id: str,
     )
 
     vg_obj = Group.query.get(vg_id)
-    for rel, trg_ig in relationships:
+
+    def _build_doc(row):
+        rel, trg_ig = row
         src_meta = build_group_metadata(vg_obj)
-        trg_meta = build_group_metadata(rel.target)
+        trg_meta = build_group_metadata(trg_ig)
         rel_meta = build_relationship_metadata(rel)
-        doc = {
+        return {
             "ID": str(rel.id),
             "Grouping": "identity",
             "RelationshipType": rel.relation.name,
@@ -141,8 +157,9 @@ def index_identity_group_relationships(ig_id: str, vg_id: str,
             "Source": src_meta,
             "Target": trg_meta,
         }
-        docs.append(doc)
-    index_documents(docs)
+
+    outgoing_rel_docs = map(_build_doc, relationships)
+    index_documents(chain(incoming_rel_docs, outgoing_rel_docs), bulk=True)
 
 
 def index_version_group_relationships(group_id: str,
@@ -163,12 +180,12 @@ def index_version_group_relationships(group_id: str,
         GroupRelationship.type == GroupType.Version,
         filter_cond
     )
-    docs = []
-    for rel in relationships:
+
+    def _build_doc(rel):
         src_meta = build_group_metadata(rel.source)
         trg_meta = build_group_metadata(rel.target)
         rel_meta = build_relationship_metadata(rel)
-        doc = {
+        return {
             "ID": str(rel.id),
             "Grouping": "version",
             "RelationshipType": rel.relation.name,
@@ -176,18 +193,15 @@ def index_version_group_relationships(group_id: str,
             "Source": src_meta,
             "Target": trg_meta,
         }
-        docs.append(doc)
-    index_documents(docs)
+    index_documents(map(_build_doc, relationships), bulk=True)
 
 
 def delete_group_relations(group_id):
     """Delete all relations for given group ID from ES."""
-    q = RecordsSearch(index='relationships').query('term', Source__ID=group_id)
-    # Ignore versioning conflicts when deleting
-    q.params(conflicts='proceed').delete()
-
-    q = RecordsSearch(index='relationships').query('term', Target__ID=group_id)
-    q.params(conflicts='proceed').delete()
+    RecordsSearch(index='relationships').query('bool', should=[
+            Q('term', Source__ID=group_id),
+            Q('term', Target__ID=group_id),
+    ]).params(conflicts='proceed').delete()  # ignore versioning conflicts
 
 
 def update_indices(src_ig, trg_ig, mrg_ig, src_vg, trg_vg, mrg_vg):
