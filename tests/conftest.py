@@ -55,6 +55,9 @@ def example_events(examples_dir):
         'ads-events-1.json',
         'ads-events-2.json',
         'test-events.json',
+        'cornerpy-1.json',
+        'cornerpy-2.json',
+        'cornerpy-3.json',
     ]
     data = []
     for fn in filenames:

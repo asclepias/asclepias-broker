@@ -1,0 +1,292 @@
+[
+  {
+    "RelationshipType": {
+      "Name": "References"
+    },
+    "LinkPublicationDate": "2017-09-01",
+    "Target": {
+      "Identifier": {
+        "ID": "10.5281/zenodo.53155",
+        "IDScheme": "doi"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ],
+    "Source": {
+      "Identifier": {
+        "ID": "2017ApJ...846...97G",
+        "IDScheme": "ads"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    }
+  },
+  {
+    "RelationshipType": {
+      "Name": "References"
+    },
+    "LinkPublicationDate": "2015-10-01",
+    "Target": {
+      "Identifier": {
+        "ID": "10.5281/zenodo.11020",
+        "IDScheme": "doi"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ],
+    "Source": {
+      "Identifier": {
+        "ID": "2015ApJ...812...58C",
+        "IDScheme": "ads"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    }
+  },
+  {
+    "RelationshipType": {
+      "Name": "References"
+    },
+    "LinkPublicationDate": "2017-05-01",
+    "Target": {
+      "Identifier": {
+        "ID": "10.21105/joss.00024",
+        "IDScheme": "doi"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ],
+    "Source": {
+      "Identifier": {
+        "ID": "2017arXiv170510322B",
+        "IDScheme": "ads"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    }
+  },
+  {
+    "RelationshipType": {
+      "Name": "References"
+    },
+    "LinkPublicationDate": "2017-05-01",
+    "Target": {
+      "Identifier": {
+        "ID": "10.21105/joss.00024",
+        "IDScheme": "doi"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ],
+    "Source": {
+      "Identifier": {
+        "ID": "2017arXiv170510712O",
+        "IDScheme": "ads"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    }
+  },
+  {
+    "RelationshipType": {
+      "Name": "References"
+    },
+    "LinkPublicationDate": "2016-03-01",
+    "Target": {
+      "Identifier": {
+        "ID": "10.5281/zenodo.11020",
+        "IDScheme": "doi"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ],
+    "Source": {
+      "Identifier": {
+        "ID": "2016ApJS..223....8C",
+        "IDScheme": "ads"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    }
+  },
+  {
+    "RelationshipType": {
+      "Name": "References"
+    },
+    "LinkPublicationDate": "2016-06-01",
+    "Target": {
+      "Identifier": {
+        "ID": "10.5281/zenodo.11020",
+        "IDScheme": "doi"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ],
+    "Source": {
+      "Identifier": {
+        "ID": "2016ApJ...824..150G",
+        "IDScheme": "ads"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    }
+  },
+  {
+    "RelationshipType": {
+      "Name": "References"
+    },
+    "LinkPublicationDate": "2017-06-01",
+    "Target": {
+      "Identifier": {
+        "ID": "10.21105/joss.00024",
+        "IDScheme": "doi"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ],
+    "Source": {
+      "Identifier": {
+        "ID": "2017ApJ...842....8M",
+        "IDScheme": "ads"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    }
+  },
+  {
+    "RelationshipType": {
+      "Name": "References"
+    },
+    "LinkPublicationDate": "2017-07-01",
+    "Target": {
+      "Identifier": {
+        "ID": "2017ascl.soft02002F",
+        "IDScheme": "ads"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ],
+    "Source": {
+      "Identifier": {
+        "ID": "2017arXiv170701559L",
+        "IDScheme": "ads"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    }
+  },
+  {
+    "RelationshipType": {
+      "Name": "References"
+    },
+    "LinkPublicationDate": "2017-10-01",
+    "Target": {
+      "Identifier": {
+        "ID": "10.21105/joss.00024",
+        "IDScheme": "doi"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ],
+    "Source": {
+      "Identifier": {
+        "ID": "2017arXiv171002099E",
+        "IDScheme": "ads"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    }
+  },
+  {
+    "RelationshipType": {
+      "Name": "References"
+    },
+    "LinkPublicationDate": "2013-09-01",
+    "Target": {
+      "Identifier": {
+        "ID": "10.5281/zenodo.10598",
+        "IDScheme": "doi"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    },
+    "LinkProvider": [
+      {
+        "Name": "SAO/NASA Astrophysics Data System"
+      }
+    ],
+    "Source": {
+      "Identifier": {
+        "ID": "2013arXiv1309.1210A",
+        "IDScheme": "ads"
+      },
+      "Type": {
+        "Name": "unknown"
+      }
+    }
+  }
+]

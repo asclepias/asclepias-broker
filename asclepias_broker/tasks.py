@@ -78,7 +78,6 @@ def process_event(event_uuid: str):
             # to know the ID upfront
             relationship = relationship.fetch_or_create_id()
             create_relation_object_events(event, relationship, payload_idx)
-
             id_groups, version_groups = update_groups(relationship)
 
             update_metadata(relationship, payload)

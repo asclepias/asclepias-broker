@@ -59,7 +59,7 @@ install:
   - "travis_retry pip install -r .travis-${REQUIREMENTS}-requirements.txt"
   - "travis_retry pip install -e .[all]"
   - pip freeze
-  - "./scripts/bootstrap"
+  - "./scripts/bootstrap.sh"
 
 before_script:
   # https://docs.travis-ci.com/user/gui-and-headless-browsers/

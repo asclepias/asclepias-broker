@@ -11,13 +11,13 @@ from datetime import datetime
 
 import arrow
 import pytest
+from helpers import gen_identifier, gen_relation
 
 from asclepias_broker.models import Event, EventType, Identifier, Relation, \
     Relationship
 from asclepias_broker.schemas.loaders import IdentifierSchema, \
     RelationshipSchema
 from asclepias_broker.schemas.scholix import SCHOLIX_RELATIONS
-from helpers import gen_identifier, gen_relation
 
 
 def compare_identifiers(a, b):

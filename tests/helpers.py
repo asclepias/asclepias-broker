@@ -17,7 +17,7 @@ from invenio_db import db
 from invenio_search import RecordsSearch, current_search
 
 from asclepias_broker.api.ingestion import get_or_create_groups
-from asclepias_broker.jsonschemas import SCHOLIX_SCHEMA, SCHOLIX_RELATIONS
+from asclepias_broker.jsonschemas import SCHOLIX_RELATIONS, SCHOLIX_SCHEMA
 from asclepias_broker.models import Group, GroupM2M, GroupMetadata, \
     GroupRelationship, GroupRelationshipM2M, GroupRelationshipMetadata, \
     GroupType, Identifier, Identifier2Group, Relationship, \
