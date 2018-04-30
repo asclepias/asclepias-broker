@@ -112,12 +112,15 @@ def index_identity_group_relationships(ig_id: str, vg_id: str,
         trg_meta = build_group_metadata(ig_obj)
         rel_meta = build_relationship_metadata(rel)
         return {
-            "ID": str(rel.id),
-            "Grouping": "identity",
-            "RelationshipType": rel.relation.name,
-            "History": rel_meta,
-            "Source": src_meta,
-            "Target": trg_meta,
+            '_id': 'i:{}'.format(str(rel.id)),
+            '_source': {
+                "ID": str(rel.id),
+                "Grouping": "identity",
+                "RelationshipType": rel.relation.name,
+                "History": rel_meta,
+                "Source": src_meta,
+                "Target": trg_meta,
+            },
         }
 
     incoming_rel_docs = map(_build_doc, relationships)
@@ -150,12 +153,15 @@ def index_identity_group_relationships(ig_id: str, vg_id: str,
         trg_meta = build_group_metadata(trg_ig)
         rel_meta = build_relationship_metadata(rel)
         return {
-            "ID": str(rel.id),
-            "Grouping": "identity",
-            "RelationshipType": rel.relation.name,
-            "History": rel_meta,
-            "Source": src_meta,
-            "Target": trg_meta,
+            '_id': 'i:{}'.format(str(rel.id)),
+            '_source': {
+                "ID": str(rel.id),
+                "Grouping": "identity",
+                "RelationshipType": rel.relation.name,
+                "History": rel_meta,
+                "Source": src_meta,
+                "Target": trg_meta,
+            },
         }
 
     outgoing_rel_docs = map(_build_doc, relationships)
@@ -186,39 +192,32 @@ def index_version_group_relationships(group_id: str,
         trg_meta = build_group_metadata(rel.target)
         rel_meta = build_relationship_metadata(rel)
         return {
-            "ID": str(rel.id),
-            "Grouping": "version",
-            "RelationshipType": rel.relation.name,
-            "History": rel_meta,
-            "Source": src_meta,
-            "Target": trg_meta,
+            '_id': 'v:{}'.format(str(rel.id)),
+            '_source': {
+                "ID": str(rel.id),
+                "Grouping": "version",
+                "RelationshipType": rel.relation.name,
+                "History": rel_meta,
+                "Source": src_meta,
+                "Target": trg_meta,
+            },
         }
     index_documents(map(_build_doc, relationships), bulk=True)
 
 
-def delete_group_relations(group_id):
-    """Delete all relations for given group ID from ES."""
+def delete_group_relations(group_ids):
+    """Delete all relations for given group IDs from ES."""
     RecordsSearch(index='relationships').query('bool', should=[
-            Q('term', Source__ID=group_id),
-            Q('term', Target__ID=group_id),
+            Q('terms', Source__ID=list(group_ids)),
+            Q('terms', Target__ID=list(group_ids)),
     ]).params(conflicts='proceed').delete()  # ignore versioning conflicts
 
 
-def update_indices(src_ig, trg_ig, mrg_ig, src_vg, trg_vg, mrg_vg):
+def update_indices(idx_ig, del_ig, idx_vg, del_vg, ig_to_vg_map):
     """Updates Elasticsearch indices with the updated groups."""
     # `src_group` and `trg_group` were merged into `merged_group`.
-    for grp_id in [src_ig, trg_ig, src_vg, trg_vg]:
-        delete_group_relations(grp_id)
-
-    if mrg_vg:
-        index_version_group_relationships(mrg_vg)
-    else:
-        index_version_group_relationships(src_vg)
-        index_version_group_relationships(trg_vg, exclude_group_id=src_vg)
-
-    if mrg_ig:
-        index_identity_group_relationships(mrg_ig, mrg_vg)
-    else:
-        index_identity_group_relationships(src_ig, src_vg)
-        index_identity_group_relationships(trg_ig, trg_vg,
-                                           exclude_group_ids=(src_ig, src_vg))
+    delete_group_relations(del_ig | del_vg | idx_ig | idx_vg)
+    for group_id in idx_vg:
+        index_version_group_relationships(group_id)
+    for group_id in idx_ig:
+        index_identity_group_relationships(group_id, ig_to_vg_map[group_id])

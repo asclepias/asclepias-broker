@@ -87,5 +87,31 @@ def process_event(event_uuid: str, delete=False):
             groups_ids.append(
                 [str(g.id) if g else g for g in id_groups + version_groups])
     db.session.commit()
-    for ids in groups_ids:
-        update_indices(*ids)
+
+    # Compact operations
+    ig_to_vg_map = {}
+    id_groups_to_index = set()
+    ver_groups_to_index = set()
+    id_groups_to_delete = set()
+    ver_groups_to_delete = set()
+    for src_ig, trg_ig, mrg_ig, src_vg, trg_vg, mrg_vg in groups_ids:
+        ig_to_vg_map[src_ig] = src_vg
+        ig_to_vg_map[trg_ig] = trg_vg
+        ig_to_vg_map[mrg_ig] = mrg_vg
+        if not mrg_ig:
+            id_groups_to_index |= {src_ig, trg_ig}
+        else:
+            id_groups_to_index.add(mrg_ig)
+            id_groups_to_delete |= {src_ig, trg_ig}
+
+        if not mrg_vg:
+            ver_groups_to_index |= {src_vg, trg_vg}
+        else:
+            ver_groups_to_index.add(mrg_vg)
+            ver_groups_to_delete |= {src_vg, trg_vg}
+    id_groups_to_index -= id_groups_to_delete
+    ver_groups_to_index -= ver_groups_to_delete
+
+    update_indices(id_groups_to_index, id_groups_to_delete,
+                   ver_groups_to_index, ver_groups_to_delete,
+                   ig_to_vg_map)
