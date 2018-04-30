@@ -8,7 +8,7 @@
 
 from flask import Blueprint, abort, render_template, request
 from flask.views import MethodView
-from invenio_rest.errors import RESTException
+from invenio_oauth2server import require_api_auth
 from jsonschema.exceptions import ValidationError as JSONValidationError
 from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
@@ -79,6 +79,7 @@ api_blueprint = Blueprint('asclepias_api', __name__)
 class EventResource(MethodView):
     """Event resource."""
 
+    @require_api_auth()
     def post(self):
         """Submit an event."""
         try:
