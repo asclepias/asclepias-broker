@@ -88,6 +88,9 @@ setup(
         'console_scripts': [
             'asclepias-broker = invenio_app.cli:cli',
         ],
+        'flask.commands': [
+            'utils = asclepias_broker.cli:utils',
+        ],
         'invenio_config.module': [
             'asclepias_broker = asclepias_broker.config',
         ],

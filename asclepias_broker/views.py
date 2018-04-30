@@ -83,7 +83,8 @@ class EventResource(MethodView):
     def post(self):
         """Submit an event."""
         try:
-            EventAPI.handle_event(request.json)
+            no_index = bool(request.args.get('noindex', False))
+            EventAPI.handle_event(request.json, no_index=no_index)
         except JSONValidationError as e:
             raise PayloadValidationRESTError(e.message, code=422)
         except MarshmallowValidationError as e:

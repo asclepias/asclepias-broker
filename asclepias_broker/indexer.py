@@ -226,7 +226,7 @@ def chunks(l, n, size):
         yield l[i:i + n]
 
 
-def reindex_all_relationships():
+def _reindex_all_relationships():
     """Reindex all relationships."""
     q = GroupRelationship.query.yield_per(1000)
     for chunk in chunks(q, 1000, q.count()):

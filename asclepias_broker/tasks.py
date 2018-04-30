@@ -13,8 +13,8 @@ from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
 
 from .api.ingestion import update_groups, update_metadata
-from .indexer import update_indices
-from .models import Event, ObjectEvent, PayloadType
+from .indexer import update_indices, _reindex_all_relationships
+from .models import Event, ObjectEvent, PayloadType, GroupRelationship
 from .schemas.loaders import RelationshipSchema
 
 
@@ -116,3 +116,9 @@ def process_event(event_uuid: str, indexing_enabled=True):
     if indexing_enabled:
         compacted = compact_indexing_groups(groups_ids)
         update_indices(*compacted)
+
+
+@shared_task(ignore_result=True)
+def reindex_all_relationships():
+    """Reindex all relationship documents."""
+    _reindex_all_relationships()
