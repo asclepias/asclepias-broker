@@ -12,5 +12,5 @@ set -e
 export SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://asclepias:asclepias@localhost/asclepias'
 invenio users create admin@cern.ch -a --password=123456
 invenio roles create admin
-invenio roles add admin@asclepias.org admin
+invenio roles add admin@cern.ch admin
 invenio access allow superuser-access role admin

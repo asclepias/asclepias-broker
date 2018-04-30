@@ -13,8 +13,8 @@ from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
 
 from .api.ingestion import update_groups, update_metadata
-from .indexer import update_indices, _reindex_all_relationships
-from .models import Event, ObjectEvent, PayloadType, GroupRelationship
+from .indexer import _reindex_all_relationships, update_indices
+from .models import Event, GroupRelationship, ObjectEvent, PayloadType
 from .schemas.loaders import RelationshipSchema
 
 
@@ -100,6 +100,11 @@ def process_event(event_uuid: str, indexing_enabled=True):
             # with RelationshipSchema on the event ingestion
             if errors:
                 raise MarshmallowValidationError(errors)
+
+            # Skip already known relationships
+            # NOTE: This skips any extra metadata!
+            if relationship.id:
+                continue
             db.session.add(relationship)
             # We need ORM relationship with IDs, since Event has
             # 'weak' (non-FK) relations to the objects, hence we need
