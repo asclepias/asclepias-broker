@@ -13,8 +13,9 @@ from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
 
 from .api.ingestion import update_groups, update_metadata
-from .indexer import update_indices, index_documents, build_doc
-from .models import Event, EventStatus, GroupRelationship, ObjectEvent, PayloadType
+from .indexer import build_doc, index_documents, update_indices
+from .models import Event, EventStatus, GroupRelationship, ObjectEvent, \
+    PayloadType
 from .schemas.loaders import RelationshipSchema
 
 
@@ -84,7 +85,8 @@ def compact_indexing_groups(groups_ids):
             ver_groups_to_delete, ig_to_vg_map)
 
 
-def set_event_status(event_uuid, status):
+def _set_event_status(event_uuid, status):
+    """Set the status of the Event."""
     event = Event.get(event_uuid)
     event.status = status
     db.session.commit()
@@ -94,7 +96,8 @@ def set_event_status(event_uuid, status):
 def process_event(event_uuid: str, indexing_enabled=True):
     """Process an event's payloads."""
     # TODO: Should we detect and skip duplicated events?
-    set_event_status(event_uuid, EventStatus.Processing)
+    _set_event_status(event_uuid, EventStatus.Processing)
+    event = Event.get(event_uuid)
     groups_ids = []
     try:
         with db.session.begin_nested():
@@ -124,9 +127,10 @@ def process_event(event_uuid: str, indexing_enabled=True):
                 groups_ids.append(
                     [str(g.id) if g else g for g in id_groups + version_groups])
         db.session.commit()
-        set_event_status(event_uuid, EventStatus.Done)
+        _set_event_status(event_uuid, EventStatus.Done)
     except:
-        set_event_status(event_uuid, EventStatus.Error)
+        _set_event_status(event_uuid, EventStatus.Error)
+        raise
 
     if indexing_enabled:
         compacted = compact_indexing_groups(groups_ids)
@@ -145,4 +149,3 @@ def reindex_all_relationships():
     q = GroupRelationship.query.yield_per(1000)
     for chunk in chunks(q, 1000, q.count()):
         index_documents(map(build_doc, chunk), bulk=True)
-

@@ -19,7 +19,7 @@ from invenio_search.api import RecordsSearch
 from sqlalchemy.orm import aliased
 
 from .models import Group, GroupM2M, GroupRelationship, GroupRelationshipM2M, \
-    GroupType
+    GroupType, Relation
 
 
 def build_id_info(id_):
@@ -42,13 +42,30 @@ def build_group_metadata(group: Group) -> dict:
     if group.type == GroupType.Version:
         # Identifiers of the first identity group from all versions
         id_group = group.groups[0]
+
+        # Remember visited parents in case of circular relations
+        seen_ids = set()
+        while True:
+            if id_group.id in seen_ids:
+                # Circular dependency. If parent seen, just pick current group
+                break
+            q = GroupRelationship.query.filter_by(target_id=id_group.id,
+                relation=Relation.HasVersion)
+            if not q.first():
+                # If no longer possible to find parents, we are done
+                break
+            seen_ids.add(id_group.id)
+            id_group=q.first().source
         ids = id_group.identifiers
         doc = deepcopy((id_group.data and id_group.data.json) or {})
+        all_ids = sum([g.identifiers for g in group.groups], [])
     else:
         doc = deepcopy((group.data and group.data.json) or {})
         ids = group.identifiers
+        all_ids = ids
 
     doc['Identifier'] = [build_id_info(i) for i in ids]
+    doc['SearchIdentifier'] = [build_id_info(i) for i in all_ids]
     doc['ID'] = str(group.id)
     return doc
 

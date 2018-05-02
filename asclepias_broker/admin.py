@@ -64,12 +64,8 @@ class EventModelView(ModelView):
 
     column_list = (
         'id',
-        'description',
-        'event_type',
-        'creator',
-        'source',
+        'status',
         'payload',
-        'time',
     )
 
     column_searchable_list = ('payload',)

@@ -10,8 +10,9 @@
 from __future__ import absolute_import, print_function
 
 import glob
-import click
 import json
+
+import click
 from flask.cli import with_appcontext
 
 

@@ -38,6 +38,9 @@ def search_factory(self, search, query_parser=None):
     if 'groupBy' not in request.values:
         search = search.filter(Q('term', Grouping='identity'))
         urlkwargs['groupBy'] = 'identity'
+
+    # Exclude the identifiers by which the search was made (large aggregate)
+    search = search.source(exclude=['*.SearchIdentifier'])
     return search, urlkwargs
 
 

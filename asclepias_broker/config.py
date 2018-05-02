@@ -135,7 +135,7 @@ SEARCH_ELASTIC_HOSTS = [
 ]
 SEARCH_MAPPINGS = ['relationships']
 
-ASCLEPIAS_SEARCH_INDEXING_ENABLED = False
+ASCLEPIAS_SEARCH_INDEXING_ENABLED = True
 
 
 # JSONSchemas
@@ -203,8 +203,8 @@ RECORDS_REST_FACETS = dict(
         # TODO: Investigate using a webargs-powered search_factory to better
         # validate and build the query...
         filters=dict(
-            id=nested_terms_filter('Target.Identifier.ID'),
-            scheme=nested_terms_filter('Target.Identifier.IDScheme'),
+            id=nested_terms_filter('Target.SearchIdentifier.ID'),
+            scheme=nested_terms_filter('Target.SearchIdentifier.IDScheme'),
             groupBy=enum_term_filter(
                 label='groupBy',
                 field='Grouping',

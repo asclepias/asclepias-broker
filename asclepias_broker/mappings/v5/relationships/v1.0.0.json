@@ -66,6 +66,20 @@
             "Title": {
               "type": "text"
             },
+            "SearchIdentifier": {
+              "properties": {
+                "IDURL": {
+                  "type": "keyword"
+                },
+                "ID": {
+                  "type": "keyword"
+                },
+                "IDScheme": {
+                  "type": "keyword"
+                }
+              },
+              "type": "nested"
+            },
             "Identifier": {
               "properties": {
                 "IDURL": {
@@ -150,6 +164,20 @@
             },
             "Title": {
               "type": "text"
+            },
+            "SearchIdentifier": {
+              "properties": {
+                "IDURL": {
+                  "type": "keyword"
+                },
+                "ID": {
+                  "type": "keyword"
+                },
+                "IDScheme": {
+                  "type": "keyword"
+                }
+              },
+              "type": "nested"
             },
             "Identifier": {
               "properties": {
