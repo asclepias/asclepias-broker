@@ -49,13 +49,13 @@ def build_group_metadata(group: Group) -> dict:
             if id_group.id in seen_ids:
                 # Circular dependency. If parent seen, just pick current group
                 break
-            q = GroupRelationship.query.filter_by(target_id=id_group.id,
-                relation=Relation.HasVersion)
+            q = GroupRelationship.query.filter_by(
+                target_id=id_group.id, relation=Relation.HasVersion)
             if not q.first():
                 # If no longer possible to find parents, we are done
                 break
             seen_ids.add(id_group.id)
-            id_group=q.first().source
+            id_group = q.first().source
         ids = id_group.identifiers
         doc = deepcopy((id_group.data and id_group.data.json) or {})
         all_ids = sum([g.identifiers for g in group.groups], [])

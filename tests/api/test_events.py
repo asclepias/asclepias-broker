@@ -114,10 +114,11 @@ def test_invalid_payload(client, db, es, auth_headers):
 
     # Not matching identifier scheme
     # TODO: For now we accept all IDSchemes
-    data = deepcopy(data_valid)
-    data[0]['Source']['Identifier']['IDScheme'] = 'unknown'
-    resp = client.post(event_url, data=json.dumps(data), headers=auth_headers,
-                       content_type='application/json')
-    assert resp.status_code == 422
-    assert resp.json['message'].startswith(
-        "Validation error") and 'Invalid scheme' in resp.json['message']
+    # data = deepcopy(data_valid)
+    # data[0]['Source']['Identifier']['IDScheme'] = 'unknown'
+    # resp = client.post(event_url, data=json.dumps(data),
+    #                    headers=auth_headers,
+    #                    content_type='application/json')
+    # assert resp.status_code == 422
+    # assert resp.json['message'].startswith(
+    #     "Validation error") and 'Invalid scheme' in resp.json['message']

@@ -121,11 +121,11 @@ def process_event(event_uuid: str, indexing_enabled=True):
                 # to know the ID upfront
                 relationship = relationship.fetch_or_create_id()
                 create_relation_object_events(event, relationship, payload_idx)
-                id_groups, version_groups = update_groups(relationship)
+                id_groups, ver_groups = update_groups(relationship)
 
                 update_metadata(relationship, payload)
                 groups_ids.append(
-                    [str(g.id) if g else g for g in id_groups + version_groups])
+                    [str(g.id) if g else g for g in id_groups + ver_groups])
         db.session.commit()
         _set_event_status(event_uuid, EventStatus.Done)
     except:

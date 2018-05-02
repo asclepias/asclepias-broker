@@ -38,5 +38,6 @@ class EventAPI:
         db.session.add(event_obj)
         db.session.commit()
         event_uuid = str(event_obj.id)
-        idx_enabled = current_app.config['ASCLEPIAS_SEARCH_INDEXING_ENABLED'] and (not no_index)
+        idx_enabled = current_app.config['ASCLEPIAS_SEARCH_INDEXING_ENABLED'] \
+            and (not no_index)
         process_event.delay(event_uuid, indexing_enabled=idx_enabled)

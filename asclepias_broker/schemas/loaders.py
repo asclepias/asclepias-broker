@@ -102,10 +102,10 @@ class IdentifierSchema(Schema):
         value = data['value']
         scheme = data['scheme'].lower()
         schemes = idutils.detect_identifier_schemes(value)
-        ## TODO: "pmid" scheme with value '11781516' collides (with ean8)
-        #if schemes and scheme not in schemes:
-        #    raise ValidationError("Invalid scheme '{}'".format(data['scheme']),
-        #                          'IDScheme')
+        # TODO: "pmid" scheme with value '11781516' collides (with ean8)
+        # if schemes and scheme not in schemes:
+        #     raise ValidationError("Invalid scheme '{}'".format(
+        #         data['scheme']), 'IDScheme')
 
 
 @to_model(Relationship)
