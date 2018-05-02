@@ -14,7 +14,7 @@ from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
 
 from ..jsonschemas import EVENT_SCHEMA
-from ..models import Event
+from ..models import Event, EventStatus
 from ..schemas.loaders import RelationshipSchema
 from ..tasks import process_event
 
@@ -34,7 +34,7 @@ class EventAPI:
             if errors:
                 raise MarshmallowValidationError(errors)
 
-        event_obj = Event(payload=event)
+        event_obj = Event(payload=event, status=EventStatus.New)
         db.session.add(event_obj)
         db.session.commit()
         event_uuid = str(event_obj.id)

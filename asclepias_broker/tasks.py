@@ -13,8 +13,8 @@ from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
 
 from .api.ingestion import update_groups, update_metadata
-from .indexer import _reindex_all_relationships, update_indices
-from .models import Event, GroupRelationship, ObjectEvent, PayloadType
+from .indexer import update_indices, index_documents, build_doc
+from .models import Event, EventStatus, GroupRelationship, ObjectEvent, PayloadType
 from .schemas.loaders import RelationshipSchema
 
 
@@ -84,46 +84,65 @@ def compact_indexing_groups(groups_ids):
             ver_groups_to_delete, ig_to_vg_map)
 
 
+def set_event_status(event_uuid, status):
+    event = Event.get(event_uuid)
+    event.status = status
+    db.session.commit()
+
+
 @shared_task(ignore_result=True)
 def process_event(event_uuid: str, indexing_enabled=True):
     """Process an event's payloads."""
     # TODO: Should we detect and skip duplicated events?
-    event = Event.get(event_uuid)
+    set_event_status(event_uuid, EventStatus.Processing)
     groups_ids = []
-    with db.session.begin_nested():
-        for payload_idx, payload in enumerate(event.payload):
-            # TODO: marshmallow validation of all payloads
-            # should be done on first event ingestion (check)
-            relationship, errors = \
-                RelationshipSchema(check_existing=True).load(payload)
-            # Errors should never happen as the payload is validated
-            # with RelationshipSchema on the event ingestion
-            if errors:
-                raise MarshmallowValidationError(errors)
+    try:
+        with db.session.begin_nested():
+            for payload_idx, payload in enumerate(event.payload):
+                # TODO: marshmallow validation of all payloads
+                # should be done on first event ingestion (check)
+                relationship, errors = \
+                    RelationshipSchema(check_existing=True).load(payload)
+                # Errors should never happen as the payload is validated
+                # with RelationshipSchema on the event ingestion
+                if errors:
+                    raise MarshmallowValidationError(errors)
 
-            # Skip already known relationships
-            # NOTE: This skips any extra metadata!
-            if relationship.id:
-                continue
-            db.session.add(relationship)
-            # We need ORM relationship with IDs, since Event has
-            # 'weak' (non-FK) relations to the objects, hence we need
-            # to know the ID upfront
-            relationship = relationship.fetch_or_create_id()
-            create_relation_object_events(event, relationship, payload_idx)
-            id_groups, version_groups = update_groups(relationship)
+                # Skip already known relationships
+                # NOTE: This skips any extra metadata!
+                if relationship.id:
+                    continue
+                db.session.add(relationship)
+                # We need ORM relationship with IDs, since Event has
+                # 'weak' (non-FK) relations to the objects, hence we need
+                # to know the ID upfront
+                relationship = relationship.fetch_or_create_id()
+                create_relation_object_events(event, relationship, payload_idx)
+                id_groups, version_groups = update_groups(relationship)
 
-            update_metadata(relationship, payload)
-            groups_ids.append(
-                [str(g.id) if g else g for g in id_groups + version_groups])
-    db.session.commit()
+                update_metadata(relationship, payload)
+                groups_ids.append(
+                    [str(g.id) if g else g for g in id_groups + version_groups])
+        db.session.commit()
+        set_event_status(event_uuid, EventStatus.Done)
+    except:
+        set_event_status(event_uuid, EventStatus.Error)
 
     if indexing_enabled:
         compacted = compact_indexing_groups(groups_ids)
         update_indices(*compacted)
 
 
+def chunks(l, n, size):
+    """Yield successive n-sized chunks from l."""
+    for i in range(0, size, n):
+        yield l[i:i + n]
+
+
 @shared_task(ignore_result=True)
 def reindex_all_relationships():
     """Reindex all relationship documents."""
-    _reindex_all_relationships()
+    q = GroupRelationship.query.yield_per(1000)
+    for chunk in chunks(q, 1000, q.count()):
+        index_documents(map(build_doc, chunk), bulk=True)
+

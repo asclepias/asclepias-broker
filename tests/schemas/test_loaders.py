@@ -13,7 +13,7 @@ import arrow
 import pytest
 from helpers import gen_identifier, gen_relation
 
-from asclepias_broker.models import Event, EventType, Identifier, Relation, \
+from asclepias_broker.models import Event, Identifier, Relation, \
     Relationship
 from asclepias_broker.schemas.loaders import IdentifierSchema, \
     RelationshipSchema

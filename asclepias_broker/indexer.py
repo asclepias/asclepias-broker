@@ -218,16 +218,3 @@ def update_indices(idx_ig, del_ig, idx_vg, del_vg, ig_to_vg_map):
         index_version_group_relationships(group_id)
     for group_id in idx_ig:
         index_identity_group_relationships(group_id, ig_to_vg_map[group_id])
-
-
-def chunks(l, n, size):
-    """Yield successive n-sized chunks from l."""
-    for i in range(0, size, n):
-        yield l[i:i + n]
-
-
-def _reindex_all_relationships():
-    """Reindex all relationships."""
-    q = GroupRelationship.query.yield_per(1000)
-    for chunk in chunks(q, 1000, q.count()):
-        index_documents(map(build_doc, chunk), bulk=True)

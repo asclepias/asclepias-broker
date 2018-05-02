@@ -21,11 +21,15 @@ def utils():
 
 
 @utils.command('reindex')
+@click.option('--no-celery', default=False, is_flag=True)
 @with_appcontext
-def _reindex_all_relationships():
+def reindex(no_celery=False):
     """Reindex all relationships."""
     from .tasks import reindex_all_relationships
-    reindex_all_relationships.delay()
+    if no_celery:
+        reindex_all_relationships()
+    else:
+        reindex_all_relationships.delay()
 
 
 def find_json(dirpath):
@@ -37,9 +41,9 @@ def find_json(dirpath):
 @utils.command('load')
 @click.argument('jsondir', type=click.Path(exists=True, dir_okay=True,
                                            resolve_path=True))
-@click.option('--no-index')
+@click.option('--no-index', default=False, is_flag=True)
 @with_appcontext
-def load_events(jsondir, no_index=False):
+def load(jsondir, no_index=False):
     """Load events from a directory."""
     from .api.events import EventAPI
     files = find_json(jsondir)
@@ -47,4 +51,7 @@ def load_events(jsondir, no_index=False):
         for fn in bar_files:
             with open(fn, 'r') as fp:
                 data = json.load(fp)
-            EventAPI.handle_event(data, no_index=no_index)
+            try:
+                EventAPI.handle_event(data, no_index=no_index)
+            except ValueError:
+                pass

@@ -36,11 +36,13 @@ class Relation(enum.Enum):
     IsRelatedTo = 5
 
 
-class EventType(enum.Enum):
-    """Event type."""
+class EventStatus(enum.Enum):
+    """Event status."""
 
-    RelationshipCreated = 1
-    RelationshipDeleted = 2
+    New = 1
+    Processing = 2
+    Error = 3
+    Done = 4
 
 
 class PayloadType(enum.Enum):
@@ -225,6 +227,8 @@ class Event(db.Model, Timestamp):
 
     id = Column(UUIDType, default=uuid.uuid4, primary_key=True)
     payload = Column(JSONType)
+
+    status = Column(Enum(EventStatus), nullable=False)
     # TODO:
     # add FK to user = ...
 

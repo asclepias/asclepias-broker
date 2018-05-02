@@ -18,8 +18,7 @@ from marshmallow import Schema, fields, missing, post_load, pre_load, \
 from marshmallow.exceptions import ValidationError
 from marshmallow.validate import OneOf
 
-from ..models import Event, EventType, Identifier, Relation, Relationship
-from .utils import to_model
+from ..models import Event, Identifier, Relation, Relationship
 
 DATACITE_RELATION_MAP = {
     'Cites': [
@@ -51,6 +50,25 @@ DATACITE_RELATION_MAP = {
 INV_DATACITE_RELATION_MAP = dict(
     sum([[(vv, (k, inv)) for vv, inv in v]
          for k, v in DATACITE_RELATION_MAP.items()], []))
+
+
+def to_model(model_cls):
+    """Marshmallow schema decorator for creating SQLAlchemy models."""
+    def inner(Cls):
+        class ToModelSchema(Cls):
+
+            def __init__(self, *args, check_existing=False, **kwargs):
+                kwargs.setdefault('context', {})
+                kwargs['context'].setdefault('check_existing', check_existing)
+                super().__init__(*args, **kwargs)
+
+            @post_load
+            def to_model(self, data):
+                if self.context.get('check_existing'):
+                    return model_cls.get(**data) or model_cls(**data)
+                return model_cls(**data)
+        return ToModelSchema
+    return inner
 
 
 def from_datacite_relation(relation: str) -> Tuple[Relation, bool]:
