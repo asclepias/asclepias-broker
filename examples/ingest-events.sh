@@ -3,5 +3,5 @@ if [ -z "$1" ]
     echo "First argument must be a JSON file with the payload."
     exit 1
 else
-    curl -vX POST http://localhost:5000/api/event -d @$1 --header "Content-Type: application/json"
+    curl -vX POST http://localhost:5000/api/event -d @$1 --header "Content-Type: application/json" -H "Authorization:Bearer $TOKEN"
 fi
