@@ -23,7 +23,7 @@ class EventAPI:
     """Event API."""
 
     @classmethod
-    def handle_event(cls, event: dict, no_index=False):
+    def handle_event(cls, event: dict, no_index=False, user_id=None):
         """Handle an event payload."""
         # Raises JSONSchema ValidationError
         jsonschema.validate(event, EVENT_SCHEMA)
@@ -34,7 +34,8 @@ class EventAPI:
             if errors:
                 raise MarshmallowValidationError(errors)
 
-        event_obj = Event(payload=event, status=EventStatus.New)
+        event_obj = Event(payload=event, status=EventStatus.New,
+                          user_id=user_id)
         db.session.add(event_obj)
         db.session.commit()
         event_uuid = str(event_obj.id)

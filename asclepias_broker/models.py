@@ -12,6 +12,7 @@ import uuid
 from copy import deepcopy
 
 import jsonschema
+from invenio_accounts.models import User
 from invenio_db import db
 from sqlalchemy import JSON, Boolean, Column, Enum, ForeignKey, Integer, String
 from sqlalchemy.dialects import postgresql
@@ -229,8 +230,12 @@ class Event(db.Model, Timestamp):
     payload = Column(JSONType)
 
     status = Column(Enum(EventStatus), nullable=False)
-    # TODO:
-    # add FK to user = ...
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=True)
+
+    #
+    # Relationships
+    #
+    user = db.relationship(User)
 
     @classmethod
     def get(cls, id=None, **kwargs):

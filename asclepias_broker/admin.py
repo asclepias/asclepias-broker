@@ -64,6 +64,7 @@ class EventModelView(ModelView):
 
     column_list = (
         'id',
+        'user_id',
         'status',
         'payload',
     )

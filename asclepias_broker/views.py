@@ -8,6 +8,7 @@
 import json
 
 from flask import Blueprint, abort, request
+from flask_login import current_user
 from flask.views import MethodView
 from invenio_oauth2server import require_api_auth
 from jsonschema.exceptions import ValidationError as JSONValidationError
@@ -44,7 +45,8 @@ class EventResource(MethodView):
         """Submit an event."""
         try:
             no_index = bool(request.args.get('noindex', False))
-            EventAPI.handle_event(request.json, no_index=no_index)
+            EventAPI.handle_event(request.json, user_id=current_user.id,
+                                  no_index=no_index)
         except JSONValidationError as e:
             raise PayloadValidationRESTError(e.message, code=422)
         except MarshmallowValidationError as e:
