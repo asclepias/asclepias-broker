@@ -92,14 +92,14 @@ def _set_event_status(event_uuid, status):
     db.session.commit()
 
 
-@shared_task(ignore_result=True)
+@shared_task(ignore_result=True, max_retries=3, default_retry_delay=5 * 60)
 def process_event(event_uuid: str, indexing_enabled=True):
-    """Process an event's payloads."""
+    """Process the event."""
     # TODO: Should we detect and skip duplicated events?
     _set_event_status(event_uuid, EventStatus.Processing)
-    event = Event.get(event_uuid)
-    groups_ids = []
     try:
+        event = Event.get(event_uuid)
+        groups_ids = []
         with db.session.begin_nested():
             for payload_idx, payload in enumerate(event.payload):
                 # TODO: marshmallow validation of all payloads
@@ -127,14 +127,15 @@ def process_event(event_uuid: str, indexing_enabled=True):
                 groups_ids.append(
                     [str(g.id) if g else g for g in id_groups + ver_groups])
         db.session.commit()
-        _set_event_status(event_uuid, EventStatus.Done)
-    except:
-        _set_event_status(event_uuid, EventStatus.Error)
-        raise
 
-    if indexing_enabled:
-        compacted = compact_indexing_groups(groups_ids)
-        update_indices(*compacted)
+        if indexing_enabled:
+            compacted = compact_indexing_groups(groups_ids)
+            update_indices(*compacted)
+
+        _set_event_status(event_uuid, EventStatus.Done)
+    except Exception as exc:
+        _set_event_status(event_uuid, EventStatus.Error)
+        process_event.retry(exc=exc)
 
 
 def chunks(l, n, size):
