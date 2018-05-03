@@ -8,8 +8,8 @@
 import json
 
 from flask import Blueprint, abort, request
-from flask_login import current_user
 from flask.views import MethodView
+from flask_login import current_user
 from invenio_oauth2server import require_api_auth
 from jsonschema.exceptions import ValidationError as JSONValidationError
 from marshmallow.exceptions import \
