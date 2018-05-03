@@ -19,17 +19,6 @@ from asclepias_broker.api import EventAPI, RelationshipAPI
 from .errors import PayloadValidationRESTError
 from .models import Identifier
 
-# TODO: we need this blueprint in order to run
-# asclepias_broker.tasks.process_event
-blueprint = Blueprint('asclepias_ui', __name__, template_folder='templates')
-
-
-@blueprint.route('/ping')
-def ping():
-    """Load balancer ping view."""
-    return 'OK'
-
-
 #
 # REST API Views
 #
