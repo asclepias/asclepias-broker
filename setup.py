@@ -52,6 +52,7 @@ install_requires = [
     'Flask-Debugtoolbar>=0.10.1',
     'idutils>=1.0.0',
     'invenio-records-rest>=1.0.1',
+    'invenio-jsonschemas>=1.0.0',
     'invenio[{extras}]==3.0.0rc1'.format(extras=INVENIO_EXTRAS),
     'jsonschema>=2.6.0',  # TODO: Investigate `invenio-jsonschemas` usage
     'marshmallow>=2.15.0',
@@ -110,6 +111,9 @@ setup(
         ],
         'invenio_celery.tasks': [
             'asclepias_broker_tasks = asclepias_broker.tasks',
+        ],
+        'invenio_jsonschemas.schemas': [
+            'asclepias_broker = asclepias_broker.jsonschemas',
         ],
         'invenio_pidstore.fetchers': [
             'relid = asclepias_broker.pidstore:relid_fetcher',
