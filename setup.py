@@ -102,9 +102,6 @@ setup(
             'asclepias_broker_event = '
             'asclepias_broker.admin:event_adminview',
         ],
-        'invenio_base.blueprints': [
-            'asclepias_broker = asclepias_broker.views:blueprint',
-        ],
         'invenio_celery.tasks': [
             'asclepias_broker_tasks = asclepias_broker.tasks',
         ],
