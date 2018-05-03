@@ -1,9 +1,0 @@
-<body>
-<b>Identifiers:</b>
-<ul>
-{% for pid in pids %}
-<li> <a href="{{ url_for('asclepias_ui.relationships', id=pid.value, scheme=pid.scheme, relation='IsCitedBy') }}">{{ pid.value }}</a> </li>
-{% endfor %}
-</ul>
-
-</body>
