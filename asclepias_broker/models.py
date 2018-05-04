@@ -433,9 +433,11 @@ class GroupRelationshipM2M(db.Model, Timestamp):
                                 nullable=False)
 
     relationship = orm_relationship(GroupRelationship,
-                                    foreign_keys=[relationship_id])
+                                    foreign_keys=[relationship_id],
+                                    backref='subrelationshipsm2m')
     subrelationship = orm_relationship(GroupRelationship,
-                                       foreign_keys=[subrelationship_id])
+                                       foreign_keys=[subrelationship_id],
+                                       backref='superrelationshipsm2m')
 
     def __repr__(self):
         """String representation of the model."""
