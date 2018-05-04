@@ -85,13 +85,13 @@ def test_group_metadata_update_type(db):
     g = Group(type=GroupType.Identity)
     db.session.add(g)
     db.session.commit()
-    gm = GroupMetadata(group_id=g.id)
+    minimal_gm = {'Type': {'Name': 'unknown'}}
+    gm = GroupMetadata(group_id=g.id, json=minimal_gm)
     db.session.add(gm)
     db.session.commit()
     assert g.data == gm
     assert g.data.json == gm.json
 
-    update_and_compare(gm, {'Title': 'Some title'})
     # Add Type
     update_and_compare(gm, {'Title': 'Some other title',
                             'Type': {'Name': 'unknown'}})
