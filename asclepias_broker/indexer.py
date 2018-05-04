@@ -98,13 +98,11 @@ def index_documents(docs, bulk=False):
 
 def build_doc(rel, src_grp=None, trg_grp=None, grouping=None):
     """Build the ES document for a relationship."""
-    if rel.type == GroupType.Identity:
-        # Fetch the supergroup (Version) of the Identity relations for metadata
-        src_meta = build_group_metadata(rel.source.supergroupsm2m[0].group)
     if src_grp:
         src_meta = build_group_metadata(src_grp)
     elif rel.type == GroupType.Identity:
-        pass
+        # Fetch the supergroup (Version) of the Identity relations for metadata
+        src_meta = build_group_metadata(rel.source.supergroupsm2m[0].group)
     else:
         src_meta = build_group_metadata(rel.source)
 
