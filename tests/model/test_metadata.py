@@ -81,6 +81,38 @@ def test_group_metadata(db):
     )
 
 
+def test_group_metadata_update_type(db):
+    g = Group(type=GroupType.Identity)
+    db.session.add(g)
+    db.session.commit()
+    minimal_gm = {'Type': {'Name': 'unknown'}}
+    gm = GroupMetadata(group_id=g.id, json=minimal_gm)
+    db.session.add(gm)
+    db.session.commit()
+    assert g.data == gm
+    assert g.data.json == gm.json
+
+    # Add Type
+    update_and_compare(gm, {'Title': 'Some other title',
+                            'Type': {'Name': 'unknown'}})
+
+    # Change Type
+    update_and_compare(gm, {'Title': 'Some other title',
+                            'Type': {'Name': 'software'}})
+
+    # Don't override Type
+    update_and_compare(gm, {'Type': {}}, {'Title': 'Some other title',
+                                          'Type': {'Name': 'software'}})
+    update_and_compare(gm, {'Type': {'Name': 'unknown'}},
+                       {'Title': 'Some other title',
+                        'Type': {'Name': 'software'}})
+
+    # Change Type
+    update_and_compare(gm, {'Type': {'Name': 'dataset'}},
+                       {'Title': 'Some other title',
+                        'Type': {'Name': 'dataset'}})
+
+
 def test_group_relationship_metadata(db):
     g_src = Group(type=GroupType.Identity)
     g_trg = Group(type=GroupType.Identity)
