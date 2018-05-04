@@ -6,6 +6,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Elasticsearch indexing module."""
 
+import uuid
 from copy import deepcopy
 from itertools import chain
 
@@ -98,24 +99,36 @@ def index_documents(docs, bulk=False):
 
 def build_doc(rel, src_grp=None, trg_grp=None, grouping=None):
     """Build the ES document for a relationship."""
-    if src_grp:
-        src_meta = build_group_metadata(src_grp)
-    elif rel.type == GroupType.Identity:
-        # Fetch the supergroup (Version) of the Identity relations for metadata
-        src_meta = build_group_metadata(rel.source.supergroupsm2m[0].group)
-    else:
-        src_meta = build_group_metadata(rel.source)
+    if not src_grp:
+        if rel.type == GroupType.Identity:
+            # Fetch the supergroup (Version) of the Identity relations
+            src_grp = rel.source.supergroupsm2m[0].group
+        else:
+            src_grp = rel.source
+    src_meta = build_group_metadata(src_grp)
 
-    if trg_grp:
-        trg_meta = build_group_metadata(trg_grp)
+    if not trg_grp:
+        trg_grp = rel.target
+    trg_meta = build_group_metadata(trg_grp)
+
+    if rel.type == GroupType.Identity:
+        rel_grp_int = rel.relation.value
+        # TODO: This this is the correct value, but there's a bug
+        # with superrelationshipsm2m being empty (shouldn't be the case)
+        # rel_grp_int = rel.superrelationshipsm2m[0].relationship_id.int
+
     else:
-        trg_meta = build_group_metadata(rel.target)
+        rel_grp_int = rel.id.int
+
+    # We deterministically recompute the document ID based on
+    # Source, Relationship and Target IDs
+    doc_uuid = uuid.UUID(int=(src_grp.id.int ^ rel_grp_int ^ trg_grp.id.int))
 
     rel_meta = build_relationship_metadata(rel)
     grouping = grouping or \
         ('identity' if rel.type == GroupType.Identity else 'version')
     return {
-        '_id': 'v:{}'.format(str(rel.id)),
+        '_id': str(doc_uuid),
         '_source': {
             "ID": str(rel.id),
             "Grouping": grouping,
