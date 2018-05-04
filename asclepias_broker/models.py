@@ -488,7 +488,7 @@ class GroupMetadata(db.Model, Timestamp):
         new_json = deepcopy(self.json or {})
         for k in OVERRIDABLE_KEYS:
             if payload.get(k):
-                if k == 'Type' and not _is_type_overridable(new_json, payload):
+                if k == 'Type' and not _is_type_overridable(payload):
                     continue
                 new_json[k] = payload[k]
         if validate:
@@ -498,12 +498,8 @@ class GroupMetadata(db.Model, Timestamp):
         return self
 
 
-def _is_type_overridable(metadata, payload):
-    return not (metadata.get('Type') is not None and
-                metadata.get('Type') != {} and
-                metadata['Type'].get('Name') != 'unknown' and
-                (payload['Type'].get('Name') == 'unknown' or
-                 payload['Type'].get('Name') == ''))
+def _is_type_overridable(new_json):
+    return new_json.get('Type', {}).get('Name', 'unknown') != 'unknown'
 
 
 class GroupRelationshipMetadata(db.Model, Timestamp):
