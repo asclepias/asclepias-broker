@@ -23,7 +23,8 @@ class EventAPI:
     """Event API."""
 
     @classmethod
-    def handle_event(cls, event: dict, no_index=False, user_id=None):
+    def handle_event(cls, event: dict, no_index=False, user_id=None,
+                     delayed=True):
         """Handle an event payload."""
         # Raises JSONSchema ValidationError
         jsonschema.validate(event, EVENT_SCHEMA)
@@ -41,4 +42,8 @@ class EventAPI:
         event_uuid = str(event_obj.id)
         idx_enabled = current_app.config['ASCLEPIAS_SEARCH_INDEXING_ENABLED'] \
             and (not no_index)
-        process_event.delay(event_uuid, indexing_enabled=idx_enabled)
+        if delayed:
+            process_event.delay(event_uuid, indexing_enabled=idx_enabled)
+        else:
+            process_event.apply(kwargs=dict(event_uuid=event_uuid,
+                                            indexing_enabled=idx_enabled))
