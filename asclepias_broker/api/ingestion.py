@@ -452,3 +452,11 @@ def update_metadata(relationship: Relationship, payload):
         rel_metadata.update(
             {k: v for k, v in payload.items()
              if k in ('LinkPublicationDate', 'LinkProvider')})
+
+
+def update_group_metadata(identifier, payload):
+    """Update the metadata of the identifier's Identity group."""
+    group = get_group_from_id(identifier_value=identifier.get('ID'),
+                              id_type=identifier.get('IDScheme'))
+    if group:
+        group.data.update(payload)

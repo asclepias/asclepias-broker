@@ -12,15 +12,16 @@ from helpers import assert_grouping, create_objects_from_relations, \
 from asclepias_broker.api import EventAPI
 from asclepias_broker.api.ingestion import get_group_from_id, \
     get_or_create_groups, merge_identity_groups, merge_version_groups
+from asclepias_broker.cli import update_groups
 from asclepias_broker.models import Group, GroupM2M, GroupMetadata, \
     GroupRelationship, GroupRelationshipM2M, GroupRelationshipMetadata, \
     GroupType, Identifier, Identifier2Group, Relation, Relationship, \
     Relationship2GroupRelationship
 
 
-def _handle_events(events):
+def _handle_events(events, no_index=False):
     for ev in events:
-        EventAPI.handle_event(generate_payload(ev))
+        EventAPI.handle_event(generate_payload(ev), no_index=no_index)
 
 
 def off_test_simple_id_group_merge(db):
@@ -62,6 +63,80 @@ def off_test_simple_id_group_merge(db):
     assert Group.query.count() == 1
     assert Identifier.query.count() == 5
     assert Identifier2Group.query.count() == 5
+
+
+def test_update_groups(db):
+    evtsrc = [
+        ['A', 'IsIdenticalTo', 'B'],
+    ]
+    _handle_events(evtsrc, no_index=True)
+    assert Group.query.filter_by(type=GroupType.Identity).count() == 1
+    group = Group.query.filter_by(type=GroupType.Identity).one()
+    group_ids = set([identifier.value for identifier in group.identifiers])
+
+    # the Identity group contains only 'A' and 'B'
+    assert set(['A', 'B']).issubset(group_ids)
+    assert len(set(['A', 'B']).difference(group_ids)) == 0
+
+    payload = {
+      "Provider": "SAO/NASA Astrophysics Data System",
+      "Object": {
+          "Identifier": [
+              {
+                  "IDScheme": "doi",
+                  "ID": "A"
+              },
+              {
+                  "IDScheme": "ads",
+                  "ID": "C"
+              },
+              {
+                  "IDScheme": "ads",
+                  "ID": "D"
+              }
+          ],
+          "Title": "{title}",
+          "Type": {"Name": "literature"},
+          "Creator": [
+              {"Name": "{author.0}"},
+              {"Name": "{author.1}"},
+              {"Name": "{author.2}"}
+          ],
+          "Publisher": [
+              {"Name": "{pub}",
+               "Identifier": [{"ID": "{orcid_pub}", "IDScheme": "orcid"}]}
+          ],
+          "PublicationDate": "2018"
+      }
+    }
+    update_groups(payload)
+
+    # fetch the group again
+    updated_group = Group.query.filter_by(type=GroupType.Identity).one()
+    updated_group_ids = set([identifier.value
+                             for identifier in updated_group.identifiers])
+
+    # the Identity group contains now 'A', 'B', 'C' and 'D'
+    assert set(['A', 'B', 'C', 'D']).issubset(updated_group_ids)
+    assert len(set(['A', 'B', 'C', 'D']).difference(updated_group_ids)) == 0
+
+    expected_metadata = {
+        "Title": "{title}",
+        "Type": {"Name": "literature"},
+        "Creator": [
+              {"Name": "{author.0}"},
+              {"Name": "{author.1}"},
+              {"Name": "{author.2}"}
+        ],
+        "Publisher": [
+            {"Name": "{pub}",
+             "Identifier": [{"ID": "{orcid_pub}", "IDScheme": "orcid"}]}
+        ],
+        "PublicationDate": "2018"
+    }
+
+    # the group's metadata got updated as expected
+    assert updated_group.data.json == expected_metadata
 
 
 def test_get_or_create_groups(db):
