@@ -16,7 +16,7 @@ import click
 from flask.cli import with_appcontext
 from invenio_db import db
 
-from .api.ingestion import get_group_from_id, update_group_metadata
+from .api.ingestion import get_group_from_id
 
 
 @click.group()
@@ -81,61 +81,43 @@ def update_groups(data):
 
     provider = data.get('Provider')
     identifiers = data.get('Object').get('Identifier')
-    identifiers_ids = set([identifier.get('ID') for identifier in identifiers])
 
-    is_identity_group_ok = False
-    i = 0
-
-    while not is_identity_group_ok and i < len(identifiers):
+    for identifier in identifiers:
+        event = [{
+            "RelationshipType": {
+                "Name": "IsRelatedTo",
+                "SubTypeSchema": "DataCite",
+                "SubType": "IsIdenticalTo"
+            },
+            "Target": {
+                "Identifier": identifier,
+                "Type": {
+                    "Name": "unknown"
+                }
+            },
+            "LinkProvider": [
+                {
+                    "Name": provider
+                }
+            ],
+            "Source": {
+                "Identifier": identifiers[0],
+                "Type": {
+                    "Name": "unknown"
+                }
+            },
+            "LinkPublicationDate": "2018-05-01"
+        }]
         try:
-            identifier_id = identifiers[i].get('ID')
-            group = get_group_from_id(identifier_value=identifier_id,
-                                      id_type=identifiers[i].get('IDScheme'))
-        except Exception:
-            group = None
+            EventAPI.handle_event(event, no_index=True, delayed=False)
+        except ValueError:
+            pass
 
-        if group is None:
-            i = i + 1
-        else:
-            group_ids = set([identifier.value
-                             for identifier in group.identifiers])
-            if identifiers_ids.issubset(group_ids):
-                is_identity_group_ok = True
-            else:
-                new_identifiers_ids = identifiers_ids - group_ids
-                new_identifiers = [identifier for identifier in identifiers if
-                                   identifier.get('ID') in new_identifiers_ids]
-                event = [{
-                    "RelationshipType": {
-                        "Name": "IsRelatedTo",
-                        "SubTypeSchema": "DataCite",
-                        "SubType": "IsIdenticalTo"
-                    },
-                    "Target": {
-                        "Identifier": new_identifiers[0],
-                        "Type": {
-                            "Name": "unknown"
-                        }
-                    },
-                    "LinkProvider": [
-                        {
-                            "Name": provider
-                        }
-                    ],
-                    "Source": {
-                        "Identifier": identifiers[i],
-                        "Type": {
-                            "Name": "unknown"
-                        }
-                    },
-                    "LinkPublicationDate": "2018-05-01"
-                }]
-                try:
-                    EventAPI.handle_event(event, no_index=True, delayed=False)
-                except ValueError:
-                    pass
     try:
-        update_group_metadata(identifiers[0], data.get('Object'))
+        group = get_group_from_id(
+            identifiers[0]['ID'], identifiers[0]['IDScheme'])
+        if group:
+            group.data.update(data.get('Object'))
         db.session.commit()
     except Exception:
         pass
