@@ -133,6 +133,13 @@ class RelationshipSchema(Schema):
     @post_load
     def inverse(self, data):
         """Normalize the relationship direction based on its type."""
+        if data['source'].value == data['target'].value \
+                and data['source'].scheme == data['target'].scheme:
+            raise ValidationError("Invalid source '{}' and target '{}'".format(
+                data['source'], data['target']),
+                "Souce and target should not be equal.")
+
         if self._inversed:
-            data['Source'], data['Target'] = data['Target'], data['Source']
+            data['source'], data['target'] = data['target'], data['source']
+
         return data

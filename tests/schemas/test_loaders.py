@@ -75,6 +75,11 @@ def test_identifier_schema(in_id, out_id, out_error, db, es_clear):
         (('10.1234/A', 'doi'), Relation.Cites, ('10.1234/B', 'doi')),
         {},
     ),
+    (
+        (('10.1234/A', 'DOI'), 'IsCitedBy', ('10.1234/B', 'DOI')),
+        (('10.1234/B', 'doi'), Relation.Cites, ('10.1234/A', 'doi')),
+        {},
+    )
     # TODO: temporarily accept invalid schemes
     # (
     #     (('10.1234/A', 'invalid_scheme'), 'Cites', ('10.1234/B', 'DOI')),
