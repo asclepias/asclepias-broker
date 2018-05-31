@@ -11,6 +11,7 @@ from __future__ import absolute_import, print_function
 
 import glob
 import json
+from datetime import datetime
 
 import click
 from flask.cli import with_appcontext
@@ -81,9 +82,10 @@ def update_groups(data):
 
     provider = data.get('Provider')
     identifiers = data.get('Object').get('Identifier')
-
+    event = []
+    source_identifier = identifiers.pop()
     for identifier in identifiers:
-        event = [{
+        payload = {
             "RelationshipType": {
                 "Name": "IsRelatedTo",
                 "SubTypeSchema": "DataCite",
@@ -101,17 +103,18 @@ def update_groups(data):
                 }
             ],
             "Source": {
-                "Identifier": identifiers[0],
+                "Identifier": source_identifier,
                 "Type": {
                     "Name": "unknown"
                 }
             },
-            "LinkPublicationDate": "2018-05-01"
-        }]
-        try:
-            EventAPI.handle_event(event, no_index=True, delayed=False)
-        except ValueError:
-            pass
+            "LinkPublicationDate": str(datetime.now())
+        }
+        event.append(payload)
+    try:
+        EventAPI.handle_event(event, no_index=True, delayed=False)
+    except ValueError:
+        pass
 
     try:
         group = get_group_from_id(
