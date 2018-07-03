@@ -137,7 +137,7 @@ ASCLEPIAS_SEARCH_INDEXING_ENABLED = True
 # JSONSchemas
 # ===========
 
-JSONSCHEMAS_HOST = 'asclepias-broker.com'
+JSONSCHEMAS_HOST = 'asclepias.github.io'
 
 # Flask configuration
 # ===================
