@@ -8,4 +8,4 @@
 
 set -e
 
-docker-compose up
+pipenv run invenio shell

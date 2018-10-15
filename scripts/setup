@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2018 CERN.
+#
+# Asclepias Broker is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+# Clean redis
+pipenv run invenio shell --no-term-title -c "import redis; redis.StrictRedis.from_url(app.config['CACHE_REDIS_URL']).flushall(); print('Cache cleared')"
+pipenv run invenio db destroy --yes-i-know
+pipenv run invenio db init create
+pipenv run invenio index destroy --force --yes-i-know
+pipenv run invenio index init --force

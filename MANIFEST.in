@@ -17,13 +17,14 @@ include docker/nginx/Dockerfile
 include docker/postgres/Dockerfile
 include Dockerfile
 include LICENSE
+include Pipfile
+include Pipfile.lock
 include pytest.ini
-include scripts/bootstrap.sh
-include scripts/create_users.sh
-include scripts/recreate_db_es.sh
-include scripts/run_app.sh
-include scripts/run_celery.sh
-include scripts/run_docker.sh
+include scripts/bootstrap
+include scripts/console
+include scripts/server
+include scripts/setup
+include scripts/update
 prune docs/_build
 recursive-include asclepias_broker *.html
 recursive-include asclepias_broker *.json

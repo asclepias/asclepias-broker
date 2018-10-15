@@ -1,0 +1,38 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+invenio = {extras = ["auth", "elasticsearch6", "postgresql"], version = "*"}
+arrow = "*"
+idutils = "*"
+invenio-records-rest = "*"
+jsonschema = "*"
+marshmallow = "*"
+uwsgi = "*"
+uwsgi-tools = "*"
+uwsgitop = "*"
+asclepias-broker = {path = ".", editable = true}
+
+[dev-packages]
+sphinx = "*"
+check-manifest = "*"
+coverage = "*"
+isort = "*"
+mock = "*"
+pydocstyle = "*"
+pytest-cov = "*"
+pytest-invenio = "*"
+pytest-mock = "*"
+"pytest-pep8" = "*"
+pytest-random-order = "*"
+pytest = "*"
+pytest-runner = "*"
+
+[requires]
+python_version = "3.6"
+
+[scripts]
+test = "python setup.py test"
+build_sphinx = "python setup.py build_sphinx"

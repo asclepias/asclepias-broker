@@ -8,7 +8,8 @@
 
 set -e
 
-export FLASK_DEBUG=1
-export SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://asclepias:asclepias@localhost/asclepias'
+script_path=$(dirname "$0")
+./"$script_path"/bootstrap
 
-celery worker -A invenio_app.celery -l INFO -f celerylog.log -c 4 --purge
+pipenv run invenio alembic upgrade
+pipenv run invenio index init --force
