@@ -5,17 +5,10 @@
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-addons:
-  chrome: stable # https://docs.travis-ci.com/user/chrome
-
-dist: trusty # Chrome driver fails if not trusty dist
-
 notifications:
   email: # sent to the committer and the author
     on_success: never # default: always
     on_failure: always # default: always
-
-sudo: false
 
 language: python
 
@@ -26,52 +19,36 @@ cache:
   - pip
 
 services:
-  - postgresql
-  - redis
-  - rabbitmq
-
-addons:
-  postgresql: "9.6"
+  - docker
+sudo: required
 
 env:
-  - REQUIREMENTS=release E2E="no" SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://postgres@localhost:5432/asclepias"
-  # - REQUIREMENTS=release E2E="yes" E2E_OUTPUT="base64"
-  - REQUIREMENTS=devel E2E="no" SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://postgres@localhost:5432/asclepias"
-  # - REQUIREMENTS=devel E2E="yes" E2E_OUTPUT="base64" SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://postgres@localhost:5432/asclepias"
+  - REQUIREMENTS=prod
+  - REQUIREMENTS=qa
 
 python:
-  - "3.5"
+  - "3.6"
 
 before_install:
-  - mkdir /tmp/elasticsearch
-  - wget -O - https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.4.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
-  - "/tmp/elasticsearch/bin/elasticsearch > /tmp/local-es.log &"
-  # Gecko webdriver: https://github.com/mozilla/geckodriver/releases/
-  - "PATH=$PATH:$HOME/webdrivers"
-  - "if [ ${E2E} == 'yes' ] && [ ! -f $HOME/webdrivers/chromedriver ]; then wget https://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip -P $HOME/webdrivers; unzip -d $HOME/webdrivers $HOME/webdrivers/chromedriver_linux64.zip; fi"
-  - "nvm install 6; nvm use 6"
-  - "travis_retry pip install --upgrade pip setuptools py"
-  - "travis_retry pip install twine wheel coveralls requirements-builder"
-  - "cat requirements.txt > .travis-release-requirements.txt"
-  - "requirements-builder -e all --level=dev --req=requirements-devel.txt setup.py > .travis-devel-requirements.txt"
+  # Stop default travis services
+  - "sudo service mysql stop"
+  - "sudo service postgresql stop"
+  # Start docker services
+  - "docker-compose up -d es db cache mq"
+  - "travis_retry pip install --upgrade pip setuptools py pipenv"
+  - "travis_retry pip install twine wheel coveralls"
 
 install:
-  - "travis_retry pip install -r .travis-${REQUIREMENTS}-requirements.txt"
-  - "travis_retry pip install -e .[all]"
-  - pip freeze
-  - "./scripts/bootstrap.sh"
+  - "./scripts/bootstrap --ci"
+  # Output installed packages
+  - "pipenv lock --requirements"
 
 before_script:
-  # https://docs.travis-ci.com/user/gui-and-headless-browsers/
-  - "export DISPLAY=:99.0"
-  - "export E2E_WEBDRIVER_BROWSERS='Chrome'"
-  - "if [ ${E2E} == 'yes' ]; then sh -e /etc/init.d/xvfb start; sleep 5; fi"
-  # Allow ES to start
-  - sleep 10
-  - curl http://127.0.0.1:9200 && echo "Elasticsearch is up!" || cat /tmp/local-es.log
+  # Allow services running inside docker to start
+  - "./docker/wait-for-services.sh"
 
 script:
-  - ./run-tests.sh # E2E tests are skipped if E2E env is set to 'no'
+  - ./run-tests.sh
 
 after_success:
   - coveralls

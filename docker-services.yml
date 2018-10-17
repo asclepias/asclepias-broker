@@ -18,12 +18,14 @@ services:
       - "INVENIO_BROKER_URL=amqp://guest:guest@mq:5672/"
       - "INVENIO_CACHE_REDIS_URL=redis://cache:6379/0"
       - "INVENIO_CACHE_TYPE=redis"
+      - "INVENIO_RATELIMIT_STORAGE_URL=redis://cache:6379/3"
       - "INVENIO_CELERY_BROKER_URL=amqp://guest:guest@mq:5672/"
       - "INVENIO_CELERY_RESULT_BACKEND=redis://cache:6379/2"
       - "INVENIO_SEARCH_ELASTIC_HOSTS=['es:9200']"
       - "INVENIO_SECRET_KEY=CHANGE_ME"
-      - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://asclepias-broker:asclepias-broker@db/asclepias-broker"
+      - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://asclepias:asclepias@db/asclepias"
       - "INVENIO_WSGI_PROXIES=2"
+      - "INVENIO_INSTANCE_PATH=/opt/invenio/var/instance/"
   lb:
     build: ./docker/haproxy/
     image: asclepias-broker-lb

@@ -7,62 +7,109 @@
 Installation
 ============
 
-To run an instance of ``Asclepias Broker`` you will need a PostgreSQL and Elasticsearch, which can be installed directly on your machine,
-or you can use ``docker-compose`` with the provided docker configuration to run those in the sandboxed docker environment (recommended).
+First you need to install
+`pipenv <https://docs.pipenv.org/install/#installing-pipenv>`_, it will handle
+the virtual environment creation for the project in order to sandbox our Python
+environment, as well as manage the dependency installation, among other things.
 
-Quick start
------------
+Start all dependent services using docker-compose (this will start PostgreSQL,
+Elasticsearch 5, RabbitMQ and Redis):
+
+.. code-block:: console
+
+    $ docker-compose up -d
 
 .. note::
 
-    The docker configuration provided in this module uses PostgresSQL and ElasticSearch 6.
+    Make sure you have `enough virtual memory
+    <https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-cli-run-prod-mode>`_
+    for Elasticsearch in Docker:
 
-Install ``docker`` and ``docker-compose`` in your machine.
-Then, create and run the services using the docker containers:
+    .. code-block:: shell
 
-.. code-block:: console
+        # Linux
+        $ sysctl -w vm.max_map_count=262144
 
-    $ cd asclepias-broker
-    $ docker-compose up db es kibana
+        # macOS
+        $ screen ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/tty
+        <enter>
+        linut00001:~# sysctl -w vm.max_map_count=262144
 
-Database and search index
--------------------------
-The last you need to do is to create the database tables and search indexes.
-Connect to the web container:
 
-.. code-block:: console
-
-    $ docker run -it asclepias-broker-web-ui /bin/bash
-
-Run the following commands inside the docker container.
-Create the database and tables:
+Next, bootstrap the instance (this will install all Python dependencies and
+build all static assets):
 
 .. code-block:: console
 
-   $ asclepias-broker db init create
+    $ ./scripts/bootstrap
 
-Create the search indexes and indexing queue:
+Next, create database tables, search indexes and message queues:
 
 .. code-block:: console
 
-    $ asclepias-broker index init
-    $ asclepias-broker index queue init
+    $ ./scripts/setup
 
-Open your browser and visit the url https://localhost.
+Running
+-------
+Start the webserver and the celery worker:
 
-.. note::
+.. code-block:: console
 
-    If for some reason something failed during table or index creation, you
-    can remove everything again with:
+    $ ./scripts/server
 
-    .. code-block:: console
+Start a Python shell:
 
-        $ asclepias-broker db drop --yes-i-know
-        $ asclepias-broker index destroy --force
+.. code-block:: console
 
-Development setup
------------------
+    $ ./scripts/console
 
-The recommended way of development is to install and run the web app locally in your machine, while keeping
-the other services (provided by `docker-compose.yml`) on Docker containers.
-See the `Developer Guide <https://http://invenio.readthedocs.io/en/latest/developersguide/>` documentation.
+Upgrading
+---------
+In order to upgrade an existing instance simply run:
+
+.. code-block:: console
+
+    $ ./scripts/update
+
+Testing
+-------
+Run the test suite via the provided script:
+
+.. code-block:: console
+
+    $ ./run-tests.sh
+
+By default, end-to-end tests are skipped. You can include the E2E tests like
+this:
+
+.. code-block:: console
+
+    $ env E2E=yes ./run-tests.sh
+
+For more information about end-to-end testing see `pytest-invenio
+<https://pytest-invenio.readthedocs.io/en/latest/usage.html#running-e2e-tests>`_
+
+Documentation
+-------------
+You can build the documentation with:
+
+.. code-block:: console
+
+    $ pipenv run build_sphinx
+
+Production environment
+----------------------
+You can use simulate a full production environment using the
+``docker-compose.full.yml``. You can start it like this:
+
+.. code-block:: console
+
+    $ docker-compose -f docker-compose.full.yml up -d
+
+In addition to the normal ``docker-compose.yml``, this one will start:
+
+- HAProxy (load balancer)
+- Nginx (web frontend)
+- UWSGI (application container)
+- Celery (background task worker)
+- Flower (Celery monitoring)

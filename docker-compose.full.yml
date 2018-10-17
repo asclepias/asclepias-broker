@@ -20,37 +20,20 @@ services:
       file: docker-services.yml
       service: frontend
     volumes:
-      - static_data:/opt/asclepias-broker/var/instance/static
+      - static_data:/opt/invenio/var/instance/static
     links:
-      - web-ui
-      - web-api
-  # UI Application
-  web-ui:
+      - web
+  # Web application
+  web:
     extends:
       file: docker-services.yml
       service: app
-    command: uwsgi /opt/asclepias-broker/var/instance/uwsgi_ui.ini
-    image: asclepias-broker-web-ui
+    command: pipenv run uwsgi /opt/invenio/var/instance/uwsgi.ini
+    image: asclepias-broker-web
     ports:
       - "5000"
     volumes:
-      - static_data:/opt/asclepias-broker/var/instance/static
-    links:
-      - cache
-      - es
-      - mq
-      - db
-  # API Rest Application
-  web-api:
-    extends:
-      file: docker-services.yml
-      service: app
-    command: uwsgi /opt/asclepias-broker/var/instance/uwsgi_rest.ini
-    image: asclepias-broker-web-api
-    ports:
-      - "5001"
-    volumes:
-      - static_data:/opt/asclepias-broker/var/instance/static
+      - static_data:/opt/invenio/var/instance/static
     links:
       - cache
       - es
@@ -62,7 +45,7 @@ services:
       file: docker-services.yml
       service: app
     restart: "always"
-    command: "celery worker -A invenio_app.celery --loglevel=INFO"
+    command: "pipenv run celery worker -A invenio_app.celery --loglevel=INFO"
     image: asclepias-broker-worker
     links:
       - cache
@@ -70,6 +53,10 @@ services:
       - mq
       - db
   # Monitoring
+  kibana:
+    extends:
+      file: docker-services.yml
+      service: kibana
   flower:
     extends:
       file: docker-services.yml
