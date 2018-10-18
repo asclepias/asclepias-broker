@@ -4,16 +4,17 @@
 #
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
-"""Relationships API."""
+"""Relationships search API."""
 
 from itertools import groupby
 
 from invenio_db import db
 
-from ..models import Group, GroupRelationship, GroupType, Identifier, \
-    Identifier2Group, Relation
+from ..core.models import Identifier, Relation
+from ..graph.api import get_group_from_id
+from ..graph.models import Group, GroupRelationship, GroupType, \
+    Identifier2Group
 from ..schemas.loaders import from_datacite_relation
-from .ingestion import get_group_from_id
 
 
 class RelationshipAPI:

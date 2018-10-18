@@ -11,7 +11,8 @@ from __future__ import absolute_import, print_function
 
 from flask_admin.contrib.sqla import ModelView
 
-from .models import Event, Identifier, Relationship
+from .core.models import Identifier, Relationship
+from .events.models import Event
 
 
 class IdentifierModelView(ModelView):

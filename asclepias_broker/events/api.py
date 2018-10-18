@@ -13,10 +13,10 @@ from invenio_db import db
 from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
 
+from ..graph.tasks import process_event
 from ..jsonschemas import EVENT_SCHEMA
-from ..models import Event, EventStatus
 from ..schemas.loaders import RelationshipSchema
-from ..tasks import process_event
+from .models import Event, EventStatus
 
 
 class EventAPI:

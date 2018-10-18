@@ -9,14 +9,13 @@
 from helpers import assert_grouping, create_objects_from_relations, \
     generate_payload
 
-from asclepias_broker.api import EventAPI
-from asclepias_broker.api.ingestion import get_group_from_id, \
+from asclepias_broker.core.models import Identifier, Relation, Relationship
+from asclepias_broker.events.api import EventAPI
+from asclepias_broker.graph.api import get_group_from_id, \
     get_or_create_groups, merge_identity_groups, merge_version_groups
-from asclepias_broker.cli import update_groups
-from asclepias_broker.models import Group, GroupM2M, GroupMetadata, \
-    GroupRelationship, GroupRelationshipM2M, GroupRelationshipMetadata, \
-    GroupType, Identifier, Identifier2Group, Relation, Relationship, \
-    Relationship2GroupRelationship
+from asclepias_broker.graph.models import Group, GroupM2M, GroupType, \
+    Identifier2Group
+from asclepias_broker.metadata.cli import update_groups
 
 
 def _handle_events(events, no_index=False):

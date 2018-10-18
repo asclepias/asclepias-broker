@@ -10,7 +10,7 @@
 from helpers import assert_es_equals_db, generate_payload
 from invenio_search import current_search
 
-from asclepias_broker.api import EventAPI
+from asclepias_broker.events.api import EventAPI
 
 
 def _group_data(id_):

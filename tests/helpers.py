@@ -6,9 +6,6 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Test helpers."""
 
-import json
-import sys
-import time
 import uuid
 from typing import List, Tuple
 
@@ -16,12 +13,14 @@ import jsonschema
 from invenio_db import db
 from invenio_search import RecordsSearch, current_search
 
-from asclepias_broker.api.ingestion import get_or_create_groups
-from asclepias_broker.jsonschemas import SCHOLIX_RELATIONS, SCHOLIX_SCHEMA
-from asclepias_broker.models import Group, GroupM2M, GroupMetadata, \
-    GroupRelationship, GroupRelationshipM2M, GroupRelationshipMetadata, \
-    GroupType, Identifier, Identifier2Group, Relationship, \
+from asclepias_broker.core.models import Identifier, Relationship
+from asclepias_broker.graph.api import get_or_create_groups
+from asclepias_broker.graph.models import Group, GroupM2M, GroupRelationship, \
+    GroupRelationshipM2M, GroupType, Identifier2Group, \
     Relationship2GroupRelationship
+from asclepias_broker.jsonschemas import SCHOLIX_RELATIONS
+from asclepias_broker.metadata.models import GroupMetadata, \
+    GroupRelationshipMetadata
 
 #
 # Events generation helpers

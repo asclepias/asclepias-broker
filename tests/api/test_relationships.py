@@ -11,7 +11,7 @@ from flask import url_for
 from helpers import generate_payload
 from invenio_search import current_search
 
-from asclepias_broker.api import EventAPI
+from asclepias_broker.events.api import EventAPI
 
 
 def test_invalid_search_parameters(client):

@@ -12,11 +12,11 @@ from invenio_db import db
 from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
 
-from .api.ingestion import update_groups, update_metadata
-from .indexer import build_doc, index_documents, update_indices
-from .models import Event, EventStatus, GroupRelationship, ObjectEvent, \
-    PayloadType
-from .schemas.loaders import RelationshipSchema
+from ..events.models import Event, EventStatus, ObjectEvent, PayloadType
+from ..metadata.api import update_metadata
+from ..schemas.loaders import RelationshipSchema
+from ..search.indexer import update_indices
+from .api import update_groups
 
 
 def get_or_create(model, **kwargs):
@@ -136,17 +136,3 @@ def process_event(event_uuid: str, indexing_enabled=True):
     except Exception as exc:
         _set_event_status(event_uuid, EventStatus.Error)
         process_event.retry(exc=exc)
-
-
-def chunks(l, n, size):
-    """Yield successive n-sized chunks from l."""
-    for i in range(0, size, n):
-        yield l[i:i + n]
-
-
-@shared_task(ignore_result=True)
-def reindex_all_relationships():
-    """Reindex all relationship documents."""
-    q = GroupRelationship.query.yield_per(1000)
-    for chunk in chunks(q, 1000, q.count()):
-        index_documents(map(build_doc, chunk), bulk=True)

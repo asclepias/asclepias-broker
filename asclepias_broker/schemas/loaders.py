@@ -10,15 +10,11 @@
 from copy import deepcopy
 from typing import Tuple
 
-import arrow
 import idutils
-from arrow.parser import ParserError
-from marshmallow import Schema, fields, missing, post_load, pre_load, \
-    validates, validates_schema
+from marshmallow import Schema, fields, post_load, pre_load, validates_schema
 from marshmallow.exceptions import ValidationError
-from marshmallow.validate import OneOf
 
-from ..models import Event, Identifier, Relation, Relationship
+from ..core.models import Identifier, Relation, Relationship
 
 DATACITE_RELATION_MAP = {
     'Cites': [

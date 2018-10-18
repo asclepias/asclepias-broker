@@ -19,8 +19,9 @@ from invenio_search import current_search_client
 from invenio_search.api import RecordsSearch
 from sqlalchemy.orm import aliased
 
-from .models import Group, GroupM2M, GroupRelationship, GroupRelationshipM2M, \
-    GroupType, Relation
+from ..core.models import Relation
+from ..graph.models import Group, GroupM2M, GroupRelationship, \
+    GroupRelationshipM2M, GroupType
 
 
 def build_id_info(id_):

@@ -41,27 +41,40 @@ setup(
             'asclepias-broker = invenio_app.cli:cli',
         ],
         'flask.commands': [
-            'utils = asclepias_broker.cli:utils',
+            'metadata = asclepias_broker.metadata.cli:metadata',
+            'events = asclepias_broker.events.cli:events',
+            'search = asclepias_broker.search.cli:search',
         ],
         'invenio_config.module': [
             'asclepias_broker = asclepias_broker.config',
         ],
-        'invenio_base.api_blueprints': [
-            'asclepias_broker = asclepias_broker.views:api_blueprint',
+        'invenio_base.api_apps': [
+            # TODO: Fix this in Flask-Menu/Breadcrumbs (i.e. make it possible
+            # to skip menus/breadcrumbs registration if the extensions aare not
+            # loaded/enabled...)
+            'flask_breadcrumbs = flask_breadcrumbs:Breadcrumbs',
         ],
-        # 'invenio_admin.views': [
-        #     'asclepias_broker_identifier = '
-        #     'asclepias_broker.admin:identifier_adminview',
-        #     'asclepias_broker_relationship = '
-        #     'asclepias_broker.admin:relationship_adminview',
-        #     'asclepias_broker_event = '
-        #     'asclepias_broker.admin:event_adminview',
-        # ],
+        'invenio_base.api_blueprints': [
+            ('invenio_oauth2server = '
+             'invenio_oauth2server.views.server:blueprint'),
+            'asclepias_broker = asclepias_broker.views:blueprint',
+            ('asclepias_broker_events = '
+             'asclepias_broker.events.views:blueprint'),
+            ('asclepias_broker_search = '
+             'asclepias_broker.search.views:blueprint'),
+        ],
         'invenio_base.blueprints': [
             'asclepias_broker = asclepias_broker.views:blueprint',
         ],
         'invenio_celery.tasks': [
-            'asclepias_broker_tasks = asclepias_broker.tasks',
+            'asclepias_broker_graph_tasks = asclepias_broker.graph.tasks',
+            'asclepias_broker_search_tasks = asclepias_broker.search.tasks',
+        ],
+        'invenio_db.models': [
+            'asclepias_broker_core = asclepias_broker.core.models',
+            'asclepias_broker_events = asclepias_broker.events.models',
+            'asclepias_broker_graph = asclepias_broker.graph.models',
+            'asclepias_broker_metadata = asclepias_broker.metadata.models',
         ],
         'invenio_pidstore.fetchers': [
             'relid = asclepias_broker.pidstore:relid_fetcher',

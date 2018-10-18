@@ -17,7 +17,7 @@ from invenio_records_rest.facets import terms_filter
 from invenio_records_rest.utils import deny_all
 from invenio_search.api import RecordsSearch
 
-from asclepias_broker.search import enum_term_filter, nested_range_filter, \
+from .search.query import enum_term_filter, nested_range_filter, \
     nested_terms_filter
 
 
@@ -75,10 +75,13 @@ COLLECT_STORAGE = 'flask_collect.storage.file'
 
 # Accounts
 # ========
+ACCOUNTS = False
+ACCOUNTS_SESSION_REDIS_URL = 'redis://localhost:6379/1'
+ACCOUNTS_REGISTER_BLUEPRINT = False
+
 SECURITY_EMAIL_SENDER = SUPPORT_EMAIL
 SECURITY_EMAIL_SUBJECT_REGISTER = _(
     "Welcome to Asclepias Broker!")
-ACCOUNTS_SESSION_REDIS_URL = 'redis://localhost:6379/1'
 
 SECURITY_REGISTERABLE = False
 SECURITY_RECOVERABLE = False
@@ -164,7 +167,7 @@ RECORDS_REST_ENDPOINTS = dict(
         indexer_class=None,
         search_index='relationships',
         search_type=None,
-        search_factory_imp='asclepias_broker.search.search_factory',
+        search_factory_imp='asclepias_broker.search.query.search_factory',
         # Only the List GET view is available
         create_permission_factory_imp=deny_all,
         delete_permission_factory_imp=deny_all,
