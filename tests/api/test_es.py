@@ -15,8 +15,8 @@ from asclepias_broker.events.api import EventAPI
 
 def _group_data(id_):
     return {
-        'Title': 'Title for {}'.format(id_),
-        'Creator': [{'Name': 'Creator for {}'.format(id_)}],
+        'Title': f'Title for {id_}',
+        'Creator': [{'Name': f'Creator for {id_}'}],
         'Type': {'Name': 'literature'},
         'PublicationDate': '2018-01-01',
     }

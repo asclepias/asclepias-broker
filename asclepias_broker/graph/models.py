@@ -46,7 +46,7 @@ class Group(db.Model, Timestamp):
 
     def __repr__(self):
         """String representation of the group."""
-        return "<{self.id}: {self.type.name}>".format(self=self)
+        return f"<{self.id}: {self.type.name}>"
 
 
 class GroupRelationship(db.Model, Timestamp):
@@ -96,8 +96,7 @@ class GroupRelationship(db.Model, Timestamp):
 
     def __repr__(self):
         """String representation of the group relationship."""
-        return ('<{self.source} {self.relation.name} {self.target}>'
-                .format(self=self))
+        return f'<{self.source} {self.relation.name} {self.target}>'
 
 
 class Identifier2Group(db.Model, Timestamp):
@@ -153,8 +152,7 @@ class Relationship2GroupRelationship(db.Model, Timestamp):
 
     def __repr__(self):
         """String representation of the model."""
-        return ('<{self.group_relationship}: {self.relationship}>'
-                .format(self=self))
+        return f'<{self.group_relationship}: {self.relationship}>'
 
 
 class GroupM2M(db.Model, Timestamp):
@@ -181,7 +179,7 @@ class GroupM2M(db.Model, Timestamp):
 
     def __repr__(self):
         """String representation of the model."""
-        return '<{self.group}: {self.subgroup}>'.format(self=self)
+        return f'<{self.group}: {self.subgroup}>'
 
 
 class GroupRelationshipM2M(db.Model, Timestamp):
@@ -216,5 +214,4 @@ class GroupRelationshipM2M(db.Model, Timestamp):
 
     def __repr__(self):
         """String representation of the model."""
-        return ('<{self.relationship}: {self.subrelationship}>'
-                .format(self=self))
+        return f'<{self.relationship}: {self.subrelationship}>'

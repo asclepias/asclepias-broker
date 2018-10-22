@@ -53,7 +53,7 @@ class Event(db.Model, Timestamp):
 
     def __repr__(self):
         """String representation of the event."""
-        return "<{self.id}: {self.created}>".format(self=self)
+        return f"<{self.id}: {self.created}>"
 
 
 class ObjectEvent(db.Model, Timestamp):
@@ -73,4 +73,4 @@ class ObjectEvent(db.Model, Timestamp):
 
     def __repr__(self):
         """String representation of the object event."""
-        return "<{self.event_id}: {self.object_uuid}>".format(self=self)
+        return f"<{self.event_id}: {self.object_uuid}>"

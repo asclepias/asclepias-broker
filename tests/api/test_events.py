@@ -33,7 +33,7 @@ def auth_headers(access_token):
     return {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': 'Bearer {0}'.format(access_token),
+        'Authorization': f'Bearer {access_token}',
     }
 
 

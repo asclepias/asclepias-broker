@@ -43,7 +43,7 @@ class Identifier(db.Model, Timestamp):
 
     def __repr__(self):
         """String representation of the Identifier."""
-        return "<{self.scheme}: {self.value}>".format(self=self)
+        return f"<{self.scheme}: {self.value}>"
 
     @classmethod
     def get(cls, value=None, scheme=None, **kwargs):
@@ -192,6 +192,5 @@ class Relationship(db.Model, Timestamp):
     def __repr__(self):
         """String representation of the relationship."""
         return (
-            '<{self.source.value} {self.relation.name} '
-            '{self.target.value}>'.format(self=self)
+            f'<{self.source.value} {self.relation.name} {self.target.value}>'
         )
