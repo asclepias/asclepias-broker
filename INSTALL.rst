@@ -12,8 +12,14 @@ First you need to install
 the virtual environment creation for the project in order to sandbox our Python
 environment, as well as manage the dependency installation, among other things.
 
-Start all dependent services using docker-compose (this will start PostgreSQL,
-Elasticsearch 5, RabbitMQ and Redis):
+For running dependent services, you'll need `Docker
+<https://docs.docker.com/install/>`_ and `Docker Compose
+<https://docs.docker.com/compose/install/>`_, in order get things up and
+running quickly but also to make sure that the same versions and configuration
+for these services is used independent of your OS.
+
+Start all the dependent services using ``docker-compose`` (this will start
+PostgreSQL, Elasticsearch 6, RabbitMQ, Redis, Kibana and Flower):
 
 .. code-block:: console
 
@@ -36,14 +42,13 @@ Elasticsearch 5, RabbitMQ and Redis):
         linut00001:~# sysctl -w vm.max_map_count=262144
 
 
-Next, bootstrap the instance (this will install all Python dependencies and
-build all static assets):
+Next, bootstrap the instance (this will install all Python dependencies):
 
 .. code-block:: console
 
     $ ./scripts/bootstrap
 
-Next, create database tables, search indexes and message queues:
+Next, create the database tables, search indices and an admin user:
 
 .. code-block:: console
 
@@ -79,16 +84,6 @@ Run the test suite via the provided script:
 
     $ ./run-tests.sh
 
-By default, end-to-end tests are skipped. You can include the E2E tests like
-this:
-
-.. code-block:: console
-
-    $ env E2E=yes ./run-tests.sh
-
-For more information about end-to-end testing see `pytest-invenio
-<https://pytest-invenio.readthedocs.io/en/latest/usage.html#running-e2e-tests>`_
-
 Documentation
 -------------
 You can build the documentation with:
@@ -99,7 +94,8 @@ You can build the documentation with:
 
 Production environment
 ----------------------
-You can use simulate a full production environment using the
+
+You can simulate a full production environment using the
 ``docker-compose.full.yml``. You can start it like this:
 
 .. code-block:: console
@@ -110,6 +106,12 @@ In addition to the normal ``docker-compose.yml``, this one will start:
 
 - HAProxy (load balancer)
 - Nginx (web frontend)
-- UWSGI (application container)
+- uWSGI (application container)
 - Celery (background task worker)
-- Flower (Celery monitoring)
+
+As done for local development, you will also have to run the initial setup
+script inside the running container:
+
+.. code-block:: console
+
+    $ docker-compose -f docker-compose.full.yml run --rm web ./scripts/setup
