@@ -9,6 +9,7 @@
 import uuid
 from copy import deepcopy
 from itertools import chain
+from typing import Dict, Iterable, Optional, Set, Tuple
 
 import idutils
 import sqlalchemy as sa
@@ -19,12 +20,12 @@ from invenio_search import current_search_client
 from invenio_search.api import RecordsSearch
 from sqlalchemy.orm import aliased
 
-from ..core.models import Relation
+from ..core.models import Identifier, Relation
 from ..graph.models import Group, GroupM2M, GroupRelationship, \
     GroupRelationshipM2M, GroupType
 
 
-def build_id_info(id_):
+def build_id_info(id_: Identifier) -> dict:
     """Build information for the Identifier."""
     data = {
         'ID': id_.value,
@@ -83,7 +84,7 @@ def build_relationship_metadata(rel: GroupRelationship) -> dict:
         return deepcopy((rel.data and rel.data.json) or {})
 
 
-def index_documents(docs, bulk=False):
+def index_documents(docs: Iterable[dict], bulk: bool = False):
     """Index a list of documents into ES."""
     if bulk:
         bulk_index(
@@ -98,7 +99,11 @@ def index_documents(docs, bulk=False):
                 index='relationships', doc_type='doc', body=doc)
 
 
-def build_doc(rel, src_grp=None, trg_grp=None, grouping=None):
+def build_doc(
+    rel: GroupRelationship,
+    src_grp: Group = None, trg_grp: Group = None,
+    grouping: str = None
+) -> dict:
     """Build the ES document for a relationship."""
     if not src_grp:
         if rel.type == GroupType.Identity:
@@ -141,8 +146,11 @@ def build_doc(rel, src_grp=None, trg_grp=None, grouping=None):
     }
 
 
-def index_identity_group_relationships(ig_id: str, vg_id: str,
-                                       exclude_group_ids: tuple=None):
+def index_identity_group_relationships(
+    ig_id: str, vg_id: str,
+    # TODO: Check if this parameter is actually used...
+    exclude_group_ids: Optional[Tuple[str, str]] = None
+):
     """Build the relationship docs for Identity relations."""
     # Build the documents for incoming Version2Identity relations
 
@@ -207,7 +215,7 @@ def index_identity_group_relationships(ig_id: str, vg_id: str,
 
 
 def index_version_group_relationships(group_id: str,
-                                      exclude_group_id: str=None):
+                                      exclude_group_id: str = None):
     """Build the relationship docs for Version relations."""
     if exclude_group_id:
         filter_cond = sa.or_(
@@ -231,7 +239,7 @@ def index_version_group_relationships(group_id: str,
     index_documents(map(_build_doc, relationships), bulk=True)
 
 
-def delete_group_relations(group_ids):
+def delete_group_relations(group_ids: Iterable[str]):
     """Delete all relations for given group IDs from ES."""
     RecordsSearch(index='relationships').query('bool', should=[
             Q('terms', Source__ID=list(group_ids)),
@@ -239,7 +247,11 @@ def delete_group_relations(group_ids):
     ]).params(conflicts='proceed').delete()  # ignore versioning conflicts
 
 
-def update_indices(idx_ig, del_ig, idx_vg, del_vg, ig_to_vg_map):
+def update_indices(
+    idx_ig: Set[str], del_ig: Set[str],
+    idx_vg: Set[str], del_vg: Set[str],
+    ig_to_vg_map: Dict[str, str]
+):
     """Updates Elasticsearch indices with the updated groups."""
     # `src_group` and `trg_group` were merged into `merged_group`.
     delete_group_relations(del_ig | del_vg | idx_ig | idx_vg)

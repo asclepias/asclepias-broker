@@ -14,7 +14,7 @@ class PayloadValidationRESTError(RESTException):
 
     code = 400
 
-    def __init__(self, error_message, code=None, **kwargs):
+    def __init__(self, error_message: str, code: int = None, **kwargs):
         """Initialize the PayloadValidation REST exception."""
         if code:
             self.code = code

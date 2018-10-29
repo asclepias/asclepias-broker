@@ -125,7 +125,7 @@ def generate_payload(item, event_schema=None):
 
 
 def create_objects_from_relations(relationships: List[Tuple],
-                                  metadata: List[Tuple[dict]]=None):
+                                  metadata: List[Tuple[dict]] = None):
     """Given a list of relationships, create all corresponding DB objects.
 
     Optional 'metadata' list can be passed, which contains corresponding

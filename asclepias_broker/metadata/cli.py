@@ -40,7 +40,7 @@ def load_metadata(jsondir):
             update_groups(data)
 
 
-def update_groups(data):
+def update_groups(data: dict):
     """Update groups and the Identity group's metadata."""
     provider = data.get('Provider')
     identifiers = data.get('Object').get('Identifier')

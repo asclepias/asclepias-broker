@@ -6,6 +6,8 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Search utilities."""
 
+from typing import Dict
+
 from elasticsearch_dsl import Q
 from elasticsearch_dsl.query import Range
 from flask import request
@@ -44,7 +46,7 @@ def search_factory(self, search, query_parser=None):
     return search, urlkwargs
 
 
-def enum_term_filter(label, field, choices):
+def enum_term_filter(label: str, field: str, choices: Dict[str, str]):
     """Term filter with controlled vocabulary."""
     def inner(values):
         if len(values) != 1:
@@ -59,7 +61,7 @@ def enum_term_filter(label, field, choices):
     return inner
 
 
-def nested_terms_filter(field, path=None):
+def nested_terms_filter(field: str, path: str = None):
     """Nested terms filter."""
     path = path or field.rsplit('.', 1)[0]
 
@@ -68,7 +70,8 @@ def nested_terms_filter(field, path=None):
     return inner
 
 
-def nested_range_filter(label, field, path=None, op=None):
+def nested_range_filter(
+        label: str, field: str, path: str = None, op: str = None):
     """Nested range filter."""
     path = path or field.rsplit('.', 1)[0]
     assert op in ('gte', 'gt', 'lte', 'lt')

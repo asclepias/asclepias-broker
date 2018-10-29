@@ -23,8 +23,8 @@ class EventAPI:
     """Event API."""
 
     @classmethod
-    def handle_event(cls, event: dict, no_index=False, user_id=None,
-                     delayed=True):
+    def handle_event(cls, event: dict, no_index: bool = False,
+                     user_id: int = None, delayed: bool = True):
         """Handle an event payload."""
         # Raises JSONSchema ValidationError
         jsonschema.validate(event, EVENT_SCHEMA)

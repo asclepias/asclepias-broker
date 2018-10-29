@@ -47,7 +47,7 @@ class Event(db.Model, Timestamp):
     user = db.relationship(User)
 
     @classmethod
-    def get(cls, id=None, **kwargs):
+    def get(cls, id: str = None, **kwargs):
         """Get the event from the database."""
         return cls.query.filter_by(id=id).one_or_none()
 

@@ -57,7 +57,7 @@ class GroupMetadata(db.Model, Timestamp):
         },
     }
 
-    def update(self, payload, validate=True):
+    def update(self, payload: dict, validate: bool = True):
         """Update the metadata of a group."""
         new_json = deepcopy(self.json or {})
         for k in OVERRIDABLE_KEYS:
@@ -120,7 +120,8 @@ class GroupRelationshipMetadata(db.Model, Timestamp):
         }
     }
 
-    def update(self, payload, validate=True, multi=False):
+    def update(self, payload: dict, validate: bool = True,
+               multi: bool = False):
         """Updates the metadata of a group relationship."""
         new_json = deepcopy(self.json or [])
         if multi:

@@ -25,11 +25,11 @@ pydocstyle = "*"
 pytest-cov = "*"
 pytest-invenio = "*"
 pytest-mock = "*"
-"pytest-pep8" = "*"
 pytest-random-order = "*"
 pytest = "*"
 pytest-runner = "*"
 "flake8" = "*"
+pytest-pycodestyle = "*"
 
 [requires]
 python_version = "3.6"

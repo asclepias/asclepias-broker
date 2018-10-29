@@ -14,7 +14,7 @@ from .models import GroupMetadata, GroupRelationshipMetadata
 
 # TODO: When merging/splitting groups there is some merging/duplicating of
 # metadata as well
-def update_metadata(relationship: Relationship, payload):
+def update_metadata(relationship: Relationship, payload: dict):
     """Updates the metadata of the source, target and relationship groups."""
     # Get identity groups for source and targer
     # TODO: Do something for this case?

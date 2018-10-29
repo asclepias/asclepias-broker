@@ -7,11 +7,14 @@
 
 """Asynchronous tasks."""
 
+from typing import Dict, List, Set, Tuple
+
 from celery import shared_task
 from invenio_db import db
 from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
 
+from ..core.models import Relationship
 from ..events.models import Event, EventStatus, ObjectEvent, PayloadType
 from ..metadata.api import update_metadata
 from ..schemas.loaders import RelationshipSchema
@@ -30,7 +33,11 @@ def get_or_create(model, **kwargs):
         return instance
 
 
-def create_relation_object_events(event, relationship, payload_idx):
+def create_relation_object_events(
+    event: Event,
+    relationship: Relationship,
+    payload_idx: int
+):
     """Create the object event models."""
     # Create the Relation entry
     rel_obj = get_or_create(
@@ -56,7 +63,13 @@ def create_relation_object_events(event, relationship, payload_idx):
     return rel_obj, src_obj, tar_obj
 
 
-def compact_indexing_groups(groups_ids):
+def compact_indexing_groups(
+    groups_ids: List[Tuple[str, str, str, str, str, str]]
+) -> Tuple[
+    Set[str], Set[str],
+    Set[str], Set[str],
+    Dict[str, str],
+]:
     """Compact the collected group IDs into minimal set of UUIDs."""
     # Compact operations
     ig_to_vg_map = {}
@@ -93,7 +106,7 @@ def _set_event_status(event_uuid, status):
 
 
 @shared_task(ignore_result=True, max_retries=3, default_retry_delay=5 * 60)
-def process_event(event_uuid: str, indexing_enabled=True):
+def process_event(event_uuid: str, indexing_enabled: bool = True):
     """Process the event."""
     # TODO: Should we detect and skip duplicated events?
     _set_event_status(event_uuid, EventStatus.Processing)

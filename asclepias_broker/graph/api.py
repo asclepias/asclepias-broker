@@ -8,18 +8,22 @@
 """Graph functions."""
 
 import uuid
-from typing import Tuple
+from typing import Optional, Tuple, Union
 
 from invenio_db import db
 from sqlalchemy.orm import aliased
 
-from ..core.models import Identifier, Relation
+from ..core.models import Identifier, Relation, Relationship
 from ..metadata.models import GroupMetadata, GroupRelationshipMetadata
 from .models import Group, GroupM2M, GroupRelationship, GroupRelationshipM2M, \
     GroupType, Identifier2Group, Relationship2GroupRelationship
 
 
-def merge_group_relationships(group_a, group_b, merged_group):
+def merge_group_relationships(
+    group_a: Group,
+    group_b: Group,
+    merged_group: Group
+):
     """Merge the relationships of merged groups A and B to avoid collisions.
 
     Groups 'group_a' and 'group_b' will be merged as 'merged_group'.
@@ -151,8 +155,13 @@ def merge_group_relationships(group_a, group_b, merged_group):
         )
 
 
-def delete_duplicate_relationship_m2m(group_a, group_b,
-                                      cls=GroupRelationshipM2M):
+def delete_duplicate_relationship_m2m(
+    group_a: Group,
+    group_b: Group,
+    cls: Union[
+        GroupRelationshipM2M, Relationship2GroupRelationship
+    ] = GroupRelationshipM2M,
+):
     """Delete any duplicate relationship M2M objects.
 
     Deletes any duplicate (unique-constraint violating) M2M objects
@@ -242,7 +251,9 @@ def delete_duplicate_group_m2m(group_a: Group, group_b: Group):
             db.session.delete(rel_a)
 
 
-def merge_identity_groups(group_a: Group, group_b: Group):
+def merge_identity_groups(
+        group_a: Group, group_b: Group
+) -> Tuple[Optional[Group], Optional[Group]]:
     """Merge two groups of type "Identity".
 
     Merges the groups together into one group, taking care of migrating
@@ -294,7 +305,7 @@ def merge_identity_groups(group_a: Group, group_b: Group):
     return merged_group, merged_version_group
 
 
-def merge_version_groups(group_a: Group, group_b: Group):
+def merge_version_groups(group_a: Group, group_b: Group) -> Optional[Group]:
     """Merge two Version groups into one."""
     # Nothing to do if groups are already merged
     if group_a == group_b:
@@ -351,8 +362,11 @@ def get_or_create_groups(identifier: Identifier) -> Tuple[Group, Group]:
     return id2g.group, g2g.group
 
 
-def get_group_from_id(identifier_value, id_type='doi',
-                      group_type=GroupType.Identity):
+def get_group_from_id(
+    identifier_value: str,
+    id_type: str = 'doi',
+    group_type: GroupType = GroupType.Identity
+) -> Group:
     """Resolve from 'A' to Identity Group of A or to a Version Group of A."""
     # TODO: Move this method to api.utils or to models?
     id_ = Identifier.get(identifier_value, id_type)
@@ -363,8 +377,11 @@ def get_group_from_id(identifier_value, id_type='doi',
         return GroupM2M.query.filter_by(subgroup=id_grp).one().group
 
 
-def add_group_relationship(relationship, src_id_grp, tar_id_grp,
-                           src_ver_grp, tar_ver_grp):
+def add_group_relationship(
+    relationship: Relationship,
+    src_id_grp: Group, tar_id_grp: Group,
+    src_ver_grp: Group, tar_ver_grp: Group
+):
     """Add a group relationship between corresponding groups."""
     # Add GroupRelationship between Identity groups
     id_grp_rel = GroupRelationship(source=src_id_grp, target=tar_id_grp,
@@ -390,7 +407,9 @@ def add_group_relationship(relationship, src_id_grp, tar_id_grp,
     db.session.add(g2g_rel)
 
 
-def update_groups(relationship, delete=False):
+def update_groups(
+    relationship: Relationship, delete: bool = False
+) -> Tuple[Tuple[Group, Group, Group], Tuple[Group, Group, Group]]:
     """Update groups and related M2M objects for given relationship."""
     src_idg, src_vg = get_or_create_groups(relationship.source)
     tar_idg, tar_vg = get_or_create_groups(relationship.target)

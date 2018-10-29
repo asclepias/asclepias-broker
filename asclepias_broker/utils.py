@@ -10,9 +10,10 @@
 from __future__ import absolute_import, print_function
 
 import glob
+from typing import List
 
 
-def find_ext(dirpath, ext):
+def find_ext(dirpath: str, ext: str):
     """Finds all files of a given extension in given subdirectory.
 
     :param str dirpath: Path to search (e.g. ``/some/foo/bar/dir``).
@@ -21,7 +22,7 @@ def find_ext(dirpath, ext):
     return glob.glob(dirpath + f'/**/*{ext}', recursive=True)
 
 
-def chunks(l, n, size):
+def chunks(l: List, n: int, size: int):
     """Yield successive n-sized chunks from l."""
     for i in range(0, size, n):
         yield l[i:i + n]
