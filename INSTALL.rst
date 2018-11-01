@@ -7,21 +7,22 @@
 Installation
 ============
 
-First you need to install
-`pipenv <https://docs.pipenv.org/install/#installing-pipenv>`_, it will handle
-the virtual environment creation for the project in order to sandbox our Python
-environment, as well as manage the dependency installation, among other things.
+First you need to install `pipenv
+<https://docs.pipenv.org/install/#installing-pipenv>`_, it will handle the
+virtual environment creation for the project in order to sandbox our Python
+environment, as well as manage the dependencies installation, among other
+things.
 
 For running dependent services, you'll need `Docker
-<https://docs.docker.com/install/>`_ and `Docker Compose
-<https://docs.docker.com/compose/install/>`_, in order get things up and
-running quickly but also to make sure that the same versions and configuration
-for these services is used independent of your OS.
+<https://docs.docker.com/install/>`_ (``>=18.06.1``) and `Docker Compose
+<https://docs.docker.com/compose/install/>`_ (``>=1.22.0``), in order get
+things up and running quickly but also to make sure that the same versions and
+configuration for these services is used, independent of your OS.
 
 Start all the dependent services using ``docker-compose`` (this will start
 PostgreSQL, Elasticsearch 6, RabbitMQ, Redis, Kibana and Flower):
 
-.. code-block:: console
+.. code-block:: shell
 
     $ docker-compose up -d
 
@@ -41,16 +42,15 @@ PostgreSQL, Elasticsearch 6, RabbitMQ, Redis, Kibana and Flower):
         <enter>
         linut00001:~# sysctl -w vm.max_map_count=262144
 
-
 Next, bootstrap the instance (this will install all Python dependencies):
 
-.. code-block:: console
+.. code-block:: shell
 
     $ ./scripts/bootstrap
 
-Next, create the database tables, search indices and an admin user:
+Next, create the database tables and search indices:
 
-.. code-block:: console
+.. code-block:: shell
 
     $ ./scripts/setup
 
@@ -58,13 +58,13 @@ Running
 -------
 Start the webserver and the celery worker:
 
-.. code-block:: console
+.. code-block:: shell
 
     $ ./scripts/server
 
 Start a Python shell:
 
-.. code-block:: console
+.. code-block:: shell
 
     $ ./scripts/console
 
@@ -72,7 +72,7 @@ Upgrading
 ---------
 In order to upgrade an existing instance simply run:
 
-.. code-block:: console
+.. code-block:: shell
 
     $ ./scripts/update
 
@@ -80,7 +80,7 @@ Testing
 -------
 Run the test suite via the provided script:
 
-.. code-block:: console
+.. code-block:: shell
 
     $ ./run-tests.sh
 
@@ -88,7 +88,7 @@ Documentation
 -------------
 You can build the documentation with:
 
-.. code-block:: console
+.. code-block:: shell
 
     $ pipenv run build_sphinx
 
@@ -98,7 +98,7 @@ Production environment
 You can simulate a full production environment using the
 ``docker-compose.full.yml``. You can start it like this:
 
-.. code-block:: console
+.. code-block:: shell
 
     $ docker-compose -f docker-compose.full.yml up -d
 
@@ -112,6 +112,6 @@ In addition to the normal ``docker-compose.yml``, this one will start:
 As done for local development, you will also have to run the initial setup
 script inside the running container:
 
-.. code-block:: console
+.. code-block:: shell
 
     $ docker-compose -f docker-compose.full.yml run --rm web ./scripts/setup
