@@ -8,4 +8,10 @@ else
     query_id="$1"
 fi
 
-curl -vkX GET "https://localhost:5000/api/relationships?id=${query_id}&scheme=doi&relation=isCitedBy&groupBy=version&prettyprint=1" --header "Accept: application/json"
+curl -vkG "https://localhost:5000/api/relationships" \
+    --header "Accept: application/json" \
+    -d id="${query_id}" \
+    -d scheme=doi \
+    -d relation=isCitedBy \
+    -d groupBy=version \
+    -d prettyprint=1
