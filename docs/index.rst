@@ -29,7 +29,11 @@ this part of the documentation is for you.
 .. toctree::
    :maxdepth: 2
 
-   api
+   api/core
+   api/events
+   api/graph
+   api/metadata
+   api/search
 
 Additional Notes
 ----------------

@@ -26,19 +26,24 @@ def merge_group_relationships(
 ):
     """Merge the relationships of merged groups A and B to avoid collisions.
 
+    :param group_a: some things.
+    :param group_b: some other things.
+
     Groups 'group_a' and 'group_b' will be merged as 'merged_group'.
     This function takes care of moving any duplicate group relations, e.g.:
 
     If we have 4 relations:
-        A Cites X
-        B Cites X
-        Y Cites A
-        Y Cites B
+
+    - A Cites X
+    - B Cites X
+    - Y Cites A
+    - Y Cites B
+
     and we merge groups A and B, we also need to squash the first two and last
     two relations together:
 
-        {AB} Cites X
-        Y Cites {AB}
+    - {AB} Cites X
+    - Y Cites {AB}
 
     before we can perform the actual marging of A and B. Otherwise we will
     violate the unique constraint. We do that by removing the duplicate

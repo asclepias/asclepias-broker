@@ -12,6 +12,8 @@ from __future__ import absolute_import, print_function
 import click
 from flask.cli import with_appcontext
 
+from .tasks import reindex_all_relationships
+
 
 @click.group()
 def search():
@@ -23,7 +25,6 @@ def search():
 @with_appcontext
 def reindex(no_celery=False):
     """Reindex all relationships."""
-    from .search.tasks import reindex_all_relationships
     if no_celery:
         reindex_all_relationships()
     else:
