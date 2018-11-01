@@ -25,11 +25,15 @@ suppress_warnings = ['image.nonlocal_uri']
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'celery.contrib.sphinx',
+    'sphinx_autodoc_typehints',
+    'sphinx_click.ext',
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
+    'sphinxcontrib.httpdomain',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -84,6 +88,8 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 exclude_patterns = []
+
+nitpick_ignore = [('py:class', 'typing.Tuple')]
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -317,7 +323,11 @@ texinfo_documents = [
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
     'python': ('https://docs.python.org/', None),
+    'flask': ('http://flask.pocoo.org/docs/latest/', None),
+    'sqlalchemy': ('https://docs.sqlalchemy.org/en/latest/', None)
 }
+
+httpexample_scheme = 'https'
 
 # Autodoc configuraton.
 autoclass_content = 'both'

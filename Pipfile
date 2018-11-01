@@ -30,6 +30,10 @@ pytest = "*"
 pytest-runner = "*"
 "flake8" = "*"
 pytest-pycodestyle = "*"
+sphinx-click = "*"
+sphinx-autodoc-typehints = "*"
+sphinxcontrib-httpdomain = "*"
+sphinxcontrib-httpexample = "*"
 
 [requires]
 python_version = "3.6"
