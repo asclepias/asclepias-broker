@@ -5,7 +5,7 @@
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 """Event views."""
-from flask import Blueprint, request
+from flask import Blueprint, jsonify, request
 from flask.views import MethodView
 from flask_login import current_user
 from invenio_oauth2server import require_api_auth
@@ -31,14 +31,17 @@ class EventResource(MethodView):
         """Submit an event."""
         try:
             no_index = bool(request.args.get('noindex', False))
-            EventAPI.handle_event(request.json, user_id=current_user.id,
-                                  no_index=no_index)
+            event = EventAPI.handle_event(
+                request.json, user_id=current_user.id, no_index=no_index)
         except JSONValidationError as e:
             raise PayloadValidationRESTError(e.message, code=422)
         except MarshmallowValidationError as e:
             msg = "Validation error: " + str(e.messages)
             raise PayloadValidationRESTError(msg, code=422)
-        return "Accepted", 202
+        return jsonify({
+            'message': 'event accepted',
+            'event_id': str(event.id)
+        }), 202
 
 
-blueprint.add_url_rule('/event', view_func=EventResource.as_view('event'))
+blueprint.add_url_rule('/events', view_func=EventResource.as_view('event'))
