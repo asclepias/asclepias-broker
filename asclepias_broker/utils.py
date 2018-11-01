@@ -10,16 +10,19 @@
 from __future__ import absolute_import, print_function
 
 import glob
+from pathlib import Path
 from typing import List
 
 
-def find_ext(dirpath: str, ext: str):
+def find_ext(file_or_dir: str, ext: str = None) -> List[str]:
     """Finds all files of a given extension in given subdirectory.
 
-    :param str dirpath: Path to search (e.g. ``/some/foo/bar/dir``).
-    :param str ext: The extension of the files to search for (e.g. ``.json``)
+    :param file_or_dir: Path to search (e.g. ``/some/foo/bar/dir``) or file.
+    :param ext: The extension of the files to search for (e.g. ``.json``)
     """
-    return glob.glob(dirpath + f'/**/*{ext}', recursive=True)
+    if Path(file_or_dir).is_file():
+        return [file_or_dir]
+    return glob.glob(file_or_dir + f'/**/*{ext}', recursive=True)
 
 
 def chunks(l: List, n: int, size: int):
