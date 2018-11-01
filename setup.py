@@ -55,8 +55,6 @@ setup(
             'flask_breadcrumbs = flask_breadcrumbs:Breadcrumbs',
         ],
         'invenio_base.api_blueprints': [
-            ('invenio_oauth2server = '
-             'invenio_oauth2server.views.server:blueprint'),
             'asclepias_broker = asclepias_broker.views:blueprint',
             ('asclepias_broker_events = '
              'asclepias_broker.events.views:blueprint'),
