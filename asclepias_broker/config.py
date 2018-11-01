@@ -5,7 +5,12 @@
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-"""Default configuration for Asclepias Broker."""
+"""Configuration for Asclepias Broker.
+
+See also `Invenio-Config <https://invenio-config.readthedocs.io/en/latest/>`_
+for more details, like e.g. how to override configuration via environment
+variables or an ``invenio.cfg`` file.
+"""
 
 from __future__ import absolute_import, print_function
 
@@ -21,80 +26,94 @@ from .search.query import enum_term_filter, nested_range_filter, \
     nested_terms_filter
 
 
-def _(x):
-    """Identity function used to trigger string extraction."""
-    return x
+def _parse_env_bool(var_name, default=None):
+    return str(os.environ.get(var_name)).lower() == 'true' or default
 
 
-# Rate limiting
-# =============
-
-RATELIMIT_STORAGE_URL = 'redis://localhost:6379/3'
-
-# I18N
-# ====
-#: Default language
-BABEL_DEFAULT_LANGUAGE = 'en'
-#: Default time zone
-BABEL_DEFAULT_TIMEZONE = 'Europe/Zurich'
-
-
-# Base templates
-# ==============
-#: Global base template.
-BASE_TEMPLATE = 'invenio_theme/page.html'
-#: Cover page base template (used for e.g. login/sign-up).
-COVER_TEMPLATE = 'invenio_theme/page_cover.html'
-#: Footer base template.
-FOOTER_TEMPLATE = 'invenio_theme/footer.html'
-#: Header base template.
-HEADER_TEMPLATE = 'invenio_theme/header.html'
-#: Settings base template.
-SETTINGS_TEMPLATE = 'invenio_theme/page_settings.html'
-
-
-# Theme configuration
+# Flask configuration
 # ===================
-#: Site name
-THEME_SITENAME = _('Asclepias Broker')
-#: Use default frontpage.
-THEME_FRONTPAGE = False
+SECRET_KEY = 'CHANGE_ME'
+"""
+Flask's :data:`flask:SECRET_KEY`. This is an essential variable that has to be
+set before deploying the broker service to a production environment. It's used
+by Invenio/Flask in various places for encrypting/hashing/signing sessions,
+passwords, tokens, etc. You can generate one using::
 
+    python -c 'import os; print(os.urandom(32))'
+"""
 
-# Email configuration
-# ===================
-#: Email address for support.
-SUPPORT_EMAIL = "info@inveniosoftware.org"
-#: Disable email sending by default.
-MAIL_SUPPRESS_SEND = True
-
-# Assets
-# ======
-#: Static files collection method (defaults to copying files).
-COLLECT_STORAGE = 'flask_collect.storage.file'
-
-# Accounts
+# Database
 # ========
-ACCOUNTS = False
-ACCOUNTS_SESSION_REDIS_URL = 'redis://localhost:6379/1'
-ACCOUNTS_REGISTER_BLUEPRINT = False
+SQLALCHEMY_DATABASE_URI = \
+    'postgresql+psycopg2://asclepias:asclepias@localhost/asclepias'
+"""SQLAlchemy database connection string.
 
-SECURITY_EMAIL_SENDER = SUPPORT_EMAIL
-SECURITY_EMAIL_SUBJECT_REGISTER = _(
-    "Welcome to Asclepias Broker!")
+See also SQLAlchemy's :ref:`sqlalchemy:database_urls` docs.
+"""
 
-SECURITY_REGISTERABLE = False
-SECURITY_RECOVERABLE = False
-SECURITY_CONFIRMABLE = False
-SECURITY_CHANGEABLE = False
+# Search
+# ======
+ELASTICSEARCH_HOST = os.environ.get('ELASTICSEARCH_HOST', 'localhost')
+ELASTICSEARCH_PORT = int(os.environ.get('ELASTICSEARCH_PORT', '9200'))
+ELASTICSEARCH_USER = os.environ.get('ELASTICSEARCH_USER')
+ELASTICSEARCH_PASSWORD = os.environ.get('ELASTICSEARCH_PASSWORD')
+ELASTICSEARCH_URL_PREFIX = os.environ.get('ELASTICSEARCH_URL_PREFIX', '')
+ELASTICSEARCH_USE_SSL = _parse_env_bool('ELASTICSEARCH_VERIFY_CERTS')
+ELASTICSEARCH_VERIFY_CERTS = _parse_env_bool('ELASTICSEARCH_VERIFY_CERTS')
+
+es_host_params = {
+    'host': ELASTICSEARCH_HOST,
+    'port': ELASTICSEARCH_PORT,
+}
+if ELASTICSEARCH_USER and ELASTICSEARCH_PASSWORD:
+    es_host_params['http_auth'] = (ELASTICSEARCH_USER, ELASTICSEARCH_PASSWORD)
+if ELASTICSEARCH_URL_PREFIX:
+    es_host_params['url_prefix'] = ELASTICSEARCH_URL_PREFIX
+if ELASTICSEARCH_USE_SSL is not None:
+    es_host_params['use_ssl'] = ELASTICSEARCH_USE_SSL
+if ELASTICSEARCH_VERIFY_CERTS is not None:
+    es_host_params['verify_certs'] = ELASTICSEARCH_VERIFY_CERTS
+
+SEARCH_ELASTIC_HOSTS = [es_host_params]
+"""Elasticsearch hosts configuration.
+
+For a single-node cluster you can configure the connection via the following
+environment variables:
+
+* ``ELASTICSEARCH_HOST`` and ``ELASTICSEARCH_PORT``. ``localhost`` and ``9200``
+  by default respectively
+* ``ELASTICSEARCH_URL_PREFIX``. URL prefix for the Elasticsearch host, e.g.
+  ``es`` would result in using ``http://localhost:9200/es``
+* ``ELASTICSEARCH_USER`` and ``ELASTICSEARCH_PASSWORD``. Used for Basic HTTP
+  authentication. By default not set
+* ``ELASTICSEARCH_USE_SSL`` and ``ELASTICSEARCH_VERIFY_CERTS``
+
+For more complex multi-node cluster setups see `Invenio-Search
+<https://invenio-search.readthedocs.io/en/latest/configuration.html>`_
+documentation.
+"""
+
+SEARCH_MAPPINGS = ['relationships']
+
+# Redis
+# =====
+REDIS_BASE_URL = os.environ.get('REDIS_BASE_URL', 'redis://localhost:6379')
+"""Redis base host URL.
+
+Used for Celery results, rate-limiting and session storage. Can be set via the
+environment variable ``REDIS_BASE_URL``.
+"""
 
 # Celery configuration
 # ====================
-BROKER_URL = 'amqp://guest:guest@mq:5672/'
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/2'
+BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+"""Celery broker URL.
 
-#: Scheduled tasks configuration (aka cronjobs).
+See also `Celery's documentation
+<http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-broker_url>`_.
+"""
+CELERY_BROKER_URL = BROKER_URL
+CELERY_RESULT_BACKEND = f'{REDIS_BASE_URL}/2'
 CELERY_BEAT_SCHEDULE = {
     'accounts': {
         'task': 'invenio_accounts.tasks.clean_session_table',
@@ -102,67 +121,14 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
-# Database
-# ========
-
-SQLALCHEMY_DATABASE_URI = \
-    'postgresql+psycopg2://asclepias:asclepias@localhost/asclepias'
-
-
-# Search
-# ======
-
-es_user = os.environ.get('ELASTICSEARCH_USER')
-es_password = os.environ.get('ELASTICSEARCH_PASSWORD')
-if es_user and es_password:
-    es_params = dict(
-        http_auth=(es_user, es_password),
-        use_ssl=str(os.environ.get('ELASTICSEARCH_USE_SSL')).lower() == 'true',
-        verify_certs=str(
-            os.environ.get('ELASTICSEARCH_VERIFY_CERTS')).lower() == 'true',
-        url_prefix=os.environ.get('ELASTICSEARCH_URL_PREFIX', ''),
-    )
-else:
-    es_params = {}
-
-SEARCH_ELASTIC_HOSTS = [
-    dict(
-        host=os.environ.get('ELASTICSEARCH_HOST', 'localhost'),
-        port=int(os.environ.get('ELASTICSEARCH_PORT', '9200')),
-        **es_params
-    )
-]
-SEARCH_MAPPINGS = ['relationships']
-
-ASCLEPIAS_SEARCH_INDEXING_ENABLED = True
-
-
-# JSONSchemas
-# ===========
-
-JSONSCHEMAS_HOST = 'asclepias-broker.com'
-
-# Flask configuration
-# ===================
-# See details on
-# http://flask.pocoo.org/docs/0.12/config/#builtin-configuration-values
-
-SECRET_KEY = 'CHANGE_ME'
-
-#: Max upload size for form data via application/mulitpart-formdata
-MAX_CONTENT_LENGTH = 100 * 1024 * 1024  # 100 MiB
-
 # REST
 # ====
-#: Enable Cross-Origin Resource Sharing support.
 REST_ENABLE_CORS = True
-
 RECORDS_REST_ENDPOINTS = dict(
     relid=dict(
         pid_type='relid',
         pid_minter='relid',
         pid_fetcher='relid',
-        # TODO: Make our own search class
         search_class=RecordsSearch,
         indexer_class=None,
         search_index='relationships',
@@ -190,8 +156,6 @@ RECORDS_REST_ENDPOINTS = dict(
         error_handlers=dict(),
     ),
 )
-
-
 RECORDS_REST_FACETS = dict(
     relationships=dict(
         aggs=dict(
@@ -226,7 +190,6 @@ RECORDS_REST_FACETS = dict(
         ),
     )
 )
-
 # TODO: See if this actually works
 RECORDS_REST_SORT_OPTIONS = dict(
     relationships=dict(
@@ -236,21 +199,41 @@ RECORDS_REST_SORT_OPTIONS = dict(
         ),
     ),
 )
-
 RECORDS_REST_DEFAULT_SORT = {
     'relationships': {
         'noquery': 'mostrecent'
     }
 }
+RATELIMIT_STORAGE_URL = f'{REDIS_BASE_URL}/3'
 
 APP_DEFAULT_SECURE_HEADERS['force_https'] = True
 APP_DEFAULT_SECURE_HEADERS['session_cookie_secure'] = True
 
-# Debug
-# =====
-# Flask-DebugToolbar is by default enabled when the application is running in
-# debug mode. More configuration options are available at
-# https://flask-debugtoolbar.readthedocs.io/en/latest/#configuration
+# Application
+# ===========
+#: Determines if the search index will be updated after ingesting an event
+ASCLEPIAS_SEARCH_INDEXING_ENABLED = True
 
-#: Switches off incept of redirects by Flask-DebugToolbar.
-DEBUG_TB_INTERCEPT_REDIRECTS = False
+# JSONSchemas
+# ===========
+JSONSCHEMAS_HOST = 'asclepias-broker.org'
+
+# Accounts
+# ========
+ACCOUNTS = False
+ACCOUNTS_SESSION_REDIS_URL = f'{REDIS_BASE_URL}/1'
+ACCOUNTS_REGISTER_BLUEPRINT = False
+
+SECURITY_REGISTERABLE = False
+SECURITY_RECOVERABLE = False
+SECURITY_CONFIRMABLE = False
+SECURITY_CHANGEABLE = False
+
+# Theme configuration
+# ===================
+THEME_SITENAME = 'Asclepias Broker'
+THEME_FRONTPAGE = False
+
+# Email configuration
+# ===================
+MAIL_SUPPRESS_SEND = True

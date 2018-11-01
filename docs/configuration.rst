@@ -10,3 +10,4 @@ Configuration
 
 .. automodule:: asclepias_broker.config
    :members:
+   :member-order: bysource
