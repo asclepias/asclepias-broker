@@ -22,10 +22,13 @@ def search():
 
 @search.command('reindex')
 @click.option('--no-celery', default=False, is_flag=True)
+@click.option('--destroy', default=False, is_flag=True)
+@click.confirmation_option(
+    prompt='Are you sure you want to reindex everything?')
 @with_appcontext
-def reindex(no_celery=False):
+def reindex(no_celery=False, destroy=False):
     """Reindex all relationships."""
     if no_celery:
-        reindex_all_relationships()
+        reindex_all_relationships.s(destroy=destroy).apply()
     else:
-        reindex_all_relationships.delay()
+        reindex_all_relationships.delay(destroy=destroy)

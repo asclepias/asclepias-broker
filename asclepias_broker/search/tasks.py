@@ -8,6 +8,7 @@
 """Asynchronous tasks."""
 
 from celery import shared_task
+from invenio_search import current_search
 
 from ..graph.models import GroupRelationship
 from ..utils import chunks
@@ -15,8 +16,11 @@ from .indexer import build_doc, index_documents
 
 
 @shared_task(ignore_result=True)
-def reindex_all_relationships():
+def reindex_all_relationships(destroy: bool = False):
     """Reindex all relationship documents."""
+    if destroy:
+        list(current_search.delete(ignore=[400, 404]))
+        list(current_search.create(ignore=[400, 404]))
     q = GroupRelationship.query.yield_per(1000)
     for chunk in chunks(q, 1000, q.count()):
         index_documents(map(build_doc, chunk), bulk=True)
