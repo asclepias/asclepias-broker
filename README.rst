@@ -9,14 +9,17 @@
  Asclepias Broker
 ==================
 
+.. image:: https://readthedocs.org/projects/asclepias-broker/badge/?version=latest&style=flat
+   :target: https://asclepias-broker.readthedocs.io/
+
 .. image:: https://img.shields.io/travis/asclepias/asclepias-broker.svg
-        :target: https://travis-ci.org/asclepias/asclepias-broker
+   :target: https://travis-ci.org/asclepias/asclepias-broker
 
 .. image:: https://img.shields.io/coveralls/asclepias/asclepias-broker.svg
-        :target: https://coveralls.io/r/asclepias/asclepias-broker
+   :target: https://coveralls.io/r/asclepias/asclepias-broker
 
 .. image:: https://img.shields.io/github/license/asclepias/asclepias-broker.svg
-        :target: https://github.com/asclepias/asclepias-broker/blob/master/LICENSE
+   :target: https://github.com/asclepias/asclepias-broker/blob/master/LICENSE
 
 The Asclepias Broker is a web service that enables building and flexibly
 querying graphs of links between research outputs. It's aiming to address a
