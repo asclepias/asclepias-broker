@@ -18,13 +18,10 @@
 .. image:: https://img.shields.io/github/license/asclepias/asclepias-broker.svg
         :target: https://github.com/asclepias/asclepias-broker/blob/master/LICENSE
 
-The Asclepias Broker is a web service that facilitates building and flexibly
-searching graphs of links between research outputs.
-
-Further documentation is available on https://asclepias-broker.readthedocs.io/
-
-The Asclepias Broker is a service aiming to address a couple of problems in the
-world of scholarly link communication, with a focus on Software citation:
+The Asclepias Broker is a web service that enables building and flexibly
+querying graphs of links between research outputs. It's aiming to address a
+couple of problems in the world of scholarly link communication, with a focus
+on Software citation:
 
 **Governance of the scholarly links data and metadata**
   Storage and curation of scholarly links is a problem that cannot be easily

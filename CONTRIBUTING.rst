@@ -64,20 +64,20 @@ Ready to contribute? Here's how to set up `asclepias-broker` for local developme
 1. Fork the `asclepias/asclepias-broker` repo on GitHub.
 2. Clone your fork locally:
 
-   .. code-block:: console
+   .. code-block:: shell
 
       $ git clone git@github.com:your_name_here/asclepias-broker.git
 
 3. Assuming you have ``pipenv``, ``docker`` and ``docker-compose`` installed,
    this is how you set up your fork for local development:
 
-   .. code-block:: console
+   .. code-block:: shell
 
       $ ./scripts/bootstrap
 
 4. Create a branch for local development:
 
-   .. code-block:: console
+   .. code-block:: shell
 
       $ git checkout -b name-of-your-bugfix-or-feature
 
@@ -85,7 +85,7 @@ Ready to contribute? Here's how to set up `asclepias-broker` for local developme
 
 5. When you're done making changes, check that your changes pass tests:
 
-   .. code-block:: console
+   .. code-block:: shell
 
       $ ./run-tests.sh
 
@@ -95,7 +95,7 @@ Ready to contribute? Here's how to set up `asclepias-broker` for local developme
 
 6. Commit your changes and push your branch to GitHub:
 
-   .. code-block:: console
+   .. code-block:: shell
 
       $ git add .
       $ git commit -m "component: summarize changes in 50 chars or less

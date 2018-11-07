@@ -10,7 +10,7 @@
 User's Guide
 ------------
 
-This part of the documentation will show you how to get started in using
+This part of the documentation will show you how to get started using the
 Asclepias Broker.
 
 .. toctree::
@@ -19,6 +19,28 @@ Asclepias Broker.
    installation
    configuration
    usage
+
+Architecture
+------------
+
+This section describes the design principles of the Asclepias Broker.
+
+.. toctree::
+   :maxdepth: 2
+
+   architecture/data-model
+   architecture/systems
+   architecture/interoperability
+
+REST API
+--------
+
+This section documents the REST APIs exposed by the service.
+
+.. toctree::
+   :maxdepth: 2
+
+   rest_api
 
 API Reference
 -------------
