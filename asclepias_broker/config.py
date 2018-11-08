@@ -18,7 +18,7 @@ import os
 from datetime import timedelta
 
 from invenio_app.config import APP_DEFAULT_SECURE_HEADERS
-from invenio_records_rest.facets import terms_filter
+from invenio_records_rest.facets import range_filter, terms_filter
 from invenio_records_rest.utils import deny_all
 from invenio_search.api import RecordsSearch
 
@@ -162,6 +162,13 @@ RECORDS_REST_FACETS = dict(
             type=dict(
                 terms=dict(field='Source.Type.Name')
             ),
+            publication_year=dict(
+                date_histogram=dict(
+                    field='Source.PublicationDate',
+                    interval='year',
+                    format='yyyy',
+                ),
+            ),
         ),
         # TODO: Investigate using a webargs-powered search_factory to better
         # validate and build the query...
@@ -186,8 +193,12 @@ RECORDS_REST_FACETS = dict(
                     'isRelatedTo': 'IsRelatedTo'
                 }
             ),
-            type=terms_filter('Source.Type.Name'),
         ),
+        post_filters=dict(
+            type=terms_filter('Source.Type.Name'),
+            publication_year=range_filter(
+                'Source.PublicationDate', format='yyyy', end_date_math='/y'),
+        )
     )
 )
 # TODO: See if this actually works
