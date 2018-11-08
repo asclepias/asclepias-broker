@@ -139,13 +139,11 @@ like Elasticsearch.
 
 We can create and index the documents using the following strategy:
 
-1. For each **Group** in our system:
-    a. Fetch its **Group Metadata** and **Identifiers**
-    b. For each of its **Group Relationships**:
-        i. Fetch its **Group Relationships Metadata**
-        ii. Fetch the **Group Metadata** and **Identifiers** for the **Group**
-            on the other side of the relationship
-        iii. Create and index the document using all of the fetched information
+1. For each **Group Relationship** in our system:
+    a. Fetch its **Group Relationships Metadata**
+    b. For its source and target groups:
+        i. Fetch the **Group Metadata** and **Identifiers**
+    c. Create a document from the fetched information and index it
 
 By performing the expensive database queries only once in order to index the
 denormalized documents we have managed to get the best of both worlds: a
