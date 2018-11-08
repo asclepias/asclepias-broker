@@ -168,8 +168,8 @@ RECORDS_REST_FACETS = dict(
         filters=dict(
             id=nested_terms_filter('Target.SearchIdentifier.ID'),
             scheme=nested_terms_filter('Target.SearchIdentifier.IDScheme'),
-            groupBy=enum_term_filter(
-                label='groupBy',
+            group_by=enum_term_filter(
+                label='group_by',
                 field='Grouping',
                 choices={'identity': 'identity', 'version': 'version'}
             ),

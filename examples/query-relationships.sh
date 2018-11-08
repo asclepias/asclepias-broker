@@ -13,5 +13,5 @@ curl -vkG "https://localhost:5000/api/relationships" \
     -d id="${query_id}" \
     -d scheme=doi \
     -d relation=isCitedBy \
-    -d groupBy=version \
+    -d group_by=version \
     -d prettyprint=1

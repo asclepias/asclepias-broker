@@ -171,7 +171,6 @@ Relationships
     :query from: Filter by start date of publication/discovery of the
       relationships. Example: ``2018-01-02T13:30:00``
     :query to: Filter by end date of publication/discovery of the
-      relationships. Example: ``2018-01-02``
-    :query groupBy: Expand the scope of the relationships to source
+    :query group_by: Expand the scope of the relationships to source
       identifier (default: ``identity``). Accepted values: ``identity``,
       ``version``

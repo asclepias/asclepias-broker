@@ -220,12 +220,12 @@ question: *How many times has any version of corner.py been cited?*:
 
 .. code-block:: shell
 
-    # Note the "groupBy=version" parameter...
+    # Note the "group_by=version" parameter...
     $ curl -k -G "https://localhost:5000/api/relationships" \
         --header "Accept: application/json" \
         -d id=10.21105/joss.00024 \
         -d scheme=doi \
-        -d groupBy=version \
+        -d group_by=version \
         -d relation=isCitedBy \
         -d prettyprint=1
     {
@@ -247,7 +247,7 @@ all of the citations that were performed in the year 2016:
         --header "Accept: application/json" \
         -d id=10.21105/joss.00024 \
         -d scheme=doi \
-        -d groupBy=version \
+        -d group_by=version \
         -d relation=isCitedBy \
         -d from="2016-01-01" -d to="2016-12-31" \
         -d prettyprint=1
