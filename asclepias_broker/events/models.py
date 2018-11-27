@@ -7,6 +7,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Event database models."""
 
+from typing import Union
 import enum
 import uuid
 
@@ -15,6 +16,8 @@ from invenio_db import db
 from sqlalchemy.schema import PrimaryKeyConstraint
 from sqlalchemy_utils.models import Timestamp
 from sqlalchemy_utils.types import JSONType, UUIDType
+
+from ..core.models import Identifier, Relationship
 
 
 class EventStatus(enum.Enum):
@@ -70,6 +73,16 @@ class ObjectEvent(db.Model, Timestamp):
     object_uuid = db.Column(UUIDType, nullable=False)
     payload_type = db.Column(db.Enum(PayloadType), nullable=False)
     payload_index = db.Column(db.Integer, nullable=False)
+
+    event = db.relationship(Event, backref='object_events')
+
+    @property
+    def object(self) -> Union[Identifier, Relationship]:
+        """Get the associated Identifier or Relationship."""
+        if self.payload_type == PayloadType.Identifier:
+            return Identifier.query.get(self.object_uuid)
+        else:
+            return Relationship.query.get(self.object_uuid)
 
     def __repr__(self):
         """String representation of the object event."""
