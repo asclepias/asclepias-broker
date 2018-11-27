@@ -10,13 +10,14 @@
 from typing import Dict, List, Set, Tuple
 
 from celery import shared_task
+from flask import current_app
 from invenio_db import db
 from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
 
 from ..core.models import Relationship
 from ..events.models import Event, EventStatus, ObjectEvent, PayloadType
-from ..metadata.api import update_metadata
+from ..events.signals import event_processed
 from ..schemas.loaders import RelationshipSchema
 from ..search.indexer import update_indices
 from .api import update_groups
@@ -146,6 +147,7 @@ def process_event(event_uuid: str, indexing_enabled: bool = True):
             update_indices(*compacted)
 
         _set_event_status(event_uuid, EventStatus.Done)
+        event_processed.send(current_app._get_current_object(), event=event)
     except Exception as exc:
         _set_event_status(event_uuid, EventStatus.Error)
         process_event.retry(exc=exc)
