@@ -11,6 +11,7 @@ from typing import Dict
 from elasticsearch_dsl import Q
 from elasticsearch_dsl.query import Range
 from flask import request
+from invenio_records_rest.errors import InvalidQueryRESTError
 from invenio_rest.errors import FieldError, RESTValidationError
 
 
@@ -24,6 +25,13 @@ def search_factory(self, search, query_parser=None):
     from invenio_records_rest.facets import default_facets_factory
     from invenio_records_rest.sorter import default_sorter_factory
     search_index = search._index[0]
+
+    try:
+        query_string = request.values.get('q')
+        if query_string:
+            search = search.query(Q('query_string', query=query_string))
+    except SyntaxError:
+        raise InvalidQueryRESTError()
 
     # TODO: make "scheme" optional?
     for field in ('id', 'scheme', 'relation'):

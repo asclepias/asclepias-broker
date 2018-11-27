@@ -178,6 +178,8 @@ Relationships
     :query group_by: Expand the scope of the relationships to source
       identifier (default: ``identity``). Accepted values: ``identity``,
       ``version``
+    :query q: Filter result using free-text search or `Elasticsearch Query
+      string syntax <https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html>`_.
     :query sort: Sorting order of the results. At the moment ``mostrecent`` is
       the only acceptable value. To reverse the sorting order you can add a
       ``-`` in front (i.e. ``-mostrecent`` will return older relationships
