@@ -18,6 +18,7 @@ from marshmallow.exceptions import \
 from ..core.models import Relationship
 from ..events.models import Event, EventStatus, ObjectEvent, PayloadType
 from ..events.signals import event_processed
+from ..metadata.api import update_metadata_from_event
 from ..schemas.loaders import RelationshipSchema
 from ..search.indexer import update_indices
 from .api import update_groups
@@ -137,7 +138,7 @@ def process_event(event_uuid: str, indexing_enabled: bool = True):
                 create_relation_object_events(event, relationship, payload_idx)
                 id_groups, ver_groups = update_groups(relationship)
 
-                update_metadata(relationship, payload)
+                update_metadata_from_event(relationship, payload)
                 groups_ids.append(
                     [str(g.id) if g else g for g in id_groups + ver_groups])
         db.session.commit()
