@@ -30,4 +30,8 @@ if [ ${#flags[0]} -eq 0 ]; then
     flags=("--dev" "--skip-lock")
 fi
 
+# Install dependencies
 pipenv install "${flags[@]}"
+
+# Install application code
+pipenv run pip install -e .

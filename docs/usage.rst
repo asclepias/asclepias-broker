@@ -65,7 +65,6 @@ To use the REST API you will first have to create a user.
 
     # Create admin role to restrict access
     $ pipenv run asclepias-broker roles create admin
-    $ pipenv run asclepias-broker access allow superuser-access role admin
     $ pipenv run asclepias-broker users create admin@cern.ch -a --password=123456
     $ pipenv run asclepias-broker roles add admin@cern.ch admin
 

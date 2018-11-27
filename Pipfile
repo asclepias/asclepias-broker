@@ -4,16 +4,17 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-invenio = {extras = ["auth", "elasticsearch6", "postgresql"], version = "*"}
-arrow = "*"
-idutils = "*"
+invenio = {version = "*",extras = ["elasticsearch6", "postgresql"]}
+invenio-accounts = "*"
+invenio-oauth2server = "*"
 invenio-records-rest = "*"
+idutils = "*"
 jsonschema = "*"
 marshmallow = "*"
 uwsgi = "*"
 uwsgi-tools = "*"
 uwsgitop = "*"
-asclepias-broker = {path = ".", editable = true}
+requests = "*"
 
 [dev-packages]
 sphinx = "*"
