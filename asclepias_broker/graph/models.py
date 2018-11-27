@@ -146,9 +146,11 @@ class Relationship2GroupRelationship(db.Model, Timestamp):
 
     # DB relationships
     relationship = db.relationship(
-        Relationship, foreign_keys=[relationship_id])
+        Relationship, foreign_keys=[relationship_id],
+        backref='relationship2group_relationship')
     group_relationship = db.relationship(
-        GroupRelationship, foreign_keys=[group_relationship_id])
+        GroupRelationship, foreign_keys=[group_relationship_id],
+        backref='relationship2group_relationship')
 
     def __repr__(self):
         """String representation of the model."""
