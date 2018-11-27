@@ -1714,35 +1714,6 @@
     "RelationshipType": {
       "Name": "References"
     },
-    "LinkPublicationDate": "2016-06-01",
-    "Target": {
-      "Identifier": {
-        "ID": "10.5281/zenodo.53155",
-        "IDScheme": "doi"
-      },
-      "Type": {
-        "Name": "unknown"
-      }
-    },
-    "LinkProvider": [
-      {
-        "Name": "SAO/NASA Astrophysics Data System"
-      }
-    ],
-    "Source": {
-      "Identifier": {
-        "ID": "10.21105/joss.00024",
-        "IDScheme": "doi"
-      },
-      "Type": {
-        "Name": "unknown"
-      }
-    }
-  },
-  {
-    "RelationshipType": {
-      "Name": "References"
-    },
     "LinkPublicationDate": "2017-04-01",
     "Target": {
       "Identifier": {
