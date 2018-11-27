@@ -22,5 +22,5 @@ def reindex_all_relationships(destroy: bool = False):
         list(current_search.delete(ignore=[400, 404]))
         list(current_search.create(ignore=[400, 404]))
     q = GroupRelationship.query.yield_per(1000)
-    for chunk in chunks(q, 1000, q.count()):
+    for chunk in chunks(q, 1000):
         index_documents(map(build_doc, chunk), bulk=True)

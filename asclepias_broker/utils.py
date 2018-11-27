@@ -10,8 +10,12 @@
 from __future__ import absolute_import, print_function
 
 import glob
+from itertools import islice
 from pathlib import Path
-from typing import List
+from typing import Iterable, Iterator, List, Tuple
+
+from flask import current_app
+from werkzeug.utils import import_string
 
 
 def find_ext(file_or_dir: str, ext: str = None) -> List[str]:
@@ -25,7 +29,34 @@ def find_ext(file_or_dir: str, ext: str = None) -> List[str]:
     return glob.glob(file_or_dir + f'/**/*{ext}', recursive=True)
 
 
-def chunks(l: List, n: int, size: int):
-    """Yield successive n-sized chunks from l."""
-    for i in range(0, size, n):
-        yield l[i:i + n]
+def chunks(iterable: Iterable, size: int) -> Iterator[Tuple]:
+    """Yield successive n-sized chunks from an iterable."""
+    iterator = iter(iterable)
+    while True:
+        chunk = tuple(islice(iterator, size))
+        if chunk:
+            yield chunk
+        else:
+            break
+
+
+def obj_or_import_string(value, default=None):
+    """Import string or return object.
+    :params value: Import path or class object to instantiate.
+    :params default: Default object to return if the import fails.
+    :returns: The imported object.
+    """
+    if isinstance(value, str):
+        return import_string(value)
+    elif value:
+        return value
+    return default
+
+
+def load_or_import_from_config(key: str, app=None, default=None):
+    """Load or import value from config.
+    :returns: The loaded value.
+    """
+    app = app or current_app
+    imp = app.config.get(key)
+    return obj_or_import_string(imp, default=default)
