@@ -212,7 +212,7 @@ RECORDS_REST_SORT_OPTIONS = dict(
 )
 RECORDS_REST_DEFAULT_SORT = {
     'relationships': {
-        'noquery': 'mostrecent'
+        'noquery': '-mostrecent'
     }
 }
 RATELIMIT_STORAGE_URL = f'{REDIS_BASE_URL}/3'
