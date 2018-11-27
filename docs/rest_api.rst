@@ -168,9 +168,9 @@ Relationships
       ``isSupplementTo``, ``isSupplementedBy``, ``isRelatedTo``
     :query type: Filter by type of the target objects. Accepted values:
       ``literature``, ``software``, ``dataset``, ``unknown``
-    :publication_year: Filter by the publication year of the target objects.
-      Examples: ``2015--<2018`` (from incl. 2015 until excl. 2018), ``>2005--``
-      (from excl. 2005), ``2015--2015`` (all from 2005).
+    :query publication_year: Filter by the publication year of the target
+      objects. Examples: ``2015--<2018`` (from incl. 2015 until excl. 2018),
+      ``>2005--`` (from excl. 2005), ``2005--2005`` (all from 2005).
     :query from: Filter by start date of publication/discovery of the
       relationships. Example: ``2018-01-02T13:30:00``
     :query to: Filter by end date of publication/discovery of the
@@ -178,3 +178,7 @@ Relationships
     :query group_by: Expand the scope of the relationships to source
       identifier (default: ``identity``). Accepted values: ``identity``,
       ``version``
+    :query sort: Sorting order of the results. At the moment ``mostrecent`` is
+      the only acceptable value. To reverse the sorting order you can add a
+      ``-`` in front (i.e. ``-mostrecent`` will return older relationships
+      first).
