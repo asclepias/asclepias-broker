@@ -27,7 +27,7 @@ from .search.query import enum_term_filter, nested_range_filter, \
 
 
 def _parse_env_bool(var_name, default=None):
-    return str(os.environ.get(var_name)).lower() == 'true' or default
+    return str(os.environ.get(var_name)).lower() in ('true', '1') or default
 
 
 # Flask configuration
@@ -58,7 +58,7 @@ ELASTICSEARCH_PORT = int(os.environ.get('ELASTICSEARCH_PORT', '9200'))
 ELASTICSEARCH_USER = os.environ.get('ELASTICSEARCH_USER')
 ELASTICSEARCH_PASSWORD = os.environ.get('ELASTICSEARCH_PASSWORD')
 ELASTICSEARCH_URL_PREFIX = os.environ.get('ELASTICSEARCH_URL_PREFIX', '')
-ELASTICSEARCH_USE_SSL = _parse_env_bool('ELASTICSEARCH_VERIFY_CERTS')
+ELASTICSEARCH_USE_SSL = _parse_env_bool('ELASTICSEARCH_USE_SSL')
 ELASTICSEARCH_VERIFY_CERTS = _parse_env_bool('ELASTICSEARCH_VERIFY_CERTS')
 
 es_host_params = {
