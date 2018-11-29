@@ -92,6 +92,7 @@ def index_documents(docs: Iterable[dict], bulk: bool = False):
             actions=docs,
             index='relationships',
             doc_type='doc',
+            raise_on_error=False,
         )
     else:
         for doc in docs:
