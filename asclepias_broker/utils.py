@@ -42,6 +42,7 @@ def chunks(iterable: Iterable, size: int) -> Iterator[Tuple]:
 
 def obj_or_import_string(value, default=None):
     """Import string or return object.
+
     :params value: Import path or class object to instantiate.
     :params default: Default object to return if the import fails.
     :returns: The imported object.
@@ -55,6 +56,7 @@ def obj_or_import_string(value, default=None):
 
 def load_or_import_from_config(key: str, app=None, default=None):
     """Load or import value from config.
+
     :returns: The loaded value.
     """
     app = app or current_app

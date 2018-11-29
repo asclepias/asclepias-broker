@@ -7,9 +7,9 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Event database models."""
 
-from typing import Union
 import enum
 import uuid
+from typing import Union
 
 from invenio_accounts.models import User
 from invenio_db import db
