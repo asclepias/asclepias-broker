@@ -26,13 +26,6 @@ def search_factory(self, search, query_parser=None):
     from invenio_records_rest.sorter import default_sorter_factory
     search_index = search._index[0]
 
-    try:
-        query_string = request.values.get('q')
-        if query_string:
-            search = search.query(Q('query_string', query=query_string))
-    except SyntaxError:
-        raise InvalidQueryRESTError()
-
     # TODO: make "scheme" optional?
     for field in ('id', 'scheme', 'relation'):
         if field not in request.values:
@@ -48,6 +41,15 @@ def search_factory(self, search, query_parser=None):
     if 'group_by' not in request.values:
         search = search.filter(Q('term', Grouping='identity'))
         urlkwargs['group_by'] = 'identity'
+
+    try:
+        query_string = request.values.get('q')
+        if query_string:
+            search = search.query(Q('query_string', query=query_string,
+                                    default_field='_search_all'))
+            urlkwargs['q'] = query_string
+    except SyntaxError:
+        raise InvalidQueryRESTError()
 
     # Exclude the identifiers by which the search was made (large aggregate)
     search = search.source(exclude=['*.SearchIdentifier'])

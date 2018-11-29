@@ -2,6 +2,9 @@
   "mappings": {
     "doc": {
       "properties": {
+        "_search_all": {
+          "type": "text"
+        },
         "ID": {
           "type": "keyword"
         },
@@ -19,7 +22,8 @@
             "LinkProvider": {
               "properties": {
                 "Name": {
-                  "type": "text"
+                  "type": "text",
+                  "copy_to": "_search_all"
                 },
                 "Identifier": {
                   "properties": {
@@ -64,7 +68,8 @@
               "type": "object"
             },
             "Title": {
-              "type": "text"
+              "type": "text",
+              "copy_to": "_search_all"
             },
             "SearchIdentifier": {
               "properties": {
@@ -72,7 +77,8 @@
                   "type": "keyword"
                 },
                 "ID": {
-                  "type": "keyword"
+                  "type": "keyword",
+                  "copy_to": "_search_all"
                 },
                 "IDScheme": {
                   "type": "keyword"
@@ -97,7 +103,8 @@
             "Creator": {
               "properties": {
                 "Name": {
-                  "type": "text"
+                  "type": "text",
+                  "copy_to": "_search_all"
                 },
                 "Identifier": {
                   "properties": {
@@ -119,7 +126,8 @@
             "Publisher": {
               "properties": {
                 "Name": {
-                  "type": "text"
+                  "type": "text",
+                  "copy_to": "_search_all"
                 },
                 "Identifier": {
                   "properties": {
@@ -243,10 +251,7 @@
           }
         }
       },
-      "dynamic": false,
-      "_all": {
-        "enabled": false
-      }
+      "dynamic": false
     }
   }
 }
