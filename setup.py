@@ -44,15 +44,23 @@ setup(
             'metadata = asclepias_broker.metadata.cli:metadata',
             'events = asclepias_broker.events.cli:events',
             'search = asclepias_broker.search.cli:search',
+            'harvester = asclepias_broker.harvester.cli:harvester',
         ],
         'invenio_config.module': [
             'asclepias_broker = asclepias_broker.config',
+        ],
+        'invenio_base.apps': [
+            'flask_breadcrumbs = flask_breadcrumbs:Breadcrumbs',
+            ('asclepias_harvester = '
+             'asclepias_broker.harvester.ext:AsclepiasHarvester'),
         ],
         'invenio_base.api_apps': [
             # TODO: Fix this in Flask-Menu/Breadcrumbs (i.e. make it possible
             # to skip menus/breadcrumbs registration if the extensions aare not
             # loaded/enabled...)
             'flask_breadcrumbs = flask_breadcrumbs:Breadcrumbs',
+            ('asclepias_harvester = '
+             'asclepias_broker.harvester.ext:AsclepiasHarvester'),
         ],
         'invenio_base.api_blueprints': [
             'asclepias_broker = asclepias_broker.views:blueprint',
@@ -67,6 +75,7 @@ setup(
         'invenio_celery.tasks': [
             'asclepias_broker_graph_tasks = asclepias_broker.graph.tasks',
             'asclepias_broker_search_tasks = asclepias_broker.search.tasks',
+            'asclepias_harvester_tasks = asclepias_broker.harvester.tasks',
         ],
         'invenio_db.models': [
             'asclepias_broker_core = asclepias_broker.core.models',
@@ -83,7 +92,6 @@ setup(
         'invenio_search.mappings': [
             'relationships = asclepias_broker.mappings',
         ],
-
     },
     classifiers=[
         'Environment :: Web Environment',
