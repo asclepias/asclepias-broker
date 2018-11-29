@@ -8,6 +8,7 @@ invenio = {version = "*",extras = ["elasticsearch6", "postgresql"]}
 invenio-accounts = "*"
 invenio-oauth2server = "*"
 invenio-records-rest = "*"
+invenio-queues = "==1.0.0a1"
 idutils = "*"
 jsonschema = "*"
 marshmallow = "*"

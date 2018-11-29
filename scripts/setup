@@ -12,3 +12,5 @@ pipenv run invenio db destroy --yes-i-know
 pipenv run invenio db init create
 pipenv run invenio index destroy --force --yes-i-know
 pipenv run invenio index init --force
+pipenv run invenio queues delete
+pipenv run invenio queues declare

@@ -7,6 +7,8 @@
 
 """Harvester configuration."""
 
+from kombu import Exchange
+
 from .metadata import ADSMetadataHarvester, DOIMetadataHarvester
 
 ASCLEPIAS_HARVESTER_HISTORY_PREFIX = 'asclepias-harvester'
@@ -35,8 +37,12 @@ ASCLEPIAS_HARVESTER_METADATA_HARVESTERS = {
     'ads': (ADSMetadataHarvester, {}),
 }
 
+ASCLEPIAS_HARVESTER_ADS_API_TOKEN = None
+
 ASCLEPIAS_HARVESTER_EVENT_PROVIDER = 'Asclepias Harvester'
 
-ASCLEPIAS_HARVESTER_HARVEST_AFTER_EVENT_PROCESS = False
+ASCLEPIAS_HARVESTER_MQ_EXCHANGE = Exchange('harvester')
 
-ASCLEPIAS_HARVESTER_ADS_API_TOKEN = None
+ASCLEPIAS_HARVESTER_METADATA_QUEUE = 'metadata-harvester'
+
+ASCLEPIAS_HARVESTER_HARVEST_AFTER_EVENT_PROCESS = True

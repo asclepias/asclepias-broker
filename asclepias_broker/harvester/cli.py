@@ -36,7 +36,7 @@ def metadata_command(identifiers: List[str], eager: bool = False):
     if eager:
         task.apply(throw=True)
     else:
-        task.apply_async(throw=True)
+        task.apply_async()
 
 
 @harvester.command('events')
@@ -49,4 +49,4 @@ def events_command(harvester_ids: List[str], eager: bool = False):
     if eager:
         task.apply(throw=True)
     else:
-        task.apply_async(throw=True)
+        task.apply_async()

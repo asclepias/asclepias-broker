@@ -7,47 +7,50 @@
 
 """Harvester tasks."""
 
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from celery import shared_task
 from invenio_db import db
 
-from ..graph.api import get_group_from_id
 from .proxies import current_harvester
 
 
-@shared_task(ignore_result=True)
-def harvest_metadata_identifier(identifier: str, scheme: str):
+@shared_task(ignore_result=True, max_retries=3, default_retry_delay=10 * 60)
+def harvest_metadata_identifier(harvester: str, identifier: str, scheme: str):
     """."""
-    for harvester in current_harvester.metadata_harvesters.values():
-        if harvester.can_harvest(identifier, scheme):
-            harvester.harvest(identifier, scheme)
+    try:
+        h = current_harvester.metadata_harvesters[harvester]
+        h.harvest(identifier, scheme)
+    except Exception as exc:
+        harvest_metadata_identifier.retry(exc=exc)
 
 
 @shared_task(ignore_result=True)
-def harvest_metadata(identifiers: List[Tuple[str, str]], eager: bool = False):
+def harvest_metadata(identifiers: Optional[List[Tuple[str, str]]],
+                     eager: bool = False):
     """."""
-    identifiers_to_harvest = {(i, v) for i, v in identifiers}
-
-    # Expand provided identifiers to their Identity groups
-    for value, scheme in identifiers:
-        id_group = get_group_from_id(value, scheme)
-        if id_group:
-            identifiers_to_harvest |= \
-                {(i.value, i.scheme) for i in id_group.identifiers}
+    if identifiers:
+        identifiers_to_harvest = ((i, v) for i, v in identifiers)
+    else:  # use queue
+        identifiers_to_harvest = current_harvester.metadata_queue.consume()
     for value, scheme in identifiers_to_harvest:
-        task = harvest_metadata_identifier.s(value, scheme)
-        if eager:
-            task.apply(throw=True)
-        else:
-            task.apply_async()
+        for h_id, harvester in current_harvester.metadata_harvesters.items():
+            if harvester.can_harvest(value, scheme):
+                task = harvest_metadata_identifier.s(h_id, value, scheme)
+                if eager:
+                    task.apply(throw=True)
+                else:
+                    task.apply_async()
 
 
 @shared_task(ignore_result=True)
 def harvest_events(harvester_ids: List[str], eager: bool = False):
     """."""
     for h in harvester_ids:
-        with db.session.begin_nested():
-            harvester = current_harvester.event_harvesters[h]
+        harvester = current_harvester.event_harvesters[h]
+        if not eager:
             harvester.harvest(eager=eager)
-        db.session.commit()
+        else:
+            with db.session.begin_nested():
+                harvester.harvest(eager=eager)
+            db.session.commit()

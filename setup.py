@@ -92,6 +92,10 @@ setup(
         'invenio_search.mappings': [
             'relationships = asclepias_broker.mappings',
         ],
+        'invenio_queues.queues': [
+            ('asclepias_harvester_queues = '
+             'asclepias_broker.harvester.queues:declare_queues'),
+        ],
     },
     classifiers=[
         'Environment :: Web Environment',

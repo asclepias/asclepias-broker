@@ -7,7 +7,10 @@
 
 """Harvester extension."""
 
+from typing import List, Tuple
+
 from flask import current_app
+from invenio_queues.proxies import current_queues
 from werkzeug.utils import cached_property
 
 from . import config
@@ -24,6 +27,15 @@ class AsclepiasHarvester:
         """Extension initialization."""
         if app:
             self.init_app(app)
+
+    @cached_property
+    def metadata_queue(self):
+        """."""
+        return current_queues.queues[self.metadata_queue_name]
+
+    def publish_metadata_harvest(self, identifiers: List[Tuple[str, str]]):
+        """Publish metadata harvesting jobs."""
+        self.metadata_queue.publish(identifiers)
 
     @cached_property
     def history(self):
@@ -64,6 +76,11 @@ class AsclepiasHarvester:
     def init_app(self, app):
         """Flask application initialization."""
         self.init_config(app)
+
+        self.metadata_queue_name = \
+            app.config['ASCLEPIAS_HARVESTER_METADATA_QUEUE']
+        self.mq_exchange = app.config['ASCLEPIAS_HARVESTER_MQ_EXCHANGE']
+
         if app.config['ASCLEPIAS_HARVESTER_HARVEST_AFTER_EVENT_PROCESS']:
             event_processed.connect(
                 harvest_metadata_after_event_process, sender=app)
