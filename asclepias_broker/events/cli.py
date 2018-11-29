@@ -20,7 +20,7 @@ from .api import EventAPI
 
 @click.group()
 def events():
-    """Utility CLI commands."""
+    """Event CLI commands."""
 
 
 @events.command('load')
@@ -28,7 +28,7 @@ def events():
     'jsondir_or_file',
     type=click.Path(exists=True, dir_okay=True, resolve_path=True))
 @click.option('--no-index', default=False, is_flag=True)
-@click.option('--eager', default=False, is_flag=True)
+@click.option('-e', '--eager', default=False, is_flag=True)
 @with_appcontext
 def load(jsondir_or_file: str, no_index: bool = False, eager: bool = False):
     """Load events from a directory."""
@@ -38,7 +38,6 @@ def load(jsondir_or_file: str, no_index: bool = False, eager: bool = False):
             with open(fn, 'r') as fp:
                 data = json.load(fp)
             try:
-                EventAPI.handle_event(
-                    data, no_index=no_index, delayed=(not eager))
+                EventAPI.handle_event(data, no_index=no_index, eager=eager)
             except ValueError:
                 pass
