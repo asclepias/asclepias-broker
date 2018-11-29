@@ -26,7 +26,7 @@ from .api import update_groups
 
 def get_or_create(model, **kwargs):
     """Get or a create a database model."""
-    instance = model.query.filter_by(**kwargs)
+    instance = model.query.filter_by(**kwargs).one_or_none()
     if instance:
         return instance
     else:

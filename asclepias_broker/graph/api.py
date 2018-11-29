@@ -375,11 +375,12 @@ def get_group_from_id(
     """Resolve from 'A' to Identity Group of A or to a Version Group of A."""
     # TODO: Move this method to api.utils or to models?
     id_ = Identifier.get(identifier_value, id_type)
-    id_grp = id_.id2groups[0].group
-    if group_type == GroupType.Identity:
-        return id_grp
-    else:
-        return GroupM2M.query.filter_by(subgroup=id_grp).one().group
+    if id_:
+        id_grp = id_.id2groups[0].group
+        if group_type == GroupType.Identity:
+            return id_grp
+        else:
+            return GroupM2M.query.filter_by(subgroup=id_grp).one().group
 
 
 def add_group_relationship(
@@ -402,11 +403,19 @@ def add_group_relationship(
         relationship=relationship, group_relationship=id_grp_rel)
     db.session.add(rel2grp_rel)
 
-    # Add GroupRelationship between Version groups
-    ver_grp_rel = GroupRelationship(source=src_ver_grp, target=tar_ver_grp,
-                                    relation=relationship.relation,
-                                    type=GroupType.Version)
-    db.session.add(ver_grp_rel)
+    # Add GroupRelationship between Version groups if it doesn't exist
+    ver_grp_rel = (
+        GroupRelationship.query
+        .filter(GroupRelationship.source_id == src_ver_grp.id,
+                GroupRelationship.target_id == tar_ver_grp.id,
+                GroupRelationship.relation == relationship.relation)
+        .one_or_none()
+        )
+    if not ver_grp_rel:
+        ver_grp_rel = GroupRelationship(source=src_ver_grp, target=tar_ver_grp,
+                                        relation=relationship.relation,
+                                        type=GroupType.Version)
+        db.session.add(ver_grp_rel)
     g2g_rel = GroupRelationshipM2M(relationship=ver_grp_rel,
                                    subrelationship=id_grp_rel)
     db.session.add(g2g_rel)
@@ -429,8 +438,8 @@ def update_groups(
     else:  # Relation.Cites, Relation.IsSupplementTo, Relation.IsRelatedTo
         grp_rel = (
             GroupRelationship.query
-            .filter(GroupRelationship.source == src_idg,
-                    GroupRelationship.target == tar_idg,
+            .filter(GroupRelationship.source_id == src_idg.id,
+                    GroupRelationship.target_id == tar_idg.id,
                     GroupRelationship.relation == relationship.relation)
             .one_or_none()
         )
