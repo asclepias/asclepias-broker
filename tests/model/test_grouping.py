@@ -15,7 +15,7 @@ from asclepias_broker.graph.api import get_group_from_id, \
     get_or_create_groups, merge_identity_groups, merge_version_groups
 from asclepias_broker.graph.models import Group, GroupM2M, GroupType, \
     Identifier2Group
-from asclepias_broker.metadata.cli import update_groups
+from asclepias_broker.metadata.api import update_metadata
 
 
 def _handle_events(events, no_index=False):
@@ -78,37 +78,35 @@ def test_update_groups(db):
     assert len(set(['A', 'B']).difference(group_ids)) == 0
 
     payload = {
-      "Provider": "SAO/NASA Astrophysics Data System",
-      "Object": {
-          "Identifier": [
-              {
-                  "IDScheme": "doi",
-                  "ID": "A"
-              },
-              {
-                  "IDScheme": "ads",
-                  "ID": "C"
-              },
-              {
-                  "IDScheme": "ads",
-                  "ID": "D"
-              }
-          ],
-          "Title": "{title}",
-          "Type": {"Name": "literature"},
-          "Creator": [
-              {"Name": "{author.0}"},
-              {"Name": "{author.1}"},
-              {"Name": "{author.2}"}
-          ],
-          "Publisher": [
-              {"Name": "{pub}",
-               "Identifier": [{"ID": "{orcid_pub}", "IDScheme": "orcid"}]}
-          ],
-          "PublicationDate": "2018"
-      }
+        "Identifier": [
+            {
+                "IDScheme": "doi",
+                "ID": "A"
+            },
+            {
+                "IDScheme": "ads",
+                "ID": "C"
+            },
+            {
+                "IDScheme": "ads",
+                "ID": "D"
+            }
+        ],
+        "Title": "{title}",
+        "Type": {"Name": "literature"},
+        "Creator": [
+            {"Name": "{author.0}"},
+            {"Name": "{author.1}"},
+            {"Name": "{author.2}"}
+        ],
+        "Publisher": [
+            {"Name": "{pub}",
+             "Identifier": [{"ID": "{orcid_pub}", "IDScheme": "orcid"}]}
+        ],
+        "PublicationDate": "2018"
     }
-    update_groups(payload)
+    update_metadata(
+        'A', 'doi', payload, provider='SAO/NASA Astrophysics Data System')
 
     # fetch the group again
     updated_group = Group.query.filter_by(type=GroupType.Identity).one()

@@ -9,12 +9,11 @@
 
 from datetime import datetime
 
-from invenio_db import db
 from flask import current_app
+from invenio_db import db
 
-from ..core.models import Relation, Relationship
-from ..events.api import EventAPI
-from ..graph.api import get_group_from_id
+from ..core.models import Identifier, Relation, Relationship
+from ..graph.api import get_group_from_id, get_or_create_groups
 from ..graph.models import GroupRelationship, GroupType
 from .models import GroupMetadata, GroupRelationshipMetadata
 
@@ -50,8 +49,11 @@ def update_metadata_from_event(relationship: Relationship, payload: dict):
 
 def update_metadata(identifier: str, scheme: str, data: dict,
                     create_identity_events=True,
+                    create_missing_groups=True,
                     provider: str = None, link_publication_date: str = None):
     """."""
+    from ..events.api import EventAPI
+
     # Check if there are identity links that can be created:
     identifiers = data.get('Identifier', [])
     if create_identity_events and len(identifiers) > 1:
@@ -61,7 +63,7 @@ def update_metadata(identifier: str, scheme: str, data: dict,
         identifiers = data.get('Identifier')
         event = []
         source_identifier = identifiers[0]
-        for target_identifier in identifiers[:1]:
+        for target_identifier in identifiers[1:]:
             payload = {
                 'RelationshipType': {
                     'Name': 'IsRelatedTo',
@@ -81,16 +83,20 @@ def update_metadata(identifier: str, scheme: str, data: dict,
             }
             event.append(payload)
         try:
-            EventAPI.handle_event(event, no_index=True, delayed=False)
+            EventAPI.handle_event(event, no_index=True, eager=True)
         except ValueError:
-            current_app.logging.exception(
+            current_app.logger.exception(
                 'Error while processing identity event')
-
     try:
-        group = get_group_from_id(
-            identifiers[0]['ID'], identifiers[0]['IDScheme'])
-        if group:
-            group.data.update(data)
+        id_value, scheme = identifiers[0]['ID'], identifiers[0]['IDScheme']
+        id_group = get_group_from_id(id_value, scheme)
+        if not id_group and create_missing_groups:
+            identifier = Identifier(
+                value=id_value, scheme=scheme).fetch_or_create_id()
+            db.session.commit()
+            id_group, _ = get_or_create_groups(identifier)
+            db.session.commit()
+        id_group.data.update(data)
         db.session.commit()
     except Exception:
-        current_app.logging.exception('Error while updating group metadata')
+        current_app.logger.exception('Error while updating group metadata')

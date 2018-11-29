@@ -20,7 +20,7 @@ from .api import update_metadata
 
 @click.group()
 def metadata():
-    """Utility CLI commands."""
+    """Metadata CLI commands."""
 
 
 @metadata.command('load')
@@ -35,8 +35,8 @@ def load_metadata(jsondir):
             with open(fn, 'r') as fp:
                 data = json.load(fp)
 
-            identifier = data['Identifier'][0]['ID']
-            scheme = data['Identifier'][0]['IDScheme']
+            identifier = data['Object']['Identifier'][0]['ID']
+            scheme = data['Object']['Identifier'][0]['IDScheme']
             provider = data.get('Provider')
             update_metadata(
                 identifier, scheme, data['Object'], provider=provider)
