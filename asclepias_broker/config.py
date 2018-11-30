@@ -27,7 +27,12 @@ from .search.query import enum_term_filter, nested_range_filter, \
 
 
 def _parse_env_bool(var_name, default=None):
-    return str(os.environ.get(var_name)).lower() in ('true', '1') or default
+    value = str(os.environ.get(var_name)).lower()
+    if value in ('true', '1'):
+        return True
+    elif value in ('false', '0'):
+        return False
+    return default
 
 
 # Flask configuration
