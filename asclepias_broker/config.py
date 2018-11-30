@@ -121,6 +121,9 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
+SENTRY_DSN = None
+"""Sentry DSN for logging errors and warnings."""
+
 # REST
 # ====
 REST_ENABLE_CORS = True
@@ -248,3 +251,7 @@ THEME_FRONTPAGE = False
 # Email configuration
 # ===================
 MAIL_SUPPRESS_SEND = True
+
+# Logging
+# =======
+LOGGING_SENTRY_CELERY = True

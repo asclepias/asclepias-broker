@@ -16,6 +16,7 @@ uwsgi = "*"
 uwsgi-tools = "*"
 uwsgitop = "*"
 requests = "*"
+raven = {version = "*",extras = ["flask"]}
 
 [dev-packages]
 sphinx = "*"
