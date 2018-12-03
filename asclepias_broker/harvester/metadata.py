@@ -44,10 +44,16 @@ def crossref_metadata(doi: str) -> dict:
     }
     if metadata.get('title'):
         result['Title'] = metadata['title'][0]
+    creators = []
     for author_field in ('author', 'editor'):
-        if metadata.get(author_field):
-            result['Creator'] = [{'Name': '{family}, {given}'.format_map(a)}
-                                 for a in metadata[author_field]]
+        authors = metadata.get(author_field, [])
+        for author in authors:
+            if author.get('family') and author.get('given'):
+                creators.append(
+                    '{}, {}'.format(author['family'], author['given']))
+    if creators:
+        result['Creator'] = [{'Name': c} for c in creators]
+
     if metadata.get('publisher'):
         result['Publisher'] = [{'Name': metadata['publisher']}]
 
@@ -81,16 +87,20 @@ def datacite_metadata(doi: str) -> dict:
     }
     if metadata.get('title'):
         result['Title'] = metadata['title']
+
+    creators = []
     if metadata.get('creator'):
-        result['Creator'] = []
         for author in metadata['creator']:
             if isinstance(author, str):
-                result['Creator'].append({'Name': author})
+                creators.append(author)
             elif author.get('name'):
-                result['Creator'].append({'Name': author['name']})
+                creators.append(author['name'])
             elif author.get('familyName') and author.get('givenName'):
-                result['Creator'].append(
-                    {'Name': '{familyName}, {givenName}'.format_map(author)})
+                creators.append(
+                    '{}, {}'.format(author['familyName'], author['givenName']))
+    if creators:
+        result['Creator'] = [{'Name': c} for c in creators]
+
     result['PublicationDate'] = metadata['date_published']
     return result
 
