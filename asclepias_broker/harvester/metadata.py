@@ -74,7 +74,7 @@ def datacite_metadata(doi: str) -> dict:
     result = {}
 
     result['Identifier'] = [{'IDScheme': 'doi', 'ID': doi}]
-    alt_ids = metadata.get('alternate_identifier')
+    alt_ids = metadata.get('alternate_identifier') or []
     if not isinstance(alt_ids, list):
         alt_ids = [alt_ids]
     for ai in alt_ids:
