@@ -7,14 +7,18 @@
 
 """Harvester base classes."""
 
+from typing import List
+
 
 class MetadataHarvester:
     """."""
 
-    def can_harvest(self, identifier: str, scheme: str) -> bool:
+    def can_harvest(self, identifier: str, scheme: str,
+                    providers: List[str]) -> bool:
         """."""
         return NotImplementedError()
 
-    def harvest(self, identifier: str, scheme: str):
+    def harvest(self, identifier: str, scheme: str,
+                providers: List[str]):
         """."""
         return NotImplementedError()

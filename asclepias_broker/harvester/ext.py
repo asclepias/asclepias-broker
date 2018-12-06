@@ -68,11 +68,6 @@ class AsclepiasHarvester:
         return self._load_harvester_config(
             'ASCLEPIAS_HARVESTER_EVENT_HARVESTERS')
 
-    @cached_property
-    def provider_name(self) -> str:
-        """."""
-        return current_app.config['ASCLEPIAS_HARVESTER_EVENT_PROVIDER']
-
     def init_app(self, app):
         """Flask application initialization."""
         self.init_config(app)

@@ -16,27 +16,33 @@ from .proxies import current_harvester
 
 
 @shared_task(ignore_result=True, max_retries=3, default_retry_delay=10 * 60)
-def harvest_metadata_identifier(harvester: str, identifier: str, scheme: str):
+def harvest_metadata_identifier(harvester: str, identifier: str, scheme: str,
+                                providers: List[str] = None):
     """."""
     try:
         h = current_harvester.metadata_harvesters[harvester]
-        h.harvest(identifier, scheme)
+        h.harvest(identifier, scheme, providers)
     except Exception as exc:
         harvest_metadata_identifier.retry(exc=exc)
 
 
 @shared_task(ignore_result=True)
-def harvest_metadata(identifiers: Optional[List[Tuple[str, str]]],
+def harvest_metadata(identifiers: Optional[List[dict]],
                      eager: bool = False):
     """."""
     if identifiers:
-        identifiers_to_harvest = ((i, v) for i, v in identifiers)
+        identifiers_to_harvest = (dict(identifier=i, scheme=v)
+                                  for i, v in identifiers)
     else:  # use queue
         identifiers_to_harvest = current_harvester.metadata_queue.consume()
-    for value, scheme in identifiers_to_harvest:
+    for payload in identifiers_to_harvest:
+        value = payload['identifier']
+        scheme = payload['scheme']
+        providers = payload['providers']
         for h_id, harvester in current_harvester.metadata_harvesters.items():
-            if harvester.can_harvest(value, scheme):
-                task = harvest_metadata_identifier.s(h_id, value, scheme)
+            if harvester.can_harvest(value, scheme, providers):
+                task = harvest_metadata_identifier.s(h_id, value, scheme,
+                                                     providers)
                 if eager:
                     task.apply(throw=True)
                 else:

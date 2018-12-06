@@ -106,7 +106,7 @@ def test_update_groups(db):
         "PublicationDate": "2018"
     }
     update_metadata(
-        'A', 'doi', payload, provider='SAO/NASA Astrophysics Data System')
+        'A', 'doi', payload, providers=['SAO/NASA Astrophysics Data System'])
 
     # fetch the group again
     updated_group = Group.query.filter_by(type=GroupType.Identity).one()
