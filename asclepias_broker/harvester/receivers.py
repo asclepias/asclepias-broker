@@ -18,9 +18,15 @@ def harvest_metadata_after_event_process(app, event: Event = None):
     for id_event in identifier_events:
         # Check provider to avoid self-triggering harvesting
         scholix_payload = event.payload[id_event.payload_index]
-        provider = scholix_payload.get('LinkProvider', [{}])[0].get('Name')
-        if provider != current_harvester.provider_name:
-            identifier = id_event.object
-            identifiers.add((identifier.value, identifier.scheme))
+        providers = [provider.get('Name') for provider in
+                     scholix_payload.get('LinkProvider', [{}])]
+        identifier = id_event.object
+        identifiers.add((identifier.value, identifier.scheme,
+                         frozenset(providers)))
     if identifiers:
-        current_harvester.publish_metadata_harvest(list(identifiers))
+        payloads = [
+            dict(identifier=identifier, scheme=scheme,
+                 providers=list(providers))
+            for identifier, scheme, providers in identifiers
+        ]
+        current_harvester.publish_metadata_harvest(payloads)

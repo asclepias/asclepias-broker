@@ -9,7 +9,7 @@
 
 from copy import deepcopy
 from datetime import datetime
-from typing import Callable, Union
+from typing import Callable, List, Union
 
 import idutils
 import requests
@@ -18,7 +18,6 @@ from werkzeug.utils import cached_property
 
 from ..metadata.api import update_metadata
 from .base import MetadataHarvester
-from .proxies import current_harvester
 
 
 def _date_from_parts(parts):
@@ -110,25 +109,34 @@ class DOIMetadataHarvester(MetadataHarvester):
 
     DOI_ORG_AGENCY_API_URL = 'https://doi.org/doiRA'
 
-    def __init__(self, *, doi_api_url: str = None, resolvers: dict = None):
+    def __init__(self, *, doi_api_url: str = None, resolvers: dict = None,
+                 provider_name: str = None):
         """."""
         self.doi_api_url = doi_api_url or self.DOI_ORG_AGENCY_API_URL
         self.resolvers = resolvers or {
             'crossref': crossref_metadata,
             'datacite': datacite_metadata,
         }
+        self.provider_name = provider_name or "DOI metadata Harvester"
 
-    def can_harvest(self, identifier: str, scheme: str) -> bool:
+    def can_harvest(self, identifier: str, scheme: str,
+                    providers: List[str] = None) -> bool:
         """."""
-        return scheme.lower() == 'doi'
+        is_provider = False
+        if providers:
+            is_provider = self.provider_name in providers
+        return scheme.lower() == 'doi' and not is_provider
 
-    def harvest(self, identifier: str, scheme: str):
+    def harvest(self, identifier: str, scheme: str,
+                providers: List[str] = None):
         """."""
         data = self.get_metadata(identifier)
         if data:
+            providers = set(providers)
+            providers.add(self.provider_name)
             update_metadata(
                 identifier, scheme, data,
-                provider=current_harvester.provider_name)
+                providers=list(providers))
 
     def get_metadata(self, doi: str) -> dict:
         """."""
@@ -182,23 +190,33 @@ class ADSMetadataHarvester(MetadataHarvester):
     }
 
     def __init__(self, *, api_url: str = None, api_params: dict = None,
-                 api_token: Union[str, Callable] = None):
+                 api_token: Union[str, Callable] = None,
+                 provider_name: str = None):
         """."""
         self.api_url = api_url or self.ADS_API_URL
         self.api_params = api_params or self.ADS_API_PARAMS
         self._api_token = api_token
+        self.provider_name = provider_name or "ADS metadata Harvester"
 
-    def can_harvest(self, identifier: str, scheme: str) -> bool:
+    def can_harvest(self, identifier: str, scheme: str,
+                    providers: List[str] = None) -> bool:
         """."""
-        return scheme.lower() == 'ads'
+        is_provider = False
+        if providers:
+            is_provider = self.provider_name in providers
 
-    def harvest(self, identifier: str, scheme: str):
+        return scheme.lower() == 'ads' and not is_provider
+
+    def harvest(self, identifier: str, scheme: str,
+                providers: List[str] = None):
         """."""
         data = self.get_metadata(identifier)
         if data:
+            providers = set(providers)
+            providers.add(self.provider_name)
             update_metadata(
                 identifier, scheme, data,
-                provider=current_harvester.provider_name)
+                providers=list(providers))
 
     def get_metadata(self, bibcode: str) -> dict:
         """."""

@@ -8,6 +8,7 @@
 """Metadata functions."""
 
 from datetime import datetime
+from typing import List
 
 from flask import current_app
 from invenio_db import db
@@ -50,14 +51,16 @@ def update_metadata_from_event(relationship: Relationship, payload: dict):
 def update_metadata(identifier: str, scheme: str, data: dict,
                     create_identity_events=True,
                     create_missing_groups=True,
-                    provider: str = None, link_publication_date: str = None):
+                    providers: List[str] = None,
+                    link_publication_date: str = None):
     """."""
     from ..events.api import EventAPI
 
     # Check if there are identity links that can be created:
     identifiers = data.get('Identifier', [])
     if create_identity_events and len(identifiers) > 1:
-        provider = provider or 'unknown'
+        providers = providers or ['unknown']
+        providers = [{'Name': provider} for provider in providers]
         link_publication_date = link_publication_date or \
             datetime.now().isoformat()
         identifiers = data.get('Identifier')
@@ -74,7 +77,7 @@ def update_metadata(identifier: str, scheme: str, data: dict,
                     'Identifier': target_identifier,
                     'Type': {'Name': 'unknown'}
                 },
-                'LinkProvider': [{'Name': provider}],
+                'LinkProvider': providers,
                 'Source': {
                     'Identifier': source_identifier,
                     'Type': {'Name': 'unknown'}
