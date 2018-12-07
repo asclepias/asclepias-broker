@@ -31,7 +31,7 @@ def harvest_metadata(identifiers: Optional[List[dict]],
                      eager: bool = False):
     """."""
     if identifiers:
-        identifiers_to_harvest = (dict(identifier=i, scheme=v)
+        identifiers_to_harvest = (dict(identifier=i, scheme=v, providers=None)
                                   for i, v in identifiers)
     else:  # use queue
         identifiers_to_harvest = current_harvester.metadata_queue.consume()

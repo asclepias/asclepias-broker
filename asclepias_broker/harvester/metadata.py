@@ -18,6 +18,19 @@ from werkzeug.utils import cached_property
 
 from ..metadata.api import update_metadata
 from .base import MetadataHarvester
+from .crossref import CrossrefAPIException
+
+
+class DataCiteAPIException(Exception):
+    """DataCite REST API exception."""
+
+
+class AdsAPIException(Exception):
+    """Ads REST API exception."""
+
+
+class MetadataAPIException(Exception):
+    """Metadata REST API exception."""
 
 
 def _date_from_parts(parts):
@@ -34,34 +47,37 @@ def crossref_metadata(doi: str) -> dict:
     # TODO: Add "mailto" parameter as described in
     # https://www.eventdata.crossref.org/guide/service/query-api
     resp = requests.get(f'https://api.crossref.org/works/{doi}')
-    metadata = resp.json()['message']
-    result = {}
-    result['Identifier'] = [{'IDScheme': 'doi', 'ID': doi}]
-    res_type = metadata['type']
-    result['Type'] = {
-        'Name': res_type if res_type == 'dataset' else 'literature',
-    }
-    if metadata.get('title'):
-        result['Title'] = metadata['title'][0]
-    creators = []
-    for author_field in ('author', 'editor'):
-        authors = metadata.get(author_field, [])
-        for author in authors:
-            if author.get('family') and author.get('given'):
-                creators.append(
-                    '{}, {}'.format(author['family'], author['given']))
-    if creators:
-        result['Creator'] = [{'Name': c} for c in creators]
+    if resp.ok:
+        metadata = resp.json()['message']
+        result = {}
+        result['Identifier'] = [{'IDScheme': 'doi', 'ID': doi}]
+        res_type = metadata['type']
+        result['Type'] = {
+            'Name': res_type if res_type == 'dataset' else 'literature',
+        }
+        if metadata.get('title'):
+            result['Title'] = metadata['title'][0]
+        creators = []
+        for author_field in ('author', 'editor'):
+            authors = metadata.get(author_field, [])
+            for author in authors:
+                if author.get('family') and author.get('given'):
+                    creators.append(
+                        '{}, {}'.format(author['family'], author['given']))
+        if creators:
+            result['Creator'] = [{'Name': c} for c in creators]
 
-    if metadata.get('publisher'):
-        result['Publisher'] = [{'Name': metadata['publisher']}]
+        if metadata.get('publisher'):
+            result['Publisher'] = [{'Name': metadata['publisher']}]
 
-    for date_field in ('issued', 'published-online', 'published-print'):
-        if metadata.get(date_field):
-            result['PublicationDate'] = _date_from_parts(
-                metadata[date_field]['date-parts'][0])
-            break
-    return result
+        for date_field in ('issued', 'published-online', 'published-print'):
+            if metadata.get(date_field):
+                result['PublicationDate'] = _date_from_parts(
+                    metadata[date_field]['date-parts'][0])
+                break
+        return result
+    else:
+        raise CrossrefAPIException()
 
 
 def datacite_metadata(doi: str) -> dict:
@@ -69,39 +85,44 @@ def datacite_metadata(doi: str) -> dict:
     # TODO: Consider using marshmallow for parsing these responses...
     mimetype = 'application/vnd.datacite.datacite+json'
     resp = requests.get(f'https://data.datacite.org/{mimetype}/{doi}')
-    metadata = resp.json()
-    result = {}
+    if resp.ok:
+        metadata = resp.json()
+        result = {}
 
-    result['Identifier'] = [{'IDScheme': 'doi', 'ID': doi}]
-    alt_ids = metadata.get('alternate_identifier') or []
-    if not isinstance(alt_ids, list):
-        alt_ids = [alt_ids]
-    for ai in alt_ids:
-        result['Identifier'].append({'IDScheme': ai['type'], 'ID': ai['name']})
+        result['Identifier'] = [{'IDScheme': 'doi', 'ID': doi}]
+        alt_ids = metadata.get('alternate_identifier') or []
+        if not isinstance(alt_ids, list):
+            alt_ids = [alt_ids]
+        for ai in alt_ids:
+            result['Identifier'].append({'IDScheme': ai['type'],
+                                         'ID': ai['name']})
 
-    res_type = metadata['resource_type_general'].lower()
-    result['Type'] = {
-        'Name': (res_type if res_type in ('dataset', 'software')
-                 else 'literature')
-    }
-    if metadata.get('title'):
-        result['Title'] = metadata['title']
+        res_type = metadata['resource_type_general'].lower()
+        result['Type'] = {
+            'Name': (res_type if res_type in ('dataset', 'software')
+                     else 'literature')
+        }
+        if metadata.get('title'):
+            result['Title'] = metadata['title']
 
-    creators = []
-    if metadata.get('creator'):
-        for author in metadata['creator']:
-            if isinstance(author, str):
-                creators.append(author)
-            elif author.get('name'):
-                creators.append(author['name'])
-            elif author.get('familyName') and author.get('givenName'):
-                creators.append(
-                    '{}, {}'.format(author['familyName'], author['givenName']))
-    if creators:
-        result['Creator'] = [{'Name': c} for c in creators]
+        creators = []
+        if metadata.get('creator'):
+            for author in metadata['creator']:
+                if isinstance(author, str):
+                    creators.append(author)
+                elif author.get('name'):
+                    creators.append(author['name'])
+                elif author.get('familyName') and author.get('givenName'):
+                    creators.append(
+                        '{}, {}'.format(author['familyName'],
+                                        author['givenName']))
+        if creators:
+            result['Creator'] = [{'Name': c} for c in creators]
 
-    result['PublicationDate'] = metadata['date_published']
-    return result
+        result['PublicationDate'] = metadata['date_published']
+        return result
+    else:
+        raise DataCiteAPIException()
 
 
 class DOIMetadataHarvester(MetadataHarvester):
@@ -132,7 +153,7 @@ class DOIMetadataHarvester(MetadataHarvester):
         """."""
         data = self.get_metadata(identifier)
         if data:
-            providers = set(providers)
+            providers = set(providers) if providers else set()
             providers.add(self.provider_name)
             update_metadata(
                 identifier, scheme, data,
@@ -154,7 +175,10 @@ class DOIMetadataHarvester(MetadataHarvester):
     def _agency_by_prefix(self, doi_prefix):
         """."""
         res = requests.get(f'{self.doi_api_url}/{doi_prefix}')
-        return res.json()[0].get('RA').lower()
+        if res.ok:
+            return res.json()[0].get('RA').lower()
+        else:
+            raise MetadataAPIException()
 
 
 class ADSMetadataHarvester(MetadataHarvester):
@@ -212,7 +236,7 @@ class ADSMetadataHarvester(MetadataHarvester):
         """."""
         data = self.get_metadata(identifier)
         if data:
-            providers = set(providers)
+            providers = set(providers) if providers else set()
             providers.add(self.provider_name)
             update_metadata(
                 identifier, scheme, data,
@@ -224,18 +248,22 @@ class ADSMetadataHarvester(MetadataHarvester):
         params['q'] = f'identifier:{bibcode}'
         res = requests.get(
             self.api_url, params=params, headers=self._req_headers)
-        data = res.json()
-        if data['response']['numFound'] == 1:
-            doc = data['response']['docs'][0]
-            return {
-                'Identifier': self._extract_identifiers(doc),
-                'Publisher': ([{'Name': doc['pub']}]
-                              if doc.get('pub') else None),
-                'Creator': [{'Name': n} for n in doc.get('author', []) if n],
-                'Title': doc.get('title', [None])[0],
-                'PublicationDate': self._extract_date(doc),
-                'Type': {'Name': self._extract_type(doc)},
-            }
+        if res.ok:
+            data = res.json()
+            if data['response']['numFound'] == 1:
+                doc = data['response']['docs'][0]
+                return {
+                    'Identifier': self._extract_identifiers(doc),
+                    'Publisher': ([{'Name': doc['pub']}]
+                                  if doc.get('pub') else None),
+                    'Creator': [{'Name': n} for n in doc.get('author', [])
+                                if n],
+                    'Title': doc.get('title', [None])[0],
+                    'PublicationDate': self._extract_date(doc),
+                    'Type': {'Name': self._extract_type(doc)},
+                }
+        else:
+            raise AdsAPIException()
 
     @cached_property
     def api_token(self):

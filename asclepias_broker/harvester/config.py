@@ -10,6 +10,7 @@
 from kombu import Exchange
 
 from .metadata import ADSMetadataHarvester, DOIMetadataHarvester
+from .zenodo import ZenodoVersioningHarvester
 
 ASCLEPIAS_HARVESTER_HISTORY_PREFIX = 'asclepias-harvester'
 
@@ -35,6 +36,7 @@ Example for harvesting citations to Zenodo DOIs:
 ASCLEPIAS_HARVESTER_METADATA_HARVESTERS = {
     'doi': (DOIMetadataHarvester, {}),
     'ads': (ADSMetadataHarvester, {}),
+    'zenodo': (ZenodoVersioningHarvester, {}),
 }
 
 ASCLEPIAS_HARVESTER_ADS_API_TOKEN = None
