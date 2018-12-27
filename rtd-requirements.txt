@@ -32,7 +32,7 @@ elasticsearch==6.3.1
 elasticsearch-dsl==6.1.0
 flake8==3.6.0
 flask==1.0.2
-flask-admin==1.5.2
+flask-admin==1.5.3
 flask-alembic==2.0.1
 flask-babelex==0.9.3
 flask-breadcrumbs==0.4.0
