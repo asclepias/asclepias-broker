@@ -22,13 +22,14 @@ def search():
 
 @search.command('reindex')
 @click.option('--destroy', default=False, is_flag=True)
+@click.option('--split/--no-split', default=True)
 @click.option('-e', '--eager', default=False, is_flag=True)
 @click.confirmation_option(
     prompt='Are you sure you want to reindex everything?')
 @with_appcontext
-def reindex(destroy=False, eager=False):
+def reindex(destroy=False, split=True, eager=False):
     """Reindex all relationships."""
-    task = reindex_all_relationships.s(destroy=destroy)
+    task = reindex_all_relationships.s(destroy=destroy, split=split)
     if eager:
         task.apply(throw=True)
     else:
