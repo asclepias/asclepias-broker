@@ -97,7 +97,8 @@ def datacite_metadata(doi: str) -> dict:
             result['Identifier'].append({'IDScheme': ai['type'],
                                          'ID': ai['name']})
 
-        res_type = metadata['resource_type_general'].lower()
+        res_type = metadata.get(
+            'types', {}).get('resourceTypeGeneral', '').lower()
         result['Type'] = {
             'Name': (res_type if res_type in ('dataset', 'software')
                      else 'literature')
