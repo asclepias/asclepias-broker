@@ -7,7 +7,7 @@
 
 """Harvester tasks."""
 
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
 from celery import shared_task
 from invenio_db import db

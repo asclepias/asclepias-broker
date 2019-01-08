@@ -93,8 +93,8 @@ def index_documents(docs: Iterable[dict], bulk: bool = False):
             index='relationships',
             doc_type='doc',
             raise_on_error=False,
-            chunk_size=100,
-            max_chunk_bytes=(10 * 1024 * 1024),
+            chunk_size=300,  # TODO: Make configurable
+            max_chunk_bytes=(30 * 1024 * 1024),  # TODO: Make configurable
         )
     else:
         for doc in docs:
