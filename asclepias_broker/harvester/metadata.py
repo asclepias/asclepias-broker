@@ -89,26 +89,32 @@ def datacite_metadata(doi: str) -> dict:
         metadata = resp.json()
         result = {}
 
-        result['Identifier'] = [{'IDScheme': 'doi', 'ID': doi}]
-        alt_ids = metadata.get('alternate_identifier') or []
-        if not isinstance(alt_ids, list):
-            alt_ids = [alt_ids]
-        for ai in alt_ids:
-            result['Identifier'].append({'IDScheme': ai['type'],
-                                         'ID': ai['name']})
+        # Identifiers
+        result['Identifier'] = []
+        identifiers = metadata.get('identifiers') or []
+        if not isinstance(identifiers, list):
+            identifiers = [identifiers]
+        for i in identifiers:
+            result['Identifier'].append(
+                {'IDScheme': i['identifierType'].lower(),
+                 'ID': i['identifier']})
 
+        # Type
         res_type = metadata.get(
             'types', {}).get('resourceTypeGeneral', '').lower()
         result['Type'] = {
             'Name': (res_type if res_type in ('dataset', 'software')
                      else 'literature')
         }
-        if metadata.get('title'):
-            result['Title'] = metadata['title']
 
+        # Title
+        if metadata.get('titles'):
+            result['Title'] = metadata['titles'][0]['title']
+
+        # Creators
         creators = []
-        if metadata.get('creator'):
-            for author in metadata['creator']:
+        if metadata.get('creators'):
+            for author in metadata['creators']:
                 if isinstance(author, str):
                     creators.append(author)
                 elif author.get('name'):
@@ -120,7 +126,12 @@ def datacite_metadata(doi: str) -> dict:
         if creators:
             result['Creator'] = [{'Name': c} for c in creators]
 
-        result['PublicationDate'] = metadata['date_published']
+        # Publication date
+        dates = [d['date'] for d in metadata.get('dates', [])
+                 if d.get('dateType') == 'Issued' and d.get('date')]
+        if dates:
+            result['PublicationDate'] = dates[0]
+
         return result
     else:
         raise DataCiteAPIException()
