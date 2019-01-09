@@ -1,21 +1,24 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2018 CERN.
+# Copyright (C) 2018, 2019 CERN.
 #
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 set -e
 
-# The real bootstrap script starts 20 lines below ;-)
+script_path=$(dirname "$0")
+pipfile_lock_path="$script_path/../Pipfile.lock"
+
 flags=()
 while test $# -gt 0; do
     case "$1" in
         --ci)
             # We are probably inside travis, check for env variables
-            if [ "$REQUIREMENTS" == "prod" ]; then
-                flags=("--dev" "--ignore-pipfile")
+            if [ "$REQUIREMENTS" == "qa" ]; then
+                # Update dependecies to latest
+                pipenv lock --dev
             fi
             shift
             ;;
@@ -27,11 +30,15 @@ while test $# -gt 0; do
     esac
 done
 if [ ${#flags[0]} -eq 0 ]; then
-    flags=("--dev" "--skip-lock")
+    flags=("--dev")
 fi
 
-# Install dependencies
-pipenv install "${flags[@]}"
+if [ ! -f $pipfile_lock_path ]; then
+    echo "'Pipfile.lock' not found. Generating via 'pipenv lock --dev'..."
+    pipenv lock --dev
+fi
 
-# Install application code
-pipenv run pip install -e .
+# Intall locked dependencies
+pipenv sync ${flags[@]}
+# Install application code and entrypoints from 'setup.py'
+pipenv run pip install -e $script_path/..
