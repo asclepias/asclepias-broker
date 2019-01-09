@@ -39,25 +39,38 @@ def test_group_metadata(db):
     assert g.data.json == gm.json
 
     # Minimal metadata
-    update_and_compare(gm, {'Title': 'Some title'})
+    update_and_compare(
+        gm,
+        {'Title': 'Some title'},
+        {'Title': 'Some title', 'Type': {'Name': 'unknown'}})
     # Change title
-    update_and_compare(gm, {'Title': 'Some other title'})
+    update_and_compare(
+        gm,
+        {'Title': 'Some other title'},
+        {'Title': 'Some other title', 'Type': {'Name': 'unknown'}})
     # Null payload
-    update_and_compare(gm, {}, {'Title': 'Some other title'})
+    update_and_compare(
+        gm,
+        {},
+        {'Title': 'Some other title', 'Type': {'Name': 'unknown'}})
     # Null title
     update_and_compare(
-        gm, {'Title': None}, {'Title': 'Some other title'})
+        gm,
+        {'Title': None},
+        {'Title': 'Some other title', 'Type': {'Name': 'unknown'}})
     # Add creators
     update_and_compare(
         gm,
         {'Creator': [{'Name': 'Foo creator'}]},
-        {'Title': 'Some other title', 'Creator': [{'Name': 'Foo creator'}]},
+        {'Title': 'Some other title', 'Type': {'Name': 'unknown'},
+         'Creator': [{'Name': 'Foo creator'}]},
     )
     # Change creators
     update_and_compare(
         gm,
         {'Creator': [{'Name': 'Bar creator'}]},
-        {'Title': 'Some other title', 'Creator': [{'Name': 'Bar creator'}]},
+        {'Title': 'Some other title', 'Type': {'Name': 'unknown'},
+         'Creator': [{'Name': 'Bar creator'}]},
     )
     # Invalid payload data
     with pytest.raises(ValidationError):

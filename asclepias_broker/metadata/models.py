@@ -60,20 +60,21 @@ class GroupMetadata(db.Model, Timestamp):
     def update(self, payload: dict, validate: bool = True):
         """Update the metadata of a group."""
         new_json = deepcopy(self.json or {})
-        for k in OVERRIDABLE_KEYS:
-            if payload.get(k):
-                if k == 'Type' and not _is_type_overridable(payload):
-                    continue
-                new_json[k] = payload[k]
+        for key in OVERRIDABLE_KEYS:
+            if payload.get(key):
+                if key == 'Type':
+                    type_val = (payload['Type'] or {}).get('Name', 'unknown')
+                    if type_val == 'unknown':
+                        continue
+                new_json[key] = payload[key]
+        # Set "Type" to "unknown" if not provided
+        if not new_json.get('Type', {}).get('Name'):
+            new_json['Type'] = {'Name': 'unknown'}
         if validate:
             jsonschema.validate(new_json, self.SCHEMA)
         self.json = new_json
         flag_modified(self, 'json')
         return self
-
-
-def _is_type_overridable(new_json):
-    return new_json.get('Type', {}).get('Name', 'unknown') != 'unknown'
 
 
 class GroupRelationshipMetadata(db.Model, Timestamp):
