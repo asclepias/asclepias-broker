@@ -63,14 +63,10 @@ setup(
              'asclepias_broker.harvester.ext:AsclepiasHarvester'),
         ],
         'invenio_base.api_blueprints': [
-            'asclepias_broker = asclepias_broker.views:blueprint',
             ('asclepias_broker_events = '
              'asclepias_broker.events.views:blueprint'),
             ('asclepias_broker_search = '
              'asclepias_broker.search.views:blueprint'),
-        ],
-        'invenio_base.blueprints': [
-            'asclepias_broker = asclepias_broker.views:blueprint',
         ],
         'invenio_celery.tasks': [
             'asclepias_broker_graph_tasks = asclepias_broker.graph.tasks',
