@@ -124,7 +124,7 @@ html_theme = 'alabaster'
 
 html_theme_options = {
     'description': 'Scholarly link broker for the Asclepias project.',
-    'github_user': 'inveniosoftware',
+    'github_user': 'asclepias',
     'github_repo': 'asclepias-broker',
     'github_button': False,
     'github_banner': True,
