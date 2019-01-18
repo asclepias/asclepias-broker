@@ -11,6 +11,7 @@ from copy import deepcopy
 from typing import Tuple
 
 import idutils
+from flask import current_app
 from marshmallow import Schema, fields, post_load, pre_load, validates_schema
 from marshmallow.exceptions import ValidationError
 
@@ -91,6 +92,14 @@ class IdentifierSchema(Schema):
     value = fields.Str(required=True, load_from='ID')
     scheme = fields.Function(
         deserialize=lambda s: s.lower(), required=True, load_from='IDScheme')
+
+    @pre_load
+    def normalize_value(self, data):
+        """Normalize identifier value."""
+        try:
+            data['ID'] = idutils.normalize_pid(data['ID'], data['IDScheme'])
+        except Exception:
+            current_app.logger.warning('Failed to normalize PID value.')
 
     @validates_schema
     def check_scheme(self, data):
