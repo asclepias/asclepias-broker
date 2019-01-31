@@ -45,4 +45,5 @@ ASCLEPIAS_HARVESTER_MQ_EXCHANGE = Exchange('harvester')
 
 ASCLEPIAS_HARVESTER_METADATA_QUEUE = 'metadata-harvester'
 
-ASCLEPIAS_HARVESTER_HARVEST_AFTER_EVENT_PROCESS = True
+ASCLEPIAS_HARVESTER_HARVEST_AFTER_EVENT_PROCESS = False
+"""Controls post-event-process metadata harvesting for identifiers."""
