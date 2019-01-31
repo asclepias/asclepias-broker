@@ -1,12 +1,12 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "https://raw.githubusercontent.com/asclepias/asclepias-broker/master/asclepias_broker/jsonschemas/event.json",
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "id": "https://schemas.asclepias.github.io/event.json",
   "title": "Event message schema.",
   "type": "array",
   "minItems": 1,
   "maxItems": 100,
   "description": "Schema of the event message. An array, containing one or more event payloads.",
   "items": {
-    "$ref": "scholix-v3.json"
+    "$ref": "https://schemas.asclepias.github.io/scholix-v3.json"
   }
 }

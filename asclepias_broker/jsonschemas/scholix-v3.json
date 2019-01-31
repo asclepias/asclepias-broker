@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-06/schema#",
-  "$id": "http://www.scholix.org/schema.json",
+  "$id": "https://schemas.asclepias.github.io/scholix-v3.json",
   "type": "object",
   "additionalProperties": false,
   "definitions": {
