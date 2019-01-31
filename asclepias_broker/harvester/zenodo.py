@@ -14,6 +14,7 @@ from typing import List
 import requests
 from flask import current_app
 
+from ..utils import chunks
 from .base import MetadataHarvester
 
 
@@ -155,8 +156,9 @@ def update_versioning(parent_identifier: str, child_identifiers: List[str],
         }
         event.append(payload)
 
-    try:
-        EventAPI.handle_event(event, no_index=True, eager=True)
-    except ValueError:
-        current_app.logger.exception(
-            'Error while processing versioning event.')
+    for event_chunk in chunks(event, 100):
+        try:
+            EventAPI.handle_event(list(event_chunk), no_index=True, eager=True)
+        except ValueError:
+            current_app.logger.exception(
+                'Error while processing versioning event.')
