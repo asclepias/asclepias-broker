@@ -235,7 +235,7 @@ ASCLEPIAS_SEARCH_INDEXING_ENABLED = False
 
 # JSONSchemas
 # ===========
-JSONSCHEMAS_HOST = 'asclepias-broker.org'
+JSONSCHEMAS_HOST = 'https://schemas.asclepias.github.io'
 
 # Accounts
 # ========

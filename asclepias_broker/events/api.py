@@ -11,29 +11,50 @@ from flask import current_app
 from invenio_db import db
 from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
+from werkzeug.local import LocalProxy
 
 from ..graph.tasks import process_event
-from ..jsonschemas import EVENT_SCHEMA
+from ..jsonschemas import EVENT_SCHEMA, SCHOLIX_SCHEMA
 from ..schemas.loaders import RelationshipSchema
 from .models import Event, EventStatus
+
+
+def _jsonschema_validator_func():
+    schema_host = current_app.config['JSONSCHEMAS_HOST']
+    schema_store = {
+        f'{schema_host}/scholix-v3.json': SCHOLIX_SCHEMA,
+        f'{schema_host}/event.json': EVENT_SCHEMA,
+    }
+    resolver = jsonschema.RefResolver(
+        schema_host, EVENT_SCHEMA, schema_store)
+    return jsonschema.Draft4Validator(EVENT_SCHEMA, resolver=resolver)
 
 
 class EventAPI:
     """Event API."""
 
-    @classmethod
-    def handle_event(cls, event: dict, no_index: bool = False,
-                     user_id: int = None, eager: bool = False) -> Event:
-        """Handle an event payload."""
-        # Raises JSONSchema ValidationError
-        jsonschema.validate(event, EVENT_SCHEMA)
+    _jsonschema_validator = LocalProxy(_jsonschema_validator_func)
+    """Event JSONSchema validator."""
 
-        # Validate the entries in the payload
+    @classmethod
+    def validate_payload(cls, event):
+        """Validate the event payload."""
+        # TODO: Use invenio-jsonschemas/jsonresolver instead of this
+        # Validate against Event JSONSchema
+        # NOTE: raises `jsonschemas.ValidationError`
+        cls._jsonschema_validator.validate(event)
+
+        # Validate using marshmallow loader
         for payload in event:
             errors = RelationshipSchema(check_existing=True).validate(payload)
             if errors:
                 raise MarshmallowValidationError(errors)
 
+    @classmethod
+    def handle_event(cls, event: dict, no_index: bool = False,
+                     user_id: int = None, eager: bool = False) -> Event:
+        """Handle an event payload."""
+        cls.validate_payload(event)
         event_obj = Event(payload=event, status=EventStatus.New,
                           user_id=user_id)
         db.session.add(event_obj)
