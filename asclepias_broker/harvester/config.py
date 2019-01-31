@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2018 CERN.
+# Copyright (C) 2018, 2019 CERN.
 #
 # Asclepias Harvester is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
@@ -17,7 +17,8 @@ ASCLEPIAS_HARVESTER_HISTORY_PREFIX = 'asclepias-harvester'
 ASCLEPIAS_HARVESTER_EVENT_HARVESTERS = {}
 """Event harvesters configuration.
 
-Example for harvesting citations to Zenodo DOIs:
+Example for harvesting citations to Zenodo DOIs using the Crossref
+and Europe PMC harvesters:
 
 .. code-block:: python
 
@@ -28,6 +29,12 @@ Example for harvesting citations to Zenodo DOIs:
                 'obj-id.prefix': '10.5281',
                 'source': 'crossref',
                 'relation-type': 'references',
+            }
+        }),
+        'europepmc': (EuropePMCHarvester, {
+            'id': 'zenodo-query',
+            'params': {
+
             }
         }),
     }
