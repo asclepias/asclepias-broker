@@ -231,7 +231,7 @@ APP_DEFAULT_SECURE_HEADERS['session_cookie_secure'] = True
 # Application
 # ===========
 #: Determines if the search index will be updated after ingesting an event
-ASCLEPIAS_SEARCH_INDEXING_ENABLED = True
+ASCLEPIAS_SEARCH_INDEXING_ENABLED = False
 
 # JSONSchemas
 # ===========
