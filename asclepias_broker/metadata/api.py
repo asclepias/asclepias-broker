@@ -10,12 +10,14 @@
 from datetime import datetime
 from typing import List
 
+import idutils
 from flask import current_app
 from invenio_db import db
 
 from ..core.models import Identifier, Relation, Relationship
 from ..graph.api import get_group_from_id, get_or_create_groups
 from ..graph.models import GroupRelationship, GroupType
+from ..utils import chunks
 from .models import GroupMetadata, GroupRelationshipMetadata
 
 
@@ -48,50 +50,59 @@ def update_metadata_from_event(relationship: Relationship, payload: dict):
              if k in ('LinkPublicationDate', 'LinkProvider')})
 
 
-def update_metadata(identifier: str, scheme: str, data: dict,
-                    create_identity_events=True,
-                    create_missing_groups=True,
+def update_metadata(id_value: str, scheme: str, data: dict,
+                    create_identity_events: bool = True,
+                    create_missing_groups: bool = True,
                     providers: List[str] = None,
                     link_publication_date: str = None):
     """."""
     from ..events.api import EventAPI
+    scheme = scheme.lower()
+    id_value = idutils.normalize_pid(id_value, scheme)
+
+    target_identifiers = set()
+    for i in data.get('Identifier', []):
+        value, scheme = i['ID'], i['IDScheme'].lower()
+        value = idutils.normalize_pid(value, scheme)
+        target_identifiers.add((value, scheme))
 
     # Check if there are identity links that can be created:
-    identifiers = data.get('Identifier', [])
-    if create_identity_events and len(identifiers) > 1:
+    if create_identity_events and len(target_identifiers) > 0:
+        events = []
         providers = providers or ['unknown']
         providers = [{'Name': provider} for provider in providers]
         link_publication_date = link_publication_date or \
             datetime.now().isoformat()
-        identifiers = data.get('Identifier')
-        event = []
-        source_identifier = identifiers[0]
-        for target_identifier in identifiers[1:]:
-            payload = {
-                'RelationshipType': {
-                    'Name': 'IsRelatedTo',
-                    'SubTypeSchema': 'DataCite',
-                    'SubType': 'IsIdenticalTo'
-                },
-                'Target': {
-                    'Identifier': target_identifier,
-                    'Type': {'Name': 'unknown'}
-                },
-                'LinkProvider': providers,
-                'Source': {
-                    'Identifier': source_identifier,
-                    'Type': {'Name': 'unknown'}
-                },
-                'LinkPublicationDate': link_publication_date,
-            }
-            event.append(payload)
-        try:
-            EventAPI.handle_event(event, no_index=True, eager=True)
-        except ValueError:
-            current_app.logger.exception(
-                'Error while processing identity event')
+        source_id_obj = {'ID': id_value, 'IDScheme': scheme}
+        for target_value, target_scheme in target_identifiers:
+            if not ((id_value, scheme) == (target_value, target_scheme)):
+                target_id_obj = {'ID': target_value, 'IDScheme': target_scheme}
+                payload = {
+                    'RelationshipType': {
+                        'Name': 'IsRelatedTo',
+                        'SubTypeSchema': 'DataCite',
+                        'SubType': 'IsIdenticalTo'
+                    },
+                    'Target': {
+                        'Identifier': target_id_obj,
+                        'Type': {'Name': 'unknown'}
+                    },
+                    'LinkProvider': providers,
+                    'Source': {
+                        'Identifier': source_id_obj,
+                        'Type': {'Name': 'unknown'}
+                    },
+                    'LinkPublicationDate': link_publication_date,
+                }
+                events.append(payload)
+        for event_chunk in chunks(events, 100):
+            try:
+                EventAPI.handle_event(
+                    list(event_chunk), no_index=True, eager=True)
+            except ValueError:
+                current_app.logger.exception(
+                    'Error while processing identity event')
     try:
-        id_value, scheme = identifiers[0]['ID'], identifiers[0]['IDScheme']
         id_group = get_group_from_id(id_value, scheme)
         if not id_group and create_missing_groups:
             identifier = Identifier(
