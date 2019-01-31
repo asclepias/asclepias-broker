@@ -66,7 +66,7 @@ def off_test_simple_id_group_merge(db):
 
 def test_update_groups(db):
     evtsrc = [
-        ['A', 'IsIdenticalTo', 'B'],
+        ['10.5072/A', 'IsIdenticalTo', '10.5072/B'],
     ]
     _handle_events(evtsrc, no_index=True)
     assert Group.query.filter_by(type=GroupType.Identity).count() == 1
@@ -74,22 +74,22 @@ def test_update_groups(db):
     group_ids = set([identifier.value for identifier in group.identifiers])
 
     # the Identity group contains only 'A' and 'B'
-    assert set(['A', 'B']).issubset(group_ids)
-    assert len(set(['A', 'B']).difference(group_ids)) == 0
+    assert set(['10.5072/A', '10.5072/B']).issubset(group_ids)
+    assert len(set(['10.5072/A', '10.5072/B']).difference(group_ids)) == 0
 
     payload = {
         "Identifier": [
             {
                 "IDScheme": "doi",
-                "ID": "A"
+                "ID": "10.5072/A"
             },
             {
                 "IDScheme": "ads",
-                "ID": "C"
+                "ID": "2018Test..........C"
             },
             {
                 "IDScheme": "ads",
-                "ID": "D"
+                "ID": "2018Test..........D"
             }
         ],
         "Title": "{title}",
@@ -105,17 +105,19 @@ def test_update_groups(db):
         ],
         "PublicationDate": "2018"
     }
-    update_metadata(
-        'A', 'doi', payload, providers=['SAO/NASA Astrophysics Data System'])
+    update_metadata('10.5072/A', 'doi', payload,
+                    providers=['SAO/NASA Astrophysics Data System'])
 
     # fetch the group again
     updated_group = Group.query.filter_by(type=GroupType.Identity).one()
-    updated_group_ids = set([identifier.value
-                             for identifier in updated_group.identifiers])
+    updated_group_ids = set(identifier.value
+                            for identifier in updated_group.identifiers)
 
     # the Identity group contains now 'A', 'B', 'C' and 'D'
-    assert set(['A', 'B', 'C', 'D']).issubset(updated_group_ids)
-    assert len(set(['A', 'B', 'C', 'D']).difference(updated_group_ids)) == 0
+    assert {
+        '10.5072/A', '10.5072/B',
+        '2018Test..........C', '2018Test..........D'
+    } == updated_group_ids
 
     expected_metadata = {
         "Title": "{title}",
