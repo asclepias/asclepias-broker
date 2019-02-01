@@ -23,6 +23,7 @@ from sqlalchemy.orm import aliased
 from ..core.models import Identifier, Relation
 from ..graph.models import Group, GroupM2M, GroupRelationship, \
     GroupRelationshipM2M, GroupType
+from ..utils import cached_func
 
 
 def build_id_info(id_: Identifier) -> dict:
@@ -40,6 +41,9 @@ def build_id_info(id_: Identifier) -> dict:
     return data
 
 
+@cached_func(
+    prefix='asclepias.search.indexer.group_metadata',
+    key_func=lambda f, group, *args, **kwargs: str(group.id))
 def build_group_metadata(group: Group) -> dict:
     """Build the metadata for a group object."""
     if group.type == GroupType.Version:
