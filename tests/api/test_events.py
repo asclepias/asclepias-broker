@@ -11,7 +11,7 @@ from copy import deepcopy
 
 import pytest
 from flask import url_for
-from helpers import assert_es_equals_db
+from helpers import assert_es_equals_db, reindex_all_relationships
 from invenio_oauth2server.models import Token
 
 from asclepias_broker.jsonschemas import EVENT_SCHEMA
@@ -51,6 +51,7 @@ def test_example_events(client, example_events, db, es_clear, auth_headers):
         resp = client.post(
             event_url, data=json.dumps(data), headers=auth_headers)
         assert resp.status_code == 202
+    reindex_all_relationships()
     assert_es_equals_db()
 
 

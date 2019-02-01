@@ -21,6 +21,7 @@ from asclepias_broker.graph.models import Group, GroupM2M, GroupRelationship, \
 from asclepias_broker.jsonschemas import SCHOLIX_RELATIONS
 from asclepias_broker.metadata.models import GroupMetadata, \
     GroupRelationshipMetadata
+from asclepias_broker.search import tasks as search_tasks
 
 #
 # Events generation helpers
@@ -347,3 +348,10 @@ def assert_es_equals_db():
     es_norm_q = list(map(normalize_es_result, es_q))
     db_norm_q = list(map(normalize_db_result, db_q))
     assert set(es_norm_q) == set(db_norm_q)
+
+
+def reindex_all_relationships():
+    """Eagerly reindexes all relationships."""
+    search_tasks.reindex_all_relationships.s(
+        destroy=True, split=False).apply()
+    current_search.flush_and_refresh('relationships')
