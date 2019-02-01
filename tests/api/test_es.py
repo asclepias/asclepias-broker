@@ -7,7 +7,8 @@
 
 """Test ElasticSearch indexing."""
 
-from helpers import assert_es_equals_db, generate_payload
+from helpers import assert_es_equals_db, generate_payload, \
+    reindex_all_relationships
 from invenio_search import current_search
 
 from asclepias_broker.events.api import EventAPI
@@ -38,11 +39,12 @@ def _rel_with_metadata(src_id, relation, trg_id):
     )
 
 
-def run_events_and_compare(events):
+def _run_events_and_compare(events):
     current_search.flush_and_refresh('relationships')
     for ev in events:
         event = generate_payload(ev)
         EventAPI.handle_event(event)
+        reindex_all_relationships()
         assert_es_equals_db()
 
 
@@ -56,4 +58,4 @@ def test_simple_groups(db, es_clear):
         _rel_with_metadata('B', 'IsIdenticalTo', 'C'),
         _rel_with_metadata('X', 'IsIdenticalTo', 'Y'),
     ]
-    run_events_and_compare(events)
+    _run_events_and_compare(events)

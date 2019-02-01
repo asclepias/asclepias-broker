@@ -8,8 +8,7 @@
 """Test search endpoint."""
 
 from flask import url_for
-from helpers import generate_payload
-from invenio_search import current_search
+from helpers import generate_payload, reindex_all_relationships
 
 from asclepias_broker.events.api import EventAPI
 
@@ -62,7 +61,7 @@ def _normalize_results(results):
 def _process_events(events):
     for e in events:
         EventAPI.handle_event(generate_payload(e))
-        current_search.flush_and_refresh('relationships')
+    reindex_all_relationships()
 
 
 def test_simple_citations(client, db, es_clear):
