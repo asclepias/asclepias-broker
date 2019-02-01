@@ -10,11 +10,13 @@
 from __future__ import absolute_import, print_function
 
 import glob
+from functools import wraps
 from itertools import islice
 from pathlib import Path
 from typing import Iterable, Iterator, List, Tuple
 
 from flask import current_app
+from invenio_cache import current_cache
 from werkzeug.utils import import_string
 
 
@@ -62,3 +64,18 @@ def load_or_import_from_config(key: str, app=None, default=None):
     app = app or current_app
     imp = app.config.get(key)
     return obj_or_import_string(imp, default=default)
+
+
+def cached_func(prefix: str, key_func, timeout=60 * 60):
+    """Decorator for caching function results in invenio-cache."""
+    def decorator(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            key = f'{prefix}:{key_func(f, *args, **kwargs)}'
+            res = current_cache.get(key)
+            if not res:
+                res = f(*args, **kwargs)
+                current_cache.set(key, res, timeout=timeout)
+            return res
+        return decorated
+    return decorator
