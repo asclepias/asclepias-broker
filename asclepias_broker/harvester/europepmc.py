@@ -69,7 +69,8 @@ class PMCClient(object):
 
     def __init__(self, email: str = None):
         """Initialize client."""
-        self._email = email
+        self._email = email or current_app.config.get(
+            'ASCLEPIAS_HARVESTER_EUROPE_PMC_API_EMAIL')
         self._session = None
         self._endpoint_search = (
             'https://www.ebi.ac.uk'
@@ -127,7 +128,7 @@ class EuropePMCHarvester:
                  query: str = None, doi_prefix: str = None):
         """Initialize harvester."""
         self.id = id
-        self.client = PMCClient(email=self.email)
+        self.client = PMCClient(email=email)
         self.query = query
         self.doi_prefix = doi_prefix
 

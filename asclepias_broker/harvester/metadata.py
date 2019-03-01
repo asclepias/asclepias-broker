@@ -44,9 +44,11 @@ def _date_from_parts(parts):
 
 def crossref_metadata(doi: str) -> dict:
     """."""
-    # TODO: Add "mailto" parameter as described in
-    # https://www.eventdata.crossref.org/guide/service/query-api
-    resp = requests.get(f'https://api.crossref.org/works/{doi}')
+    params = {}
+    email = current_app.config.get('ASCLEPIAS_HARVESTER_CROSSREF_API_EMAIL')
+    if email:
+        params['mailto'] = email
+    resp = requests.get(f'https://api.crossref.org/works/{doi}', params=params)
     if resp.ok:
         metadata = resp.json()['message']
         result = {}

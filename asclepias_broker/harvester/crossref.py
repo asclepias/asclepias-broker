@@ -11,6 +11,7 @@ from copy import deepcopy
 from typing import Iterator
 
 import requests
+from flask import current_app
 
 from ..events.api import EventAPI
 from ..utils import chunks
@@ -42,6 +43,7 @@ class CrossrefHarvester:
         'subj.alternative-id', 'obj.alternative-id',
         'source', 'relation-type',
         'rows', 'cursor',
+        'mailto',
     }
 
     def __init__(self, *, id: str = None, base_url: str = None,
@@ -76,8 +78,12 @@ class CrossrefHarvester:
         url = f'{self.base_url}/scholix' if scholix else self.base_url
         params = deepcopy(self.params)
 
-        # TODO: Add "mailto" parameter as described in
-        # https://www.eventdata.crossref.org/guide/service/query-api
+        # Add 'mailto' parameter from config if available
+        email = params.get('mailto') or current_app.config.get(
+            'ASCLEPIAS_HARVESTER_CROSSREF_API_EMAIL')
+        if email:
+            params['mailto'] = email
+
         if set(params.keys()) > self.VALID_API_PARAMS:
             raise CrossrefAPIParametersException()
 
@@ -97,7 +103,7 @@ class CrossrefHarvester:
             else:
                 break
 
-    def harvest(self, eager: bool = False, no_index=True):
+    def harvest(self, eager: bool = False, no_index: bool = True):
         """."""
         last_run = current_harvester.history.get(self.id)
         if last_run:

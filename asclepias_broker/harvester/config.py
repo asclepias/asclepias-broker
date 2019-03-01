@@ -32,10 +32,9 @@ and Europe PMC harvesters:
             }
         }),
         'europepmc': (EuropePMCHarvester, {
-            'id': 'zenodo-query',
-            'params': {
-
-            }
+            'id': 'zenodo-dois-query',
+            'query': 'zenodo',
+            'doi_prefix': '10.5281',
         }),
     }
 """
@@ -45,12 +44,22 @@ ASCLEPIAS_HARVESTER_METADATA_HARVESTERS = {
     'ads': (ADSMetadataHarvester, {}),
     'zenodo': (ZenodoVersioningHarvester, {}),
 }
+"""Metadata harvesters configuration."""
 
 ASCLEPIAS_HARVESTER_ADS_API_TOKEN = None
+"""API token to be used when accessing the ADS REST API."""
+
+ASCLEPIAS_HARVESTER_CROSSREF_API_EMAIL = None
+"""Email address to be passed when accessing the Crossref REST API."""
+
+ASCLEPIAS_HARVESTER_EUROPE_PMC_API_EMAIL = None
+"""Email address to be passed when accessing the Europe PMC REST API."""
 
 ASCLEPIAS_HARVESTER_MQ_EXCHANGE = Exchange('harvester')
+"""RabbitMQ exchange for the harvester."""
 
 ASCLEPIAS_HARVESTER_METADATA_QUEUE = 'metadata-harvester'
+"""RabbitMQ queue name for the metadata harvester."""
 
-ASCLEPIAS_HARVESTER_HARVEST_AFTER_EVENT_PROCESS = False
+ASCLEPIAS_HARVESTER_HARVEST_AFTER_EVENT_PROCESS = True
 """Controls post-event-process metadata harvesting for identifiers."""
