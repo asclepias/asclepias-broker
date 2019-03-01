@@ -10,6 +10,9 @@
 from datetime import date
 
 import requests
+from flask import current_app
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 from ..events.api import EventAPI
 from ..metadata.api import update_metadata
@@ -85,7 +88,16 @@ class PMCClient(object):
     def session(self):
         """Create a session for making HTTP requests to the API."""
         if self._session is None:
-            self._session = requests.Session()
+            _session = requests.Session()
+            retry = Retry(
+                total=5, read=5, connect=5,
+                backoff_factor=0.3,
+                status_forcelist=(500, 502, 504),
+            )
+            adapter = HTTPAdapter(max_retries=retry)
+            _session.mount('http://', adapter)
+            _session.mount('https://', adapter)
+            self._session = _session
             self._session.headers.update({'Accept': 'application/json'})
         return self._session
 
@@ -210,9 +222,8 @@ class EuropePMCHarvester:
                 return
         return _filter
 
-    def harvest(self):
-        """Harvest links."""
-        events = []
+    def search_links(self):
+        """Yield Scholix links from Europe PMC."""
         for hit in self.client.search(query=self.query).hits:
             target_ids = set()
             _filter_func = self._doi_prefix_filter(doi_prefix=self.doi_prefix)
@@ -230,6 +241,10 @@ class EuropePMCHarvester:
                 update_metadata(
                     source_id, source_scheme, source_metadata,
                     providers=['Europe PMC'])
-                events.append([self._clean_scholix(l) for l in links])
-        for chunk in chunks(events, 100):
-            EventAPI.handle_event(list(chunk), no_index=True)
+                for l in links:
+                    yield self._clean_scholix(l)
+
+    def harvest(self, eager: bool = False, no_index: bool = True):
+        """Harvest links."""
+        for events in chunks(self.search_links(), 100):
+            EventAPI.handle_event(list(events), no_index=no_index, eager=eager)
