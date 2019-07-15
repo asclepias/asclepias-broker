@@ -8,6 +8,7 @@
 """Crossref client."""
 
 from copy import deepcopy
+from datetime import datetime
 from typing import Iterator
 
 import requests
@@ -106,11 +107,13 @@ class CrossrefHarvester:
     def harvest(self, eager: bool = False, no_index: bool = True):
         """."""
         last_run = current_harvester.history.get(self.id)
+        current_datetime = datetime.now()
         if last_run:
             self.params.setdefault(
-                'from-updated-date', last_run.date().isoformat())
+                'from-update-date', last_run.date().isoformat())
 
         results = self.search_events()
         for events in chunks(results, 100):
             EventAPI.handle_event(list(events), no_index=no_index, eager=eager)
-        current_harvester.history.set(self.id)
+
+        current_harvester.history.set(self.id, value=current_datetime)
