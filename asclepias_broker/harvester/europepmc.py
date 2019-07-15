@@ -7,7 +7,7 @@
 
 """Europe PMC harvester."""
 
-from datetime import date
+from datetime import datetime
 
 import requests
 from flask import current_app
@@ -17,6 +17,7 @@ from requests.packages.urllib3.util.retry import Retry
 from ..events.api import EventAPI
 from ..metadata.api import update_metadata
 from ..utils import chunks
+from .proxies import current_harvester
 
 
 def raise_on_error(res):
@@ -246,5 +247,16 @@ class EuropePMCHarvester:
 
     def harvest(self, eager: bool = False, no_index: bool = True):
         """Harvest links."""
+        last_run = current_harvester.history.get(self.id)
+        current_datetime = datetime.now()
+        if last_run:
+            daterange = 'UPDATE_DATE:[{0} TO {1}]'.format(
+                last_run.date().isoformat(),
+                current_datetime.date().isoformat()
+                )
+            self.query = '({0}) AND {1}'.format(self.query, daterange or '')
+
         for events in chunks(self.search_links(), 100):
             EventAPI.handle_event(list(events), no_index=no_index, eager=eager)
+
+        current_harvester.history.set(self.id, value=current_datetime)
