@@ -61,7 +61,6 @@ idna==2.7
 IDUtils==1.1.2
 imagesize==1.1.0
 importlib-metadata==0.18
-importmagic3==0.2.0
 infinity==1.4
 intervals==0.8.1
 invenio==3.1.1
@@ -98,7 +97,6 @@ jsonresolver==0.2.1
 jsonschema==3.0.1
 kombu==4.6.3
 limits==1.3
-log-colorizer==1.8.6
 Mako==1.0.13
 MarkupSafe==1.1.1
 marshmallow==2.19.5
@@ -139,13 +137,10 @@ pytest-mock==1.10.4
 pytest-pycodestyle==1.4.0
 pytest-random-order==1.0.4
 pytest-runner==5.1
-pytest-wdb==0.4.0
 python-dateutil==2.8.0
 python-editor==1.0.4
-python-magic==0.4.15
 pytz==2019.1
 pywebpack==1.0.0
-PyYAML==3.13
 raven==6.10.0
 redis==3.2.1
 requests==2.22.0
@@ -154,7 +149,6 @@ selenium==3.141.0
 simplekv==0.12.0
 six==1.12.0
 snowballstemmer==1.9.0
-spark-parser==1.8.7
 speaklater==1.3
 Sphinx==2.1.2
 sphinx-autodoc-typehints==1.6.0
@@ -167,14 +161,12 @@ sphinxcontrib-httpexample==0.10.3
 sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==1.0.2
 sphinxcontrib-serializinghtml==1.1.3
-sphinxcontrib-websupport==1.1.0
 SQLAlchemy==1.3.5
 SQLAlchemy-Continuum==1.3.4
 SQLAlchemy-Utils==0.34.1
 toml==0.10.0
 traitlets==4.3.2
 ua-parser==0.8.0
-uncompyle6==3.2.5
 urllib3==1.24.3
 uWSGI==2.0.18
 uwsgi-tools==1.1.1
@@ -182,7 +174,6 @@ uwsgitop==0.11
 validators==0.13.0
 vine==1.3.0
 wcwidth==0.1.7
-wdb==3.2.5
 webargs==5.3.2
 webencodings==0.5.1
 Werkzeug==0.15.4
@@ -190,6 +181,5 @@ whichcraft==0.6.0
 WTForms==2.2.1
 WTForms-Alchemy==0.16.9
 WTForms-Components==0.10.4
-xdis==3.8.9
 zipp==0.5.2
 -e .
