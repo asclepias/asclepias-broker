@@ -13,9 +13,9 @@ from flask import current_app
 from invenio_queues.proxies import current_queues
 from werkzeug.utils import cached_property
 
-from . import config
 from ..events.signals import event_processed
 from ..utils import obj_or_import_string
+from . import config
 from .receivers import harvest_metadata_after_event_process
 from .utils import HarvesterHistory
 
