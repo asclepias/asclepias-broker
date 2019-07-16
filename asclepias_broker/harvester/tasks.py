@@ -27,7 +27,7 @@ def harvest_metadata_identifier(harvester: str, identifier: str, scheme: str,
 
 
 @shared_task(ignore_result=True)
-def harvest_metadata(identifiers: Optional[List[dict]],
+def harvest_metadata(identifiers: Optional[List[dict]] = None,
                      eager: bool = False):
     """."""
     if identifiers:
