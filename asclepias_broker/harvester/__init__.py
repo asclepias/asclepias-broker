@@ -9,7 +9,6 @@
 from .ext import AsclepiasHarvester
 from .proxies import current_harvester
 
-
 __all__ = (
     'AsclepiasHarvester',
     'current_harvester',
