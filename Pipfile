@@ -18,6 +18,7 @@ uwsgi-tools = "*"
 uwsgitop = "*"
 requests = "*"
 raven = {version = "*",extras = ["flask"]}
+celery = "<4.3"
 
 [dev-packages]
 sphinx = "*"
