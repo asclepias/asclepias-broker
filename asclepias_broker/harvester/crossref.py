@@ -13,6 +13,8 @@ from typing import Iterator
 
 import requests
 from flask import current_app
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 from ..events.api import EventAPI
 from ..utils import chunks
@@ -53,9 +55,25 @@ class CrossrefHarvester:
         self.id = id
         self.base_url = base_url or self.DEFAULT_API_BASE_URL
         self.params = params or {}
+        self._session = None
 
-    def _transform_scholix(self, data):
-        """."""
+    @property
+    def session(self):
+        """Create a session for making HTTP requests to the API."""
+        if self._session is None:
+            _session = requests.Session()
+            retry = Retry(
+                total=5, read=5, connect=5,
+                backoff_factor=0.3,
+                status_forcelist=(500, 502, 504),
+            )
+            adapter = HTTPAdapter(max_retries=retry)
+            _session.mount('http://', adapter)
+            _session.mount('https://', adapter)
+            self._session = _session
+        return self._session
+
+    def _clean_scholix(self, data):
         data.pop('Url', None)
         for k in ('Source', 'Target'):
             t = data[k]['Type']
@@ -89,14 +107,14 @@ class CrossrefHarvester:
             raise CrossrefAPIParametersException()
 
         while True:
-            resp = requests.get(url, params=params)
+            resp = self.session.get(url, params=params)
             if not resp.ok or resp.json().get('status') != 'ok':
                 raise CrossrefAPIException()
             payload = resp.json()
             items = payload.get('message', {}).get(
                 'link-packages' if scholix else 'events', [])
             for item in items:
-                yield self._transform_scholix(item) if scholix else item
+                yield self._clean_scholix(item) if scholix else item
 
             cursor_id = payload.get('message', {}).get('next-cursor')
             if cursor_id:
@@ -110,7 +128,7 @@ class CrossrefHarvester:
         current_datetime = datetime.now()
         if last_run:
             self.params.setdefault(
-                'from-update-date', last_run.date().isoformat())
+                'from-occurred-date', last_run.date().isoformat())
 
         results = self.search_events()
         for events in chunks(results, 100):
