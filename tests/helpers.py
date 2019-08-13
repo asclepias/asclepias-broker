@@ -352,6 +352,6 @@ def assert_es_equals_db():
 
 def reindex_all_relationships():
     """Eagerly reindexes all relationships."""
-    search_tasks.reindex_all_relationships.s(
-        destroy=True, split=False).apply()
-    current_search.flush_and_refresh('relationships')
+    search_tasks.reindex_all_relationships.si(
+        split=False, keep_old_indices=0).apply(throw=True)
+    current_search.flush_and_refresh('relationships*')

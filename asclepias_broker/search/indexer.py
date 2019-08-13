@@ -24,6 +24,7 @@ from ..core.models import Identifier, Relation
 from ..graph.models import Group, GroupM2M, GroupRelationship, \
     GroupRelationshipM2M, GroupType
 from ..utils import cached_func
+from .utils import get_write_index
 
 
 def build_id_info(id_: Identifier) -> dict:
@@ -90,11 +91,12 @@ def build_relationship_metadata(rel: GroupRelationship) -> dict:
 
 def index_documents(docs: Iterable[dict], bulk: bool = False):
     """Index a list of documents into ES."""
+    index_name = get_write_index()
     if bulk:
         bulk_index(
             client=current_search_client,
             actions=docs,
-            index='relationships',
+            index=index_name,
             doc_type='doc',
             raise_on_error=False,
             chunk_size=300,  # TODO: Make configurable
@@ -103,7 +105,7 @@ def index_documents(docs: Iterable[dict], bulk: bool = False):
     else:
         for doc in docs:
             current_search_client.index(
-                index='relationships', doc_type='doc', body=doc)
+                index=index_name, doc_type='doc', body=doc)
 
 
 def build_doc(
