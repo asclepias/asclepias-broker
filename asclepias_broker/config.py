@@ -124,6 +124,10 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'invenio_accounts.tasks.clean_session_table',
         'schedule': timedelta(minutes=60),
     },
+    'reindex': {
+        'task': 'asclepias_broker.tasks.reindex_all_relationships',
+        'schedule': timedelta(hours=24)
+    },
 }
 
 SENTRY_DSN = None
