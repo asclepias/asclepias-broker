@@ -11,6 +11,7 @@ from copy import deepcopy
 from datetime import datetime
 from typing import Iterator
 
+import idutils
 import requests
 from flask import current_app
 from requests.adapters import HTTPAdapter
@@ -30,7 +31,7 @@ class CrossrefAPIParametersException(Exception):
 
 
 class CrossrefHarvester:
-    """."""
+    """Crossref Event Data harvester."""
 
     DEFAULT_API_BASE_URL = 'https://api.eventdata.crossref.org/v1/events'
 
@@ -74,6 +75,7 @@ class CrossrefHarvester:
         return self._session
 
     def _clean_scholix(self, data):
+        """Clean Scholix result from Crossref API."""
         data.pop('Url', None)
         for k in ('Source', 'Target'):
             t = data[k]['Type']
@@ -91,6 +93,25 @@ class CrossrefHarvester:
             # Rename IDUrl -> IDURL
             data[k]['Identifier']['IDURL'] = data[k]['Identifier'].pop('IDUrl')
         return data
+
+    def _to_scolix(self, data):
+        """Convert a default Crossref event to Scolix data."""
+        src_id = idutils.normalize_doi(data['subj_id'])
+        trg_id = idutils.normalize_doi(data['obj_id'])
+        reltaion_type = data['relation_type_id'].capitalize()
+        return {
+            'LinkPublicationDate': data['timestamp'],
+            'LinkProvider': [{'Name': 'crossref'}],
+            'RelationshipType': {'Name': reltaion_type},
+            'Source': {
+                'Identifier': {'ID': src_id, 'IDScheme': 'DOI'},
+                'Type': {'Name': 'unknown'},
+            },
+            'Target': {
+                'Identifier': {'ID': trg_id, 'IDScheme': 'DOI'},
+                'Type': {'Name': 'unknown'},
+            }
+        }
 
     def search_events(self, *, scholix: bool = True) -> Iterator[dict]:
         """Search the Crossref events API."""
@@ -114,7 +135,8 @@ class CrossrefHarvester:
             items = payload.get('message', {}).get(
                 'link-packages' if scholix else 'events', [])
             for item in items:
-                yield self._clean_scholix(item) if scholix else item
+                yield self._clean_scholix(item) if scholix else \
+                    self._to_scolix(item)
 
             cursor_id = payload.get('message', {}).get('next-cursor')
             if cursor_id:
@@ -122,15 +144,16 @@ class CrossrefHarvester:
             else:
                 break
 
-    def harvest(self, eager: bool = False, no_index: bool = True):
-        """."""
+    def harvest(self, eager: bool = False, no_index: bool = True,
+                scholix: bool = True):
+        """Harvest events from the Crossref Event Data API."""
         last_run = current_harvester.history.get(self.id)
         current_datetime = datetime.now()
         if last_run:
             self.params.setdefault(
                 'from-occurred-date', last_run.date().isoformat())
 
-        results = self.search_events()
+        results = self.search_events(scholix=scholix)
         for events in chunks(results, 100):
             EventAPI.handle_event(list(events), no_index=no_index, eager=eager)
 
