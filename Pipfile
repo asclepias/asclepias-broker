@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+arxiv = "*"
 invenio = {version = "*",extras = ["elasticsearch6", "postgresql"]}
 invenio-accounts = "*"
 invenio-oauth2server = "*"
