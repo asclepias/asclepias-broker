@@ -99,7 +99,8 @@ class IdentifierSchema(Schema):
         try:
             data['ID'] = idutils.normalize_pid(data['ID'], data['IDScheme'])
         except Exception:
-            current_app.logger.warning('Failed to normalize PID value.')
+            current_app.logger.warning(
+                'Failed to normalize PID value.', extra={'data': data})
 
     @validates_schema
     def check_scheme(self, data):
