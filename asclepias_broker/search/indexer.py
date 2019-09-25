@@ -66,10 +66,14 @@ def build_group_metadata(group: Group) -> dict:
         ids = id_group.identifiers
         doc = deepcopy((id_group.data and id_group.data.json) or {})
         all_ids = sum([g.identifiers for g in group.groups], [])
+        doc['Created'] = id_group.data.created
+        doc['Updated'] = id_group.data.updated
     else:
         doc = deepcopy((group.data and group.data.json) or {})
         ids = group.identifiers
         all_ids = ids
+        doc['Created'] = group.data.created
+        doc['Updated'] = group.data.updated
 
     doc['Identifier'] = [build_id_info(i) for i in ids]
     doc['SearchIdentifier'] = [build_id_info(i) for i in all_ids]
@@ -140,6 +144,20 @@ def build_doc(
     rel_meta = build_relationship_metadata(rel)
     grouping = grouping or \
         ('identity' if rel.type == GroupType.Identity else 'version')
+
+    updated = None
+    if src_meta["Updated"] > trg_meta["Updated"]:
+        updated = src_meta["Updated"]
+    else:
+        updated = trg_meta["Updated"]
+
+    created = None
+    for relationship in rel.relationships:
+        if not created:
+            created = relationship.data.created
+        elif created > relationship.data.created:
+            created = relationship.data.created
+
     return {
         '_id': str(doc_uuid),
         '_source': {
@@ -149,6 +167,8 @@ def build_doc(
             "History": rel_meta,
             "Source": src_meta,
             "Target": trg_meta,
+            "Created": created,
+            "Updated": updated
         },
     }
 
