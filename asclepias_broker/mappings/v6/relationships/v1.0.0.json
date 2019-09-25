@@ -148,6 +148,12 @@
             },
             "PublicationDate": {
               "type": "date"
+            },
+            "Created": {
+              "type": "date"
+            },
+            "Updated": {
+              "type": "date"
             }
           }
         },
@@ -247,8 +253,20 @@
             },
             "PublicationDate": {
               "type": "date"
+            },
+            "Created": {
+              "type": "date"
+            },
+            "Updated": {
+              "type": "date"
             }
           }
+        },
+        "Created": {
+          "type": "date"
+        },
+        "Updated": {
+          "type": "date"
         }
       },
       "dynamic": false
