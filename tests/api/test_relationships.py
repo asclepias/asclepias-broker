@@ -13,28 +13,38 @@ from helpers import generate_payload, reindex_all_relationships
 from asclepias_broker.events.api import EventAPI
 
 
+def test_optional_search_parameters(client, db, es_clear):
+    search_url = url_for('invenio_records_rest.relid_list')
+
+    _process_events([
+        ['A', 'Cites', 'X'],
+        ['A', 'Cites', 'B']
+    ])
+
+    params = {}
+    resp = client.get(search_url)
+    assert resp.status_code == 200
+    assert resp.json['hits']['total'] == 2
+
+    params['scheme'] = 'doi'
+    resp = client.get(search_url, query_string=params)
+    assert resp.status_code == 200
+    assert resp.json['hits']['total'] == 2
+
+    params['id'] = 'X'
+    resp = client.get(search_url, query_string=params)
+    assert resp.status_code == 200
+    assert resp.json['hits']['total'] == 1
+
+
 def test_invalid_search_parameters(client):
     search_url = url_for('invenio_records_rest.relid_list')
 
     params = {}
-    resp = client.get(search_url)
-    assert resp.status_code == 400
-    assert resp.json['message'] == 'Validation error.'
-    assert resp.json['errors'][0]['field'] == 'id'
-
     params['id'] = 'some-id'
     resp = client.get(search_url, query_string=params)
-    assert resp.status_code == 400
-    assert resp.json['message'] == 'Validation error.'
-    assert len(resp.json['errors']) == 1
-    assert resp.json['errors'][0]['field'] == 'scheme'
-
-    params['scheme'] = 'doi'
-    resp = client.get(search_url, query_string=params)
-    assert resp.status_code == 400
-    assert resp.json['message'] == 'Validation error.'
-    assert len(resp.json['errors']) == 1
-    assert resp.json['errors'][0]['field'] == 'relation'
+    assert resp.status_code == 200
+    assert resp.json['hits']['total'] == 0
 
     params['relation'] = 'not-a-valid-value'
     resp = client.get(search_url, query_string=params)

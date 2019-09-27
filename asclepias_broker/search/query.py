@@ -26,12 +26,6 @@ def search_factory(self, search, query_parser=None):
     from invenio_records_rest.sorter import default_sorter_factory
     search_index = search._index[0]
 
-    # TODO: make "scheme" optional?
-    for field in ('id', 'scheme', 'relation'):
-        if field not in request.values:
-            raise RESTValidationError(
-                errors=[FieldError(field, 'Required field.')])
-
     search, urlkwargs = default_facets_factory(search, search_index)
     search, sortkwargs = default_sorter_factory(search, search_index)
     for key, value in sortkwargs.items():
