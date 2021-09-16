@@ -7,7 +7,14 @@
 
 version: '2.3'
 services:
+  app:
+    extends:
+      file: docker-services.yml
+      service: app
   cache:
+    extends:
+      file: docker-services.yml
+      service: cache
     extends:
       file: docker-services.yml
       service: cache
