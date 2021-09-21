@@ -11,6 +11,8 @@ from kombu import Exchange
 
 from .metadata import ADSMetadataHarvester, DOIMetadataHarvester
 from .zenodo import ZenodoVersioningHarvester
+from .crossref import CrossrefHarvester
+from .europepmc import EuropePMCHarvester
 
 ASCLEPIAS_HARVESTER_HISTORY_PREFIX = 'asclepias-harvester'
 
@@ -22,22 +24,22 @@ and Europe PMC harvesters:
 
 .. code-block:: python
 
-    ASCLEPIAS_HARVESTER_EVENT_HARVESTERS = {
-        'crossref': (CrossrefHarvester, {
-            'id': 'zenodo-doi-references',
-            'params': {
-                'obj-id.prefix': '10.5281',
-                'source': 'crossref',
-                'relation-type': 'references',
-            }
-        }),
-        'europepmc': (EuropePMCHarvester, {
-            'id': 'zenodo-dois-query',
-            'query': 'zenodo',
-            'doi_prefix': '10.5281',
-        }),
-    }
 """
+ASCLEPIAS_HARVESTER_EVENT_HARVESTERS = {
+    'crossref': (CrossrefHarvester, {
+        'id': 'zenodo-doi-references',
+        'params': {
+            'obj-id.prefix': '10.5281',
+            'source': 'crossref',
+            'relation-type': 'references',
+        }
+    }),
+    'europepmc': (EuropePMCHarvester, {
+        'id': 'zenodo-dois-query',
+        'query': 'zenodo',
+        'doi_prefix': '10.5281',
+    }),
+}
 
 ASCLEPIAS_HARVESTER_METADATA_HARVESTERS = {
     'doi': (DOIMetadataHarvester, {}),
