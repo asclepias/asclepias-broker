@@ -60,7 +60,13 @@ def to_model(model_cls):
                 super().__init__(*args, **kwargs)
 
             @post_load
-            def to_model(self, data):
+            def to_model(self, data, **kwargs):
+                """Remove the link date and provider metadata"""
+
+                data.pop('link_publication_date', None)
+                data.pop('link_provider', None)
+                data.pop('id_url', None)
+                data.pop('license_url', None)
                 if self.context.get('check_existing'):
                     return model_cls.get(**data) or model_cls(**data)
                 return model_cls(**data)
@@ -85,25 +91,31 @@ def from_scholix_relation(rel_obj: dict) -> Tuple[Relation, bool]:
     return from_datacite_relation(relation)
 
 
+class LinkProviderSchema(Schema):
+    """LinkProvider loader schema."""
+    name = fields.String(required=True, data_key='Name')
+
 @to_model(Identifier)
 class IdentifierSchema(Schema):
     """Identifier loader schema."""
 
-    value = fields.Str(required=True, load_from='ID')
+    value = fields.String(required=True, data_key='ID')
+    id_url = fields.String(data_key='IDURL')
     scheme = fields.Function(
-        deserialize=lambda s: s.lower(), required=True, load_from='IDScheme')
+        deserialize=lambda s: s.lower(), required=True, data_key='IDScheme')
 
     @pre_load
-    def normalize_value(self, data):
+    def normalize_value(self, data, **kwargs):
         """Normalize identifier value."""
         try:
             data['ID'] = idutils.normalize_pid(data['ID'], data['IDScheme'])
+            return data
         except Exception:
             current_app.logger.warning(
                 'Failed to normalize PID value.', extra={'data': data})
 
     @validates_schema
-    def check_scheme(self, data):
+    def check_scheme(self, data, **kwargs):
         """Validate the provided identifier scheme."""
         value = data['value']
         scheme = data['scheme'].lower()
@@ -119,25 +131,29 @@ class RelationshipSchema(Schema):
     """Relationship loader schema."""
 
     relation = fields.Method(
-        deserialize='load_relation', load_from='RelationshipType')
-    source = fields.Nested(IdentifierSchema, load_from='Source')
-    target = fields.Nested(IdentifierSchema, load_from='Target')
+        deserialize='load_relation', data_key='RelationshipType')
+    source = fields.Nested(IdentifierSchema, data_key='Source')
+    target = fields.Nested(IdentifierSchema, data_key='Target')
+    link_publication_date = fields.String(data_key='LinkPublicationDate')
+    link_provider = fields.List(fields.Nested(LinkProviderSchema), data_key='LinkProvider')
+    license_url = fields.String(data_key='LicenseURL')
 
     @pre_load
-    def remove_object_envelope(self, obj):
+    def remove_object_envelope(self, obj, **kwargs):
         """Remove the envelope for the Source and Target identifier fields."""
+        print(obj)
         obj2 = deepcopy(obj)
         for k in ('Source', 'Target'):
             obj2[k] = obj[k]['Identifier']
         return obj2
 
-    def load_relation(self, data):
+    def load_relation(self, data, **kwargs):
         """Load the relation type value."""
         rel_name, self._inversed = from_scholix_relation(data)
         return rel_name
 
     @post_load
-    def inverse(self, data):
+    def inverse(self, data, **kwargs):
         """Normalize the relationship direction based on its type."""
         if data['source'].value == data['target'].value \
                 and data['source'].scheme == data['target'].scheme:

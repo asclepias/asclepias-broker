@@ -119,12 +119,9 @@ def process_event(event_uuid: str, indexing_enabled: bool = True):
             for payload_idx, payload in enumerate(event.payload):
                 # TODO: marshmallow validation of all payloads
                 # should be done on first event ingestion (check)
-                relationship, errors = \
-                    RelationshipSchema(check_existing=True).load(payload)
+                relationship = RelationshipSchema(check_existing=True).load(payload)
                 # Errors should never happen as the payload is validated
                 # with RelationshipSchema on the event ingestion
-                if errors:
-                    raise MarshmallowValidationError(errors)
 
                 # Skip already known relationships
                 # NOTE: This skips any extra metadata!
