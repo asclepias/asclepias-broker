@@ -21,7 +21,7 @@ from ..jsonschemas import SCHOLIX_SCHEMA
 
 COMMON_SCHEMA_DEFINITIONS = SCHOLIX_SCHEMA['definitions']
 OBJECT_TYPE_SCHEMA = COMMON_SCHEMA_DEFINITIONS['ObjectType']
-OVERRIDABLE_KEYS = {'Type', 'Title', 'Creator', 'PublicationDate', 'Publisher'}
+OVERRIDABLE_KEYS = {'Type', 'Title', 'Creator', 'PublicationDate', 'Publisher', 'Keywords'}
 
 
 class GroupMetadata(db.Model, Timestamp):

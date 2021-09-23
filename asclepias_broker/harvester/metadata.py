@@ -200,7 +200,7 @@ class ADSMetadataHarvester(MetadataHarvester):
 
     ADS_API_URL = 'https://api.adsabs.harvard.edu/v1/search/query'
     ADS_API_PARAMS = {
-        'fl': 'title,author,doi,bibcode,identifier,doctype,pub,year,pubdate',
+        'fl': 'title,author,doi,bibcode,identifier,doctype,pub,year,pubdate,keyword',
     }
 
     ADS_TYPE_MAPPING = {
@@ -275,6 +275,8 @@ class ADSMetadataHarvester(MetadataHarvester):
                     'Title': doc.get('title', [None])[0],
                     'PublicationDate': self._extract_date(doc),
                     'Type': {'Name': self._extract_type(doc)},
+                    'Keywords': [{'Keyword': n} for n in doc.get('keyword', [])
+                                if n],
                 }
         else:
             raise AdsAPIException()
