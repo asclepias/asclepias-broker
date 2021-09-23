@@ -141,7 +141,6 @@ class RelationshipSchema(Schema):
     @pre_load
     def remove_object_envelope(self, obj, **kwargs):
         """Remove the envelope for the Source and Target identifier fields."""
-        print(obj)
         obj2 = deepcopy(obj)
         for k in ('Source', 'Target'):
             obj2[k] = obj[k]['Identifier']
