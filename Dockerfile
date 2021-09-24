@@ -5,7 +5,7 @@
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 #F§ROM inveniosoftware/centos7-python:3.6
-FROM python:3.6
+FROM python:3.8
 
 RUN mkdir /app
 WORKDIR /app
