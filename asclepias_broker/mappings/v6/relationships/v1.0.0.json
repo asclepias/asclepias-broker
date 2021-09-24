@@ -135,8 +135,7 @@
             "Publisher": {
               "properties": {
                 "Name": {
-                  "type": "text",
-                  "copy_to": "_search_all"
+                  "type": "keyword"
                 },
                 "Identifier": {
                   "properties": {

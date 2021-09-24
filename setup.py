@@ -81,9 +81,11 @@ setup(
         ],
         'invenio_pidstore.fetchers': [
             'relid = asclepias_broker.pidstore:relid_fetcher',
+            'meta = asclepias_broker.pidstore:relid_fetcher',
         ],
         'invenio_pidstore.minters': [
             'relid = asclepias_broker.pidstore:relid_minter',
+            'meta = asclepias_broker.pidstore:relid_minter',
         ],
         'invenio_search.mappings': [
             'relationships = asclepias_broker.mappings',

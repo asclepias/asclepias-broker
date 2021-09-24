@@ -23,7 +23,7 @@ from invenio_records_rest.utils import deny_all
 from invenio_search.api import RecordsSearch
 
 from .search.query import enum_term_filter, nested_range_filter, \
-    nested_terms_filter
+    nested_terms_filter, year_filter, nested_match_filter, free_filter
 
 
 def _parse_env_bool(var_name, default=None):
@@ -167,6 +167,36 @@ RECORDS_REST_ENDPOINTS = dict(
         max_result_window=10000,
         error_handlers=dict(),
     ),
+    meta=dict(
+        pid_type='meta',
+        pid_minter='relid',
+        pid_fetcher='relid',
+        search_class=RecordsSearch,
+        indexer_class=None,
+        search_index='relationships',
+        search_type=None,
+        search_factory_imp='asclepias_broker.search.query.meta_search_factory',
+        # Only the List GET view is available
+        create_permission_factory_imp=deny_all,
+        delete_permission_factory_imp=deny_all,
+        update_permission_factory_imp=deny_all,
+        read_permission_factory_imp=deny_all,
+        links_factory_imp=lambda p, **_: None,
+        record_serializers={
+            'application/json': ('invenio_records_rest.serializers'
+                                 ':json_v1_response'),
+        },
+        # TODO: Implement marshmallow serializers
+        search_serializers={
+            'application/json': ('invenio_records_rest.serializers'
+                                 ':json_v1_search'),
+        },
+        list_route='/metadata',
+        item_route='/metadata/<pid(meta):pid_value>',
+        default_media_type='application/json',
+        max_result_window=10000,
+        error_handlers=dict(),
+    ),
 )
 RECORDS_REST_FACETS = dict(
     relationships=dict(
@@ -205,6 +235,38 @@ RECORDS_REST_FACETS = dict(
                     'isRelatedTo': 'IsRelatedTo'
                 }
             ),
+        ),
+        post_filters=dict(
+            type=terms_filter('Source.Type.Name'),
+            publication_year=range_filter(
+                'Source.PublicationDate', format='yyyy', end_date_math='/y'),
+        )
+    ),
+    metadata=dict(
+        aggs=dict(
+            type=dict(
+                terms=dict(field='Source.Type.Name')
+            ),
+            publication_year=dict(
+                date_histogram=dict(
+                    field='Source.PublicationDate',
+                    interval='year',
+                    format='yyyy',
+                ),
+            ),
+        ),
+        # TODO: Investigate using a webargs-powered search_factory to better
+        # validate and build the query...
+        filters=dict(
+            group_by=enum_term_filter(
+                label='group_by',
+                field='Grouping',
+                choices={'identity': 'identity', 'version': 'version'}
+            ),
+            keyword=nested_terms_filter('Source.Keywords.Keyword','Source.Keywords'),
+            journal=nested_terms_filter('Source.Publisher.Name','Source.Publisher'),
+            test=free_filter(),
+            year=year_filter('Source.PublicationDate')
         ),
         post_filters=dict(
             type=terms_filter('Source.Type.Name'),
