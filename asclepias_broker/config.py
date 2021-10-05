@@ -23,7 +23,7 @@ from invenio_records_rest.utils import deny_all
 from invenio_search.api import RecordsSearch
 
 from .search.query import enum_term_filter, nested_range_filter, \
-    nested_terms_filter, year_filter, nested_match_filter, free_filter
+    nested_terms_filter, simple_query_string_filter
 
 
 def _parse_env_bool(var_name, default=None):
@@ -255,18 +255,14 @@ RECORDS_REST_FACETS = dict(
                 ),
             ),
         ),
-        # TODO: Investigate using a webargs-powered search_factory to better
-        # validate and build the query...
         filters=dict(
             group_by=enum_term_filter(
                 label='group_by',
                 field='Grouping',
                 choices={'identity': 'identity', 'version': 'version'}
             ),
-            keyword=nested_terms_filter('Source.Keywords.Keyword','Source.Keywords'),
+            keyword=simple_query_string_filter('Source.Keywords_all'),
             journal=nested_terms_filter('Source.Publisher.Name','Source.Publisher'),
-            test=free_filter(),
-            year=year_filter('Source.PublicationDate')
         ),
         post_filters=dict(
             type=terms_filter('Source.Type.Name'),

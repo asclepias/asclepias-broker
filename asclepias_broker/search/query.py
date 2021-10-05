@@ -124,15 +124,10 @@ def nested_terms_filter(field: str, path: str = None):
         return Q('nested', path=path, query=dict(terms={field: values}))
     return inner
 
-def year_filter(field:str):
+def simple_query_string_filter(field: str):
+    """Nested terms filter."""
     def inner(values):
-        year = values[0] + "||/y"
-        return Range(**{field:{'gte': year, 'lte': year, 'format': 'yyyy'}})
-    return inner
-
-def free_filter():
-    def inner(values):
-        return Q(values[0])
+        return Q('simple_query_string', query={'query': values, 'fields':[field], 'default_operator':'AND'})
     return inner
 
 def nested_range_filter(

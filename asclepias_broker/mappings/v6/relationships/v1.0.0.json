@@ -1,4 +1,15 @@
 {
+  "settings": {
+    "analysis": {
+      "normalizer": {
+        "lowercase_normalizer": {
+          "type": "custom",
+          "char_filter": [],
+          "filter": ["lowercase", "asciifolding"]
+        }
+      }
+    }
+  },
   "mappings": {
     "doc": {
       "properties": {
@@ -127,15 +138,19 @@
               "properties": {
                 "Keyword": {
                   "type": "text",
-                  "copy_to": "_search_all"
+                  "copy_to": "Source.Keywords_all"
                 }
               },
               "type": "nested"
             },
+            "Keywords_all": {
+              "type": "text"
+            },
             "Publisher": {
               "properties": {
                 "Name": {
-                  "type": "keyword"
+                  "type": "keyword",
+                  "normalizer": "lowercase_normalizer"
                 },
                 "Identifier": {
                   "properties": {
