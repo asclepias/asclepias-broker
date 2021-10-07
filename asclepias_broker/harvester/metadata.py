@@ -79,7 +79,10 @@ def crossref_metadata(doi: str) -> dict:
                 break
         return result
     else:
-        raise CrossrefAPIException()
+        try:
+            resp.raise_for_status()
+        except Exception as exc:
+            raise CrossrefAPIException(exc)
 
 
 def datacite_metadata(doi: str) -> dict:
@@ -136,7 +139,10 @@ def datacite_metadata(doi: str) -> dict:
 
         return result
     else:
-        raise DataCiteAPIException()
+        try:
+            resp.raise_for_status()
+        except Exception as exc:
+            raise DataCiteAPIException(exc)
 
 
 class DOIMetadataHarvester(MetadataHarvester):
@@ -192,7 +198,10 @@ class DOIMetadataHarvester(MetadataHarvester):
         if res.ok:
             return res.json()[0].get('RA').lower()
         else:
-            raise MetadataAPIException()
+            try:
+                res.raise_for_status()
+            except Exception as exc:
+                raise MetadataAPIException(exc)
 
 
 class ADSMetadataHarvester(MetadataHarvester):
@@ -279,7 +288,10 @@ class ADSMetadataHarvester(MetadataHarvester):
                                 if n],
                 }
         else:
-            raise AdsAPIException()
+            try:
+                res.raise_for_status()
+            except Exception as exc:
+                raise AdsAPIException(exc)
 
     @cached_property
     def api_token(self):

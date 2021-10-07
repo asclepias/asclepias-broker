@@ -25,7 +25,7 @@ class ZenodoAPIException(Exception):
 class ZenodoClient:
     """Zenodo client."""
 
-    url = 'https://zenodo.org/api/records/'
+    url = 'https://zenodo.org/api/records'
     params = {
         'page': 1,
         'size': 100,
@@ -47,7 +47,10 @@ class ZenodoClient:
             else:
                 conceptdoi = doi  # it's already a conceptdoi
         else:
-            raise ZenodoAPIException()
+            try:
+                res.raise_for_status()
+            except Exception as exc:
+                raise ZenodoAPIException(exc)
         return conceptdoi
 
     def get_versions(self, conceptdoi) -> List[str]:
@@ -59,7 +62,10 @@ class ZenodoClient:
         while True:
             res = requests.get(url, params=params)
             if not res.ok:
-                raise ZenodoAPIException()
+                try:
+                    res.raise_for_status()
+                except Exception as exc:
+                    raise ZenodoAPIException(exc)
 
             data = res.json()
             for r in data['hits']['hits']:
