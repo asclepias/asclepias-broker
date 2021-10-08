@@ -117,6 +117,12 @@ def nested_match_filter(field: str, path: str = None):
         return Q('nested', path=path, query=dict(match={field: values}))
     return inner
 
+def simple_query_string_filter(field: str):
+    """Simple query string filter."""
+    def inner(values):
+        return Q('simple_query_string',query=values[0], fields=[field], default_operator='AND')
+    return inner
+
 def nested_terms_filter(field: str, path: str = None):
     """Nested terms filter."""
     path = path or field.rsplit('.', 1)[0]
