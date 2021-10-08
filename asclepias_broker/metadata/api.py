@@ -62,9 +62,9 @@ def update_metadata(id_value: str, scheme: str, data: dict,
 
     target_identifiers = set()
     for i in data.get('Identifier', []):
-        value, scheme = i['ID'], i['IDScheme'].lower()
-        value = idutils.normalize_pid(value, scheme)
-        target_identifiers.add((value, scheme))
+        value, target_scheme = i['ID'], i['IDScheme'].lower()
+        value = idutils.normalize_pid(value, target_scheme)
+        target_identifiers.add((value, target_scheme))
 
     # Check if there are identity links that can be created:
     if create_identity_events and len(target_identifiers) > 0:
