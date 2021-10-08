@@ -130,12 +130,6 @@ def nested_terms_filter(field: str, path: str = None):
         return Q('nested', path=path, query=dict(terms={field: values}))
     return inner
 
-def simple_query_string_filter(field: str):
-    """Nested terms filter."""
-    def inner(values):
-        return Q('simple_query_string', query={'query': values, 'fields':[field], 'default_operator':'AND'})
-    return inner
-
 def nested_range_filter(
         label: str, field: str, path: str = None, op: str = None):
     """Nested range filter."""
