@@ -62,10 +62,7 @@ class ZenodoClient:
         while True:
             res = requests.get(url, params=params)
             if not res.ok:
-                try:
-                    res.raise_for_status()
-                except Exception as exc:
-                    raise ZenodoAPIException(exc)
+                res.raise_for_status()
 
             data = res.json()
             for r in data['hits']['hits']:
@@ -98,12 +95,15 @@ class ZenodoVersioningHarvester(MetadataHarvester):
     def harvest(self, identifier: str, scheme: str,
                 providers: List[str] = None):
         """."""
-        conceptdoi, versions = self.get_versioning_metadata(identifier)
-        if conceptdoi:
-            providers = set(providers) if providers else set()
-            providers.add(self.provider_name)
-            update_versioning(conceptdoi, versions, 'doi',
-                              providers=list(providers))
+        try:
+            conceptdoi, versions = self.get_versioning_metadata(identifier)
+            if conceptdoi:
+                providers = set(providers) if providers else set()
+                providers.add(self.provider_name)
+                update_versioning(conceptdoi, versions, 'doi',
+                                providers=list(providers))
+        except Exception as exc:
+            raise ZenodoAPIException(exc)
 
     def _is_zenodo_doi(self,  scheme: str, identifier: str) -> bool:
         if scheme.lower() == 'doi' and identifier.lower()\
