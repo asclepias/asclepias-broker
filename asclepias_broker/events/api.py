@@ -48,7 +48,7 @@ class EventAPI:
         for payload in event:
             errors = RelationshipSchema(check_existing=True).validate(payload)
             if errors:
-                raise MarshmallowValidationError(errors)
+                raise MarshmallowValidationError(str(errors) + "payload" +  str(payload))
 
     @classmethod
     def handle_event(cls, event: dict, no_index: bool = False,
