@@ -48,6 +48,7 @@ class HarvestMonitoring(db.Model, Timestamp):
     id = db.Column(UUIDType, default=uuid.uuid4, primary_key=True)
     identifier = db.Column(db.String, nullable=False)
     scheme = db.Column(db.String)
+    harvester = db.Column(db.String)
     status = db.Column(db.Enum(HarvestStatus), nullable=False)
 
     @classmethod
@@ -56,10 +57,10 @@ class HarvestMonitoring(db.Model, Timestamp):
         return cls.query.filter_by(id=id).one_or_none()
     
     @classmethod
-    def isRecentlyAdded(cls, identifier: str, scheme: str, **kwargs) -> Boolean:
+    def isRecentlyAdded(cls, identifier: str, scheme: str, harvester: str, **kwargs) -> Boolean:
         """Check if the same identifier has been queried for during the last week to avoid duplicates"""
         last_week = datetime.datetime.now() - datetime.timedelta(days = 7)
-        resp = cls.query.filter(cls.identifier==identifier, cls.scheme==scheme, cls.updated > str(last_week)).one_or_none()
+        resp = cls.query.filter(cls.identifier==identifier, cls.scheme==scheme, cls.harvester==harvester, cls.updated > str(last_week)).one_or_none()
         return resp is not None
 
     def __repr__(self):

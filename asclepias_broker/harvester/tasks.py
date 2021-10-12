@@ -50,8 +50,8 @@ def harvest_metadata(identifiers: Optional[List[dict]] = None,
         providers = payload['providers']
         for h_id, harvester in current_harvester.metadata_harvesters.items():
             if harvester.can_harvest(value, scheme, providers):
-                if not HarvestMonitoring.isRecentlyAdded(identifier=value, scheme=scheme):
-                    harvest_event_obj = HarvestMonitoring(identifier=value, scheme=scheme, status=HarvestStatus.New)
+                if not HarvestMonitoring.isRecentlyAdded(identifier=value, scheme=scheme, harvester=harvester.__class__.__name__):
+                    harvest_event_obj = HarvestMonitoring(identifier=value, scheme=scheme,harvester=harvester.__class__.__name__, status=HarvestStatus.New)
                     db.session.add(harvest_event_obj)
                     db.session.commit()
                     task = harvest_metadata_identifier.s(h_id, value, scheme,
