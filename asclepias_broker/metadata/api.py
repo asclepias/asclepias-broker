@@ -19,7 +19,7 @@ from ..graph.api import get_group_from_id, get_or_create_groups
 from ..graph.models import GroupRelationship, GroupType
 from ..utils import chunks
 from .models import GroupMetadata, GroupRelationshipMetadata
-
+from ..monitoring.models import ErrorMonitoring 
 
 # TODO: When merging/splitting groups there is some merging/duplicating of
 # metadata as well
@@ -99,7 +99,10 @@ def update_metadata(id_value: str, scheme: str, data: dict,
             try:
                 EventAPI.handle_event(
                     list(event_chunk), no_index=True, eager=True)
-            except ValueError:
+            except ValueError as exc:
+                error_obj = ErrorMonitoring(origin="update_metadata", error=repr(exc), payload=event_chunk)
+                db.session.add(error_obj)
+                db.session.commit()
                 current_app.logger.exception(
                     'Error while processing identity event')
     try:
@@ -112,5 +115,8 @@ def update_metadata(id_value: str, scheme: str, data: dict,
             db.session.commit()
         id_group.data.update(data)
         db.session.commit()
-    except Exception:
+    except Exception as exc:
+        error_obj = ErrorMonitoring(origin="update_group_metadata", error=repr(exc), payload={'id_value':id_value, 'scheme': scheme})
+        db.session.add(error_obj)
+        db.session.commit()
         current_app.logger.exception('Error while updating group metadata')
