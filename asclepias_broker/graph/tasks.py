@@ -108,7 +108,7 @@ def _set_event_status(event_uuid, status):
     db.session.commit()
 
 
-@shared_task(bind=True, ignore_result=True, max_retries=0, default_retry_delay=5 * 60)
+@shared_task(bind=True, ignore_result=True, max_retries=3, default_retry_delay=5 * 60)
 def process_event(self, event_uuid: str, indexing_enabled: bool = True):
     """Process the event."""
     # TODO: Should we detect and skip duplicated events?

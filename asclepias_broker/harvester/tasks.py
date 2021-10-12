@@ -16,7 +16,7 @@ from .proxies import current_harvester
 from ..monitoring.models import ErrorMonitoring
 
 
-@shared_task(bind=True, ignore_result=True, max_retries=0, default_retry_delay=10 * 60)
+@shared_task(bind=True, ignore_result=True, max_retries=3, default_retry_delay=10 * 60)
 def harvest_metadata_identifier(self, harvester: str, identifier: str, scheme: str,
                                 providers: List[str] = None):
     """."""
