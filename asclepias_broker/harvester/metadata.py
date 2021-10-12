@@ -176,13 +176,16 @@ class DOIMetadataHarvester(MetadataHarvester):
     def harvest(self, identifier: str, scheme: str,
                 providers: List[str] = None):
         """."""
-        data = self.get_metadata(identifier)
-        if data:
-            providers = set(providers) if providers else set()
-            providers.add(self.provider_name)
-            update_metadata(
-                identifier, scheme, data,
-                providers=list(providers))
+        try:
+            data = self.get_metadata(identifier)
+            if data:
+                providers = set(providers) if providers else set()
+                providers.add(self.provider_name)
+                update_metadata(
+                    identifier, scheme, data,
+                    providers=list(providers))
+        except Exception as exc:
+            raise MetadataAPIException(exc)
 
     def get_metadata(self, doi: str) -> dict:
         """."""
@@ -199,14 +202,11 @@ class DOIMetadataHarvester(MetadataHarvester):
 
     def _agency_by_prefix(self, doi_prefix):
         """."""
-        try:
-            res = requests.get(f'{self.doi_api_url}/{doi_prefix}')
-            if res.ok:
-                return res.json()[0].get('RA').lower()
-            else:
-                res.raise_for_status()
-        except Exception as exc:
-            raise MetadataAPIException(exc)
+        res = requests.get(f'{self.doi_api_url}/{doi_prefix}')
+        if res.ok:
+            return res.json()[0].get('RA').lower()
+        else:
+            res.raise_for_status()
 
 
 class ADSMetadataHarvester(MetadataHarvester):
@@ -214,7 +214,7 @@ class ADSMetadataHarvester(MetadataHarvester):
 
     ADS_API_URL = 'https://api.adsabs.harvard.edu/v1/search/query'
     ADS_API_PARAMS = {
-        'fl': 'title,author,doi,bibcode,identifier,doctype,pub,year,pubdate,keyword',
+        'fl': 'title,author,doi,bibcode,identifier,doctype,pub,year,pubdate,keyword, bibstem',
     }
 
     ADS_TYPE_MAPPING = {
