@@ -21,7 +21,8 @@ from ..jsonschemas import SCHOLIX_SCHEMA
 
 COMMON_SCHEMA_DEFINITIONS = SCHOLIX_SCHEMA['definitions']
 OBJECT_TYPE_SCHEMA = COMMON_SCHEMA_DEFINITIONS['ObjectType']
-OVERRIDABLE_KEYS = {'Type', 'Title', 'Creator', 'PublicationDate', 'Publisher', 'Keywords'}
+OVERRIDABLE_KEYS = {'Type', 'Title', 'Creator', 'PublicationDate'}
+MERGEABLE_KEYS = {'Publisher', 'Keywords'}
 
 
 class GroupMetadata(db.Model, Timestamp):
@@ -53,7 +54,7 @@ class GroupMetadata(db.Model, Timestamp):
         'additionalProperties': False,
         'properties': {
             k: v for k, v in OBJECT_TYPE_SCHEMA['properties'].items()
-            if k in OVERRIDABLE_KEYS
+            if k in OVERRIDABLE_KEYS or k in MERGEABLE_KEYS
         },
     }
 
@@ -67,6 +68,8 @@ class GroupMetadata(db.Model, Timestamp):
                     if type_val == 'unknown':
                         continue
                 new_json[key] = payload[key]
+        for key in MERGEABLE_KEYS:
+            mergeKey(new_json, payload, key)
         # Set "Type" to "unknown" if not provided
         if not new_json.get('Type', {}).get('Name'):
             new_json['Type'] = {'Name': 'unknown'}
@@ -76,6 +79,18 @@ class GroupMetadata(db.Model, Timestamp):
         flag_modified(self, 'json')
         return self
 
+def mergeKey(new_json: dict, payload: dict, key: str):
+    
+    if payload.get(key):
+        if  not key in new_json.keys():
+            new_json[key] = []
+        for item in payload.get(key):
+            #Should only be one item per dictionary here
+            val = list(item.values())[0]
+            current_values = [list(s.values())[0].lower() for s in new_json[key]]
+            if val.lower() not in current_values:
+                item_key = list(item.keys())[0]
+                new_json[key].append({item_key : val})
 
 class GroupRelationshipMetadata(db.Model, Timestamp):
     """Metadata for a group relationship."""
