@@ -105,18 +105,13 @@ def update_metadata(id_value: str, scheme: str, data: dict,
                 db.session.commit()
                 current_app.logger.exception(
                     'Error while processing identity event')
-    try:
-        id_group = get_group_from_id(id_value, scheme)
-        if not id_group and create_missing_groups:
-            identifier = Identifier(
-                value=id_value, scheme=scheme).fetch_or_create_id()
-            db.session.commit()
-            id_group, _ = get_or_create_groups(identifier)
-            db.session.commit()
-        id_group.data.update(data)
+
+    id_group = get_group_from_id(id_value, scheme)
+    if not id_group and create_missing_groups:
+        identifier = Identifier(
+            value=id_value, scheme=scheme).fetch_or_create_id()
         db.session.commit()
-    except Exception as exc:
-        error_obj = ErrorMonitoring(origin="update_group_metadata", error=repr(exc), payload={'id_value':id_value, 'scheme': scheme})
-        db.session.add(error_obj)
+        id_group, _ = get_or_create_groups(identifier)
         db.session.commit()
-        current_app.logger.exception('Error while updating group metadata')
+    id_group.data.update(data)
+    db.session.commit()
