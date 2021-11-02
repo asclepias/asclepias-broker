@@ -33,6 +33,7 @@ class ErrorMonitoring(db.Model, Timestamp):
     id = db.Column(UUIDType, default=uuid.uuid4, primary_key=True)
     origin = db.Column(db.String, nullable=False)
     error = db.Column(db.String)
+    n_retries = db.Column(db.Integer)
     payload = db.Column(
         db.JSON()
         .with_variant(postgresql.JSONB(none_as_null=True), 'postgresql')

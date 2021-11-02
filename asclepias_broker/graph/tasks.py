@@ -108,7 +108,7 @@ def _set_event_status(event_uuid, status):
     db.session.commit()
 
 
-@shared_task(bind=True, ignore_result=True, max_retries=3, default_retry_delay=5 * 60)
+@shared_task(bind=True, ignore_result=True, max_retries=4, default_retry_delay=5 * 60)
 def process_event(self, event_uuid: str, indexing_enabled: bool = True):
     """Process the event."""
     # TODO: Should we detect and skip duplicated events?
@@ -149,7 +149,9 @@ def process_event(self, event_uuid: str, indexing_enabled: bool = True):
         event_processed.send(current_app._get_current_object(), event=event)
     except Exception as exc:
         _set_event_status(event_uuid, EventStatus.Error)
-        error_obj = ErrorMonitoring(origin=self.__class__.__name__, error=repr(exc), payload=event_uuid)
+        error_obj = ErrorMonitoring(origin=self.__class__.__name__, error=repr(exc), n_retries=self.request.retries, payload=event_uuid)
         db.session.add(error_obj)
         db.session.commit()
-        process_event.retry(exc=exc)
+        wait_time = [600, 3600, 24*3600, 7*24*3600] 
+        time_to_next_try = wait_time[self.request.retries]
+        self.retry(exc=exc, countdown=time_to_next_try)

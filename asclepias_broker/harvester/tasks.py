@@ -17,7 +17,7 @@ from .proxies import current_harvester
 from ..monitoring.models import ErrorMonitoring, HarvestMonitoring, HarvestStatus
 
 
-@shared_task(bind=True, ignore_result=True, max_retries=3, default_retry_delay=10 * 60)
+@shared_task(bind=True, ignore_result=True, max_retries=4, default_retry_delay=10 * 60)
 def harvest_metadata_identifier(self, harvester: str, identifier: str, scheme: str,
                                 event_uuid: str, providers: List[str] = None):
     """."""
@@ -29,10 +29,12 @@ def harvest_metadata_identifier(self, harvester: str, identifier: str, scheme: s
     except Exception as exc:
         _set_event_status(event_uuid, HarvestStatus.Error)
         payload = {'identifier':identifier, 'scheme': scheme, 'providers': providers}
-        error_obj = ErrorMonitoring(origin=h.__class__.__name__, error=repr(exc), payload=payload)
+        error_obj = ErrorMonitoring(origin=self.__class__.__name__, error=repr(exc), n_retries=self.request.retries, payload=event_uuid)
         db.session.add(error_obj)
         db.session.commit()
-        harvest_metadata_identifier.retry(exc=exc)
+        wait_time = [600, 3600, 24*3600, 7*24*3600] 
+        time_to_next_try = wait_time[self.request.retries]
+        self.retry(exc=exc, countdown=time_to_next_try)
 
 
 @shared_task(ignore_result=True)
