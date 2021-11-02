@@ -239,13 +239,16 @@ RECORDS_REST_FACETS = dict(
         post_filters=dict(
             type=terms_filter('Source.Type.Name'),
             publication_year=range_filter(
-                'Source.PublicationDate', format='yyyy', end_date_math='/y'),
+                'Source.PublicationDate', format='yyyy', start_date_math='/y', end_date_math='/y'),
         )
     ),
     metadata=dict(
         aggs=dict(
-            type=dict(
-                terms=dict(field='Source.Type.Name')
+            NumberOfTargets=dict(
+                cardinality=dict(field='Target.Title')
+            ),
+            Targets=dict(
+                terms=dict(field='Target.Title')
             ),
             publication_year=dict(
                 date_histogram=dict(
@@ -263,11 +266,11 @@ RECORDS_REST_FACETS = dict(
             ),
             keyword=simple_query_string_filter('Source.Keywords_all'),
             journal=nested_terms_filter('Source.Publisher.Name','Source.Publisher'),
+            publication_year=range_filter(
+                'Source.PublicationDate', format='yyyy', start_date_math='/y', end_date_math='/y'),
         ),
         post_filters=dict(
             type=terms_filter('Source.Type.Name'),
-            publication_year=range_filter(
-                'Source.PublicationDate', format='yyyy', end_date_math='/y'),
         )
     )
 )
