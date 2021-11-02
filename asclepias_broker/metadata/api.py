@@ -100,7 +100,7 @@ def update_metadata(id_value: str, scheme: str, data: dict,
                 EventAPI.handle_event(
                     list(event_chunk), no_index=True, eager=True)
             except ValueError as exc:
-                error_obj = ErrorMonitoring(origin="update_metadata", error=repr(exc), payload=event_chunk)
+                error_obj = ErrorMonitoring(origin="update_metadata", error=repr(exc), n_retries = 99, payload=event_chunk)
                 db.session.add(error_obj)
                 db.session.commit()
                 current_app.logger.exception(

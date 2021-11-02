@@ -72,6 +72,7 @@ setup(
             'asclepias_broker_graph_tasks = asclepias_broker.graph.tasks',
             'asclepias_broker_search_tasks = asclepias_broker.search.tasks',
             'asclepias_harvester_tasks = asclepias_broker.harvester.tasks',
+            'asclepias_monitoring_tasks = asclepias_broker.monitoring.tasks'
         ],
         'invenio_db.models': [
             'asclepias_broker_core = asclepias_broker.core.models',

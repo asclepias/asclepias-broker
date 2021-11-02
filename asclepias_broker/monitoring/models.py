@@ -12,7 +12,7 @@ import enum
 import datetime
 
 from sqlalchemy.sql.sqltypes import Boolean
-
+from sqlalchemy import func
 from invenio_db import db
 from sqlalchemy.dialects import postgresql
 from sqlalchemy_utils.models import Timestamp
@@ -41,6 +41,23 @@ class ErrorMonitoring(db.Model, Timestamp):
         default=dict,
     )
 
+    @classmethod
+    def getLastWeeksErrors(cls, **kwargs):
+        """Gets all the errors from last week where it has been rerun for at least 2 times all ready"""
+        last_week = datetime.datetime.now() - datetime.timedelta(days = 7)
+        resp = cls.query.filter(cls.created > str(last_week), cls.n_retries > 2).all()
+        return resp
+    
+    def to_dict(self):
+        """Dictionary representation of the error."""
+        return dict(created=self.created, updated = self.updated, id = self.id, origin = self.origin, error = self.error, payload = self.payload)
+
+
+    def __repr__(self):
+        """String representation of the error."""
+        return str(self.to_dict())
+
+
 class HarvestMonitoring(db.Model, Timestamp):
     """Harvesting monitoring model."""
 
@@ -61,9 +78,16 @@ class HarvestMonitoring(db.Model, Timestamp):
     def isRecentlyAdded(cls, identifier: str, scheme: str, harvester: str, **kwargs) -> Boolean:
         """Check if the same identifier has been queried for during the last week to avoid duplicates"""
         last_week = datetime.datetime.now() - datetime.timedelta(days = 7)
-        resp = cls.query.filter(cls.identifier==identifier, cls.scheme==scheme, cls.harvester==harvester, cls.updated > str(last_week)).one_or_none()
+        resp = cls.query.filter(cls.identifier==identifier, cls.scheme==scheme, cls.harvester==harvester, cls.updated > str(last_week)).first()
         return resp is not None
 
+    @classmethod
+    def getStatsFromLastWeek(cls):
+        """Gets the stats from the last 7 days"""
+        last_week = datetime.datetime.now() - datetime.timedelta(days = 7)
+        resp = db.session.query(cls.status, func.count('*')).filter(cls.updated > str(last_week)).group_by(cls.status).all()
+        return resp
+    
     def __repr__(self):
         """String representation of the event."""
         return f"<{self.id}: {self.created} : {self.identifier}>"

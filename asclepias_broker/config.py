@@ -21,6 +21,7 @@ from invenio_app.config import APP_DEFAULT_SECURE_HEADERS
 from invenio_records_rest.facets import range_filter, terms_filter
 from invenio_records_rest.utils import deny_all
 from invenio_search.api import RecordsSearch
+from celery.schedules import crontab
 
 from .search.query import enum_term_filter, nested_range_filter, \
     nested_terms_filter, simple_query_string_filter
@@ -125,8 +126,12 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': timedelta(minutes=60),
     },
     'reindex': {
-        'task': 'asclepias_broker.tasks.reindex_all_relationships',
+        'task': 'asclepias_broker.search.tasks.reindex_all_relationships',
         'schedule': timedelta(hours=24)
+    },
+    'notify': {
+        'task': 'asclepias_broker.monitoring.tasks.test',
+        'schedule':  crontab(hour=0, minute=0, day_of_week=0)
     },
 }
 
