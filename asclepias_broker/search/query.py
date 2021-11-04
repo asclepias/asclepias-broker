@@ -92,6 +92,10 @@ def meta_search_factory(self, search, query_parser=None):
     except SyntaxError:
         raise InvalidQueryRESTError()
 
+    search.aggs.bucket('Target', 'terms', field='Target.ID')\
+    .metric("first", "top_hits", _source=dict(include=["Target.Identifier.*", "Target.Creator.Name", "Target.Title"]), size=1)
+    search = search.extra(size=0)
+
     return search, urlkwargs
 
 

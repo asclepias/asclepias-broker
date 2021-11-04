@@ -247,13 +247,12 @@ RECORDS_REST_FACETS = dict(
                 'Source.PublicationDate', format='yyyy', start_date_math='/y', end_date_math='/y'),
         )
     ),
+    
+    # The topHits agg can't be addded here due to limitations in elasticsearch_dsl aggs function so that is added in query.py
     metadata=dict(
         aggs=dict(
             NumberOfTargets=dict(
-                cardinality=dict(field='Target.Title')
-            ),
-            Targets=dict(
-                terms=dict(field='Target.Title')
+                cardinality=dict(field='Target.ID')
             ),
             publication_year=dict(
                 date_histogram=dict(
@@ -274,9 +273,6 @@ RECORDS_REST_FACETS = dict(
             publication_year=range_filter(
                 'Source.PublicationDate', format='yyyy', start_date_math='/y', end_date_math='/y'),
         ),
-        post_filters=dict(
-            type=terms_filter('Source.Type.Name'),
-        )
     )
 )
 # TODO: See if this actually works
