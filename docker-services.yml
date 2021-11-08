@@ -26,6 +26,7 @@ services:
       - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://asclepias:asclepias@db/asclepias"
       - "INVENIO_WSGI_PROXIES=2"
       - "INVENIO_INSTANCE_PATH=/opt/invenio/var/instance/"
+      - "SLACK_API_TOKEN=CHANGE_ME"
   lb:
     build: ./docker/haproxy/
     image: asclepias-broker-lb
@@ -86,6 +87,6 @@ services:
     ports: ['5601:5601']
   flower:
     image: mher/flower
-    command: --broker=amqp://guest:guest@mq:5672/ --broker_api=http://guest:guest@mq:15672/api/
+    command: celery flower --broker=amqp://guest:guest@mq:5672/ --broker_api=http://guest:guest@mq:15672/api/
     ports:
       - "5555:5555"

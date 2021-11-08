@@ -157,6 +157,17 @@
           "items": {
             "$ref": "#/definitions/PersonOrOrgType"
           }
+        },
+        "Keywords": {
+          "type": "array",
+          "items": {
+            "keyword": {
+              "type": "string",
+              "title": "Objects article keyord",
+              "description": "An article keyword",
+              "default": ""
+            }
+          }
         }
       },
       "required": [
