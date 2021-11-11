@@ -12,8 +12,12 @@ services:
     extends:
       file: docker-services.yml
       service: lb
+    build: ./docker/haproxy-dev-ssl/
+    image: asclepias-broker-lb-ssl
     links:
       - frontend
+    volumes:
+      - /etc/letsencrypt/:/etc/certbot/conf
   # Frontend
   frontend:
     extends:
