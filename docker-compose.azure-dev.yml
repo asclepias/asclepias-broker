@@ -23,7 +23,7 @@ services:
     image: asclepias-broker-frontend-ssl
     volumes:
       - static_data:/opt/invenio/var/instance/static
-      - /etc/letsencrypt/live/asclepias-broker-node.eastus.cloudapp.azure.com:/etc/certbot/conf/live/asclepias-broker-node.eastus.cloudapp.azure.com
+      - /etc/letsencrypt/:/etc/certbot/conf
     links:
       - web
   # Web application
