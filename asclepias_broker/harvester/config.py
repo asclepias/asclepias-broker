@@ -11,6 +11,7 @@ from kombu import Exchange
 
 from .metadata import ADSMetadataHarvester, DOIMetadataHarvester
 from .zenodo import ZenodoVersioningHarvester
+from .github import GitHubHarvester
 from .crossref import CrossrefHarvester
 from .europepmc import EuropePMCHarvester
 
@@ -45,6 +46,7 @@ ASCLEPIAS_HARVESTER_METADATA_HARVESTERS = {
     'doi': (DOIMetadataHarvester, {}),
     'ads': (ADSMetadataHarvester, {}),
     'zenodo': (ZenodoVersioningHarvester, {}),
+    'github': (GitHubHarvester, {})
 }
 """Metadata harvesters configuration."""
 

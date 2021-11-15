@@ -9,10 +9,12 @@
 
 from copy import deepcopy
 from datetime import datetime
-from typing import List
+from typing import Any, List
 
 import requests
 from flask import current_app
+
+from asclepias_broker.harvester.github import GitHubHarvester
 
 from ..utils import chunks
 from .base import MetadataHarvester
@@ -66,7 +68,7 @@ class ZenodoClient:
 
             data = res.json()
             for r in data['hits']['hits']:
-                yield r['doi']
+                yield r
             if data['links'].get('next'):
                 url = data['links'].get('next')
                 params = {
@@ -121,8 +123,44 @@ class ZenodoVersioningHarvester(MetadataHarvester):
             versions = client.get_versions(conceptdoi)
         return conceptdoi, versions
 
+def check_for_github_relations(child: dict, child_scheme: str, providers: List[str], link_publication_date: str):
+    if 'related_identifiers' in child.keys():
+        for relation in  child['related_identifiers']:
+            rel_identifier = relation['identifier']
+            rel_scheme = relation['scheme']
+            relation = relation['relation']
+            if GitHubHarvester.can_harvest(identifier=rel_identifier, scheme=rel_scheme):
+                target_identifier = {
+                    "ID": rel_identifier,
+                    "IDScheme": rel_scheme
+                }
+                source_identifier = {
+                    "ID": child['doi'],
+                    "IDScheme": child_scheme
+                }
 
-def update_versioning(parent_identifier: str, child_identifiers: List[str],
+                payload = {
+                        'RelationshipType': {
+                            'Name': 'IsRelatedTo',
+                            'SubTypeSchema': 'DataCite',
+                            'SubType': 'IsIdenticalTo'
+                        },
+                        'Target': {
+                            'Identifier': target_identifier,
+                            'Type': {'Name': 'unknown'}
+                        },
+                        'LinkProvider': providers,
+                        'Source': {
+                            'Identifier': source_identifier,
+                            'Type': {'Name': 'unknown'}
+                        },
+                        'LinkPublicationDate': link_publication_date,
+                    }
+                yield payload
+    return None
+
+
+def update_versioning(parent_identifier: str, children: List[Any],
                       scheme: str, providers: List[str] = None,
                       link_publication_date: str = None):
     """."""
@@ -138,7 +176,8 @@ def update_versioning(parent_identifier: str, child_identifiers: List[str],
                 }
     event = []
 
-    for identifier in child_identifiers:
+    for child in children:
+        identifier = child['doi']
         target_identifier = {
                     "ID": identifier,
                     "IDScheme": scheme
@@ -161,6 +200,12 @@ def update_versioning(parent_identifier: str, child_identifiers: List[str],
             'LinkPublicationDate': link_publication_date,
         }
         event.append(payload)
+
+        github_payloads = check_for_github_relations(child, scheme, providers, link_publication_date)
+        if github_payloads is not None:
+            for p in github_payloads:
+                event.append(p)
+
 
     for event_chunk in chunks(event, 100):
         try:
