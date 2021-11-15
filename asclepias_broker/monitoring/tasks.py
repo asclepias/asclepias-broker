@@ -24,22 +24,87 @@ def test():
         sendEventReport(client)
 
 def sendErrorReport(client):
-    error_list = ErrorMonitoring.getLastWeeksErrors()
-    str_list = [repr(err) for err in error_list]
-    msg = "[" + ",".join(str_list) + "]"
-    client.chat_postMessage(channel='test', text="Errors received during the last 7 days")
-    client.chat_postMessage(channel='test', text=msg)
+    errors = ErrorMonitoring.getLastWeeksErrors()
+    blocks = []
+    blocks.append({"type": "section",
+                "text": {
+                    "text": "*Errors during the last 7 days*",
+                    "type": "mrkdwn"
+                },
+        })
+    for i, error in enumerate(errors):
+        fields = [{
+            "type": "plain_text",
+            "text": 'origin'
+        },
+        {
+            "type": "plain_text",
+            "text": str(error['origin'])
+        },
+        {
+            "type": "plain_text",
+            "text": 'created'
+        },{
+            "type": "plain_text",
+            "text": str(error['created'])
+        },{
+            "type": "plain_text",
+            "text": 'error'
+        },{
+            "type": "plain_text",
+            "text": str(error['error']).replace('\\n', '\n')
+        }]
+        blocks.append({"type": "section",
+                "text": {
+                    "text": "Error #" + str(i),
+                    "type": "mrkdwn"
+                },
+                "fields":fields
+        })
+
+    client.chat_postMessage(channel='test', blocks=blocks)
+    # client.chat_postMessage(channel='test', text="Errors received during the last 7 days")
+    # client.chat_postMessage(channel='test', text=msg)
 
 def sendHarvestReport(client):
     list = HarvestMonitoring.getStatsFromLastWeek()
-    str_list = [str(obj) for obj in list]
-    msg = "[" + ",".join(str_list) + "]"
-    client.chat_postMessage(channel='test', text="Number of harvests done during the last 7 days")
-    client.chat_postMessage(channel='test', text=msg)
+    fields = []
+    for obj in list:
+        fields.append({
+            "type": "plain_text",
+            "text": obj[0].name
+        })
+        fields.append({
+            "type": "plain_text",
+            "text": str(obj[1])
+        })
+    blocks = [{"type": "section",
+            "text": {
+                "text": "*Number of harvests done during the last 7 days*",
+                "type": "mrkdwn"
+            },
+            "fields":fields
+    }]
+    client.chat_postMessage(channel='test', blocks=blocks)
+
 
 def sendEventReport(client):
     list = Event.getStatsFromLastWeek()
-    str_list = [str(obj) for obj in list]
-    msg = "[" + ",".join(str_list) + "]"
-    client.chat_postMessage(channel='test', text="Number of events done during the last 7 days")
-    client.chat_postMessage(channel='test', text=msg)
+    fields = []
+    for obj in list:
+        fields.append({
+            "type": "plain_text",
+            "text": obj[0].name
+        })
+        fields.append({
+            "type": "plain_text",
+            "text": str(obj[1])
+        })
+    blocks = [{"type": "section",
+            "text": {
+                "text": "*Number of harvests done during the last 7 days*",
+                "type": "mrkdwn"
+            },
+            "fields":fields
+    }]
+    client.chat_postMessage(channel='test', blocks=blocks)
