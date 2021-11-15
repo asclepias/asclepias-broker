@@ -64,7 +64,7 @@ services:
       - "15672:15672"
       - "5672:5672"
   es:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.4
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
     restart: "always"
     environment:
       - bootstrap.memory_lock=true
@@ -80,9 +80,9 @@ services:
       - "9200:9200"
       - "9300:9300"
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:6.2.4
+    image: docker.elastic.co/kibana/kibana:7.14.1
     environment:
-      - ELASTICSEARCH_URL=http://es:9200
+      - ELASTICSEARCH_HOSTS=http://es:9200
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
     ports: ['5601:5601']
   flower:
