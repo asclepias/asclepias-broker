@@ -6,14 +6,14 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 """Search utilities."""
 
-from typing import Dict
+from typing import Dict, Sized
 
 from elasticsearch_dsl import Q
 from elasticsearch_dsl.query import Range
 from flask import request
 from invenio_records_rest.errors import InvalidQueryRESTError
 from invenio_rest.errors import FieldError, RESTValidationError
-
+import json
 
 def search_factory(self, search, query_parser=None):
     """Parse query using elasticsearch DSL query.
@@ -75,10 +75,10 @@ def meta_search_factory(self, search, query_parser=None):
     for key, value in sortkwargs.items():
         urlkwargs.add(key, value)
 
+    search = search.extra(size=0)
+
     # Apply 'identity' grouping by default
-    if 'relation' not in request.values:
-        search = search.filter(Q('term', RelationshipType='Cites'))
-        urlkwargs['relation'] = 'isCitedBy'
+    search = search.filter(Q('term', RelationshipType='Cites'))
     if 'group_by' not in request.values:
         search = search.filter(Q('term', Grouping='identity'))
         urlkwargs['group_by'] = 'identity'
@@ -91,11 +91,18 @@ def meta_search_factory(self, search, query_parser=None):
             urlkwargs['q'] = query_string
     except SyntaxError:
         raise InvalidQueryRESTError()
+    size = 10
+    if 'size' in request.values:    
+        size = request.values.get('size')
 
-    search.aggs.bucket('Target', 'terms', field='Target.ID')\
-    .metric("first", "top_hits", _source=dict(include=["Target.Identifier.*", "Target.Creator.Name", "Target.Title"]), size=1)
-    search = search.extra(size=0)
+    start = 0
+    if 'page' in request.values:    
+        start = int(int(request.values.get('page')) - 1) * int(size)
 
+    search.aggs.bucket('Target', 'terms', field='Target.ID', size=1000)\
+    .metric("first", "top_hits", _source=dict(include=["Target.Identifier.*", "Target.Creator.Name", "Target.Title"]),  size=1)
+    kwargs = {'from':start, 'size':size, 'sort':[{'_key':{'order':'desc'}}]}
+    search.aggs['Target'].bucket('pagination', 'bucket_sort', **kwargs)
     return search, urlkwargs
 
 
