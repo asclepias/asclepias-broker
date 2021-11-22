@@ -206,7 +206,7 @@ def add_version_identifiers(parsed_info, providers)  -> List[dict]:
     add_old_name = False
     if 'user' in parsed_info.keys():
         version_meta = client.get_repo_release_from_name(user=parsed_info['user'], repo=parsed_info['repo'], tag=parsed_info['tag'])
-        if version_meta['html_url'] != parsed_info['identifier']:
+        if version_meta is not None and version_meta['html_url'] != parsed_info['identifier']:
             add_old_name = True
     else:
         version_meta = client.get_repo_release_from_id(user=parsed_info['id'])
