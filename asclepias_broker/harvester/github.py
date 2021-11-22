@@ -36,11 +36,11 @@ class GitHubClient:
     # For some reason a different repo name when using id vs name in the Github API 
 
     def get_repo_metadata_from_id(self, id) -> dict:
-        url = self.base_url + "/repositories/" + id
+        url = self.base_url + "repositories/" + id
         return self.query_api(url)
     
     def get_repo_metadata_from_name(self, user, repo) -> dict:
-        url = self.base_url + "/repos/" + user + "/" + repo
+        url = self.base_url + "repos/" + user + "/" + repo
         return self.query_api(url)
 
     def get_repo_release_from_name(self, user, repo, tag) -> dict:
@@ -57,7 +57,7 @@ class GitHubClient:
         releases = self.query_api(url)
         for release in releases:
             if release['tag_name'] == tag:
-                release['repo_id'] = repo_meta['ID']
+                release['repo_id'] = repo_meta['id']
                 release['repo_name'] = repo_meta['full_name']
                 return release
 
@@ -73,11 +73,11 @@ class GitHubClient:
             raise GitHubAPIException(exc)
 
 class GitHubHarvester(MetadataHarvester):
-    """Metadata harvester for Zenodo records' versioning."""
+    """Metadata harvester for Github"""
 
     def __init__(self, *, provider_name: str = None):
         """."""
-        self.provider_name = provider_name or "Github versioning harvester"
+        self.provider_name = provider_name or "Github harvester"
 
     def can_harvest(self, identifier: str, scheme: str,
                     providers: List[str] = None) -> bool:
@@ -102,7 +102,7 @@ class GitHubHarvester(MetadataHarvester):
                 parsed_info = self.parse_url_info(identifier)
             elif self._is_github_repo_id(scheme,identifier):
                 parsed_info = dict(id=identifier, identifier=identifier, scheme='github')
-            elif self._is_github_repo_release_id(scheme,identifier):
+            elif self._is_github_release_id(scheme,identifier):
                 id, release_id = identifier.split('/')
                 parsed_info = dict(id=id, sub_type='release_id', release_id=release_id, identifier=identifier, scheme='github')
            
@@ -235,6 +235,8 @@ def add_version_identifiers(parsed_info, providers)  -> List[dict]:
 
 def create_relationship_event(src, target, relationship, providers) -> dict:
     link_publication_date = datetime.now().isoformat()
+    link_providers = providers or ['unknown']
+    link_providers = [{'Name': provider} for provider in link_providers]
     payload = {
         'RelationshipType': {
             'Name': 'IsRelatedTo',
@@ -245,7 +247,7 @@ def create_relationship_event(src, target, relationship, providers) -> dict:
             'Identifier': src,
             'Type': {'Name': 'unknown'}
         },
-        'LinkProvider': providers,
+        'LinkProvider': link_providers,
         'Source': {
             'Identifier': target,
             'Type': {'Name': 'unknown'}
