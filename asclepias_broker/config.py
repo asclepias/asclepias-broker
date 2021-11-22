@@ -130,7 +130,7 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': timedelta(hours=24)
     },
     'notify': {
-        'task': 'asclepias_broker.monitoring.tasks.test',
+        'task': 'asclepias_broker.monitoring.tasks.sendMonitoringReport',
         'schedule':  crontab(hour=0, minute=0, day_of_week=0)
     },
 }

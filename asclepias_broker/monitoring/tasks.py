@@ -15,15 +15,16 @@ import slack
 import os
 
 @shared_task()
-def test():
+def sendMonitoringReport():
     slack_token = os.environ.get("SLACK_API_TOKEN")
     if slack_token is not None and slack_token != "CHANGE_ME":
         client = slack.WebClient(token=slack_token)
-        sendErrorReport(client)
-        sendHarvestReport(client)
-        sendEventReport(client)
+        channel = 'broker-alerts'
+        sendErrorReport(client, channel)
+        sendHarvestReport(client, channel)
+        sendEventReport(client, channel)
 
-def sendErrorReport(client):
+def sendErrorReport(client, channel:str):
     errors = ErrorMonitoring.getLastWeeksErrors()
     blocks = []
     blocks.append({"type": "section",
@@ -62,11 +63,9 @@ def sendErrorReport(client):
                 "fields":fields
         })
 
-    client.chat_postMessage(channel='test', blocks=blocks)
-    # client.chat_postMessage(channel='test', text="Errors received during the last 7 days")
-    # client.chat_postMessage(channel='test', text=msg)
+    client.chat_postMessage(channel=channel, blocks=blocks)
 
-def sendHarvestReport(client):
+def sendHarvestReport(client, channel:str):
     list = HarvestMonitoring.getStatsFromLastWeek()
     fields = []
     for obj in list:
@@ -85,10 +84,10 @@ def sendHarvestReport(client):
             },
             "fields":fields
     }]
-    client.chat_postMessage(channel='test', blocks=blocks)
+    client.chat_postMessage(channel=channel, blocks=blocks)
 
 
-def sendEventReport(client):
+def sendEventReport(client, channel:str):
     list = Event.getStatsFromLastWeek()
     fields = []
     for obj in list:
@@ -107,4 +106,4 @@ def sendEventReport(client):
             },
             "fields":fields
     }]
-    client.chat_postMessage(channel='test', blocks=blocks)
+    client.chat_postMessage(channel=channel, blocks=blocks)
