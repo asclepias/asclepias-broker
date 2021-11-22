@@ -29,7 +29,7 @@ def harvest_metadata_identifier(self, harvester: str, identifier: str, scheme: s
     except Exception as exc:
         _set_event_status(event_uuid, HarvestStatus.Error)
         payload = {'identifier':identifier, 'scheme': scheme, 'providers': providers}
-        error_obj = ErrorMonitoring(origin=self.__class__.__name__, error=repr(exc), n_retries=self.request.retries, payload=event_uuid)
+        error_obj = ErrorMonitoring(origin=self.__class__.__name__, error=repr(exc), n_retries=self.request.retries, payload=payload)
         db.session.add(error_obj)
         db.session.commit()
         wait_time = [600, 3600, 24*3600, 7*24*3600] 

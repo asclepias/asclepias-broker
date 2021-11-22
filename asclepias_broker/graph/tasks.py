@@ -149,7 +149,8 @@ def process_event(self, event_uuid: str, indexing_enabled: bool = True):
         event_processed.send(current_app._get_current_object(), event=event)
     except Exception as exc:
         _set_event_status(event_uuid, EventStatus.Error)
-        error_obj = ErrorMonitoring(origin=self.__class__.__name__, error=repr(exc), n_retries=self.request.retries, payload=event_uuid)
+        payload = Event.get(id=event_uuid).payload
+        error_obj = ErrorMonitoring(origin=self.__class__.__name__, error=repr(exc), n_retries=self.request.retries, payload=payload)
         db.session.add(error_obj)
         db.session.commit()
         wait_time = [600, 3600, 24*3600, 7*24*3600] 
