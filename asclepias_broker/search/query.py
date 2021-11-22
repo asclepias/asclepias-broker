@@ -101,7 +101,7 @@ def meta_search_factory(self, search, query_parser=None):
 
     search.aggs.bucket('Target', 'terms', field='Target.ID', size=1000)\
     .metric("first", "top_hits", _source=dict(include=["Target.Identifier.*", "Target.Creator.Name", "Target.Title"]),  size=1)
-    kwargs = {'from':start, 'size':size, 'sort':[{'_key':{'order':'desc'}}]}
+    kwargs = {'from':start, 'size':size, 'sort':[{'_count':{'order':'desc'}}]}
     search.aggs['Target'].bucket('pagination', 'bucket_sort', **kwargs)
     return search, urlkwargs
 
