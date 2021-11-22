@@ -100,10 +100,10 @@ class GitHubHarvester(MetadataHarvester):
             payloads = []
             if self._is_github_url(scheme, identifier):
                 parsed_info = self.parse_url_info(identifier)
-            elif self._is_github_repo_id(scheme,identifier):
+            elif self._is_github_repo_id(scheme, identifier):
                 parsed_info = dict(id=identifier, identifier=identifier, scheme='github')
-            elif self._is_github_release_id(scheme,identifier):
-                id, release_id = identifier.split('/')
+            elif self._is_github_release_id(scheme, identifier):
+                id, _, release_id = identifier.split('/')
                 parsed_info = dict(id=id, sub_type='release_id', release_id=release_id, identifier=identifier, scheme='github')
            
             child = None
@@ -147,7 +147,7 @@ class GitHubHarvester(MetadataHarvester):
         parts = url.split('/')
         github_index = next(i for i,p in enumerate(parts) if 'github.com' in p)
         
-        if len(parts) - github_index < 2:
+        if len(parts) - github_index < 3:
                 raise GitHubAPIException('Not a valid github url: ', )
 
         resp = dict()
@@ -160,7 +160,7 @@ class GitHubHarvester(MetadataHarvester):
         # github.com/user/repo/tree/tag_we_want
         # or 
         # github.com/user/repo/releases/tag/tag_we_want
-        if len(parts) - github_index > 2:
+        if len(parts) - github_index > 3:
             resp['sub_type'] = parts[github_index + 3]
             if resp['sub_type'] == 'tree': 
                 resp['tag'] = parts[github_index + 4]
