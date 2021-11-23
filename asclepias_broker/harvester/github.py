@@ -244,12 +244,12 @@ def create_relationship_event(src, target, relationship, providers) -> dict:
             'SubType': relationship
         },
         'Target': {
-            'Identifier': src,
+            'Identifier': target,
             'Type': {'Name': 'unknown'}
         },
         'LinkProvider': link_providers,
         'Source': {
-            'Identifier': target,
+            'Identifier': src,
             'Type': {'Name': 'unknown'}
         },
         'LinkPublicationDate': link_publication_date,
