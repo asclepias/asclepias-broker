@@ -63,8 +63,7 @@ class GitHubClient:
                 release['repo_name'] = repo_meta['full_name']
                 return release
 
-    @cached_property
-    def api_token(self):
+    def get_api_token(self):
         """."""
         if self._api_token is None:
             self._api_token = current_app.config.get(
@@ -76,9 +75,9 @@ class GitHubClient:
     def query_api(self, url):
         try:
             headers = {'X-GitHub-Media-Type':'application/vnd.github.v3.raw+json'}
-            api_token = self.api_token()
-            if api_token is not None:
-                headers['Authorization'] = 'token ' + api_token
+            token = self.get_api_token()
+            if token is not None:
+                headers['Authorization'] = 'token ' + token
             res = requests.get(url, headers=headers)
             if res.ok:
                 return res.json()
