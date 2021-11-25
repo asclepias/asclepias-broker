@@ -50,8 +50,11 @@ ASCLEPIAS_HARVESTER_METADATA_HARVESTERS = {
 }
 """Metadata harvesters configuration."""
 
-ASCLEPIAS_HARVESTER_ADS_API_TOKEN = 'IkTy5gifaaE10RYXo7EfYsTU7lYg8zTTMZmrdcF8'
+ASCLEPIAS_HARVESTER_ADS_API_TOKEN = None
 """API token to be used when accessing the ADS REST API."""
+
+ASCLEPIAS_HARVESTER_GITHUB_API_TOKEN = None
+"""API token to be used when accessing the GITHUB REST API."""
 
 ASCLEPIAS_HARVESTER_CROSSREF_API_EMAIL = None
 """Email address to be passed when accessing the Crossref REST API."""

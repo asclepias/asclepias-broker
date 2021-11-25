@@ -31,6 +31,7 @@ class GitHubAPIException(Exception):
 class GitHubClient:
     """GitHub client."""
 
+    _api_token = current_app.config.get('ASCLEPIAS_HARVESTER_GITHUB_API_TOKEN')
     base_url = 'https://api.github.com/'
     
     # For some reason a different repo name when using id vs name in the Github API 
@@ -61,9 +62,11 @@ class GitHubClient:
                 release['repo_name'] = repo_meta['full_name']
                 return release
 
-    def query_api(self,url):
+    def query_api(self, url):
         try:
             headers = {'X-GitHub-Media-Type':'application/vnd.github.v3.raw+json'}
+            if self._api_token is not None:
+                headers['Authorization'] = 'token ' + self._api_token
             res = requests.get(url, headers=headers)
             if res.ok:
                 return res.json()
