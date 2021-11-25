@@ -33,6 +33,7 @@ class GitHubClient:
     """GitHub client."""
 
     base_url = 'https://api.github.com/'
+    _api_token = None
     
     # For some reason a different repo name when using id vs name in the Github API 
 
