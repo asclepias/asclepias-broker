@@ -45,6 +45,7 @@ setup(
             'events = asclepias_broker.events.cli:events',
             'search = asclepias_broker.search.cli:search',
             'harvester = asclepias_broker.harvester.cli:harvester',
+            'monitor = asclepias_broker.monitoring.cli:monitor',
         ],
         'invenio_config.module': [
             'asclepias_broker = asclepias_broker.config',
