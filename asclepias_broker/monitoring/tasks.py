@@ -25,7 +25,7 @@ def sendMonitoringReport():
         sendEventReport(client, channel)
 
 def sendErrorReport(client, channel:str):
-    errors = ErrorMonitoring.getLastWeeksErrors()
+    errors = ErrorMonitoring.getLastWeeksErrors().to_dict()
     blocks = []
     blocks.append({"type": "section",
                 "text": {
