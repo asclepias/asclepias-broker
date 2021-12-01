@@ -77,12 +77,21 @@ def sendHarvestReport(client, channel:str):
             "type": "plain_text",
             "text": str(obj[1])
         })
+    if len(fields) == 0:
+         fields.append({
+            "type": "plain_text",
+            "text": "Done"
+        })
+         fields.append({
+            "type": "plain_text",
+            "text": str(0)
+        })
     blocks = [{"type": "section",
-            "text": {
-                "text": "*Number of harvests done during the last 7 days*",
-                "type": "mrkdwn"
-            },
-            "fields":fields
+        "text": {
+            "text": "*Number of harvests done during the last 7 days*",
+            "type": "mrkdwn"
+        },
+        "fields":fields
     }]
     client.chat_postMessage(channel=channel, blocks=blocks)
 
@@ -99,11 +108,20 @@ def sendEventReport(client, channel:str):
             "type": "plain_text",
             "text": str(obj[1])
         })
+    if len(fields) == 0:
+         fields.append({
+            "type": "plain_text",
+            "text": "Done"
+        })
+         fields.append({
+            "type": "plain_text",
+            "text": str(0)
+        })
     blocks = [{"type": "section",
-            "text": {
-                "text": "*Number of harvests done during the last 7 days*",
-                "type": "mrkdwn"
-            },
-            "fields":fields
+        "text": {
+            "text": "*Number of harvests done during the last 7 days*",
+            "type": "mrkdwn"
+        },
+        "fields":fields
     }]
     client.chat_postMessage(channel=channel, blocks=blocks)
