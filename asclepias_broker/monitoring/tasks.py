@@ -55,6 +55,12 @@ def sendErrorReport(client, channel:str):
         },{
             "type": "plain_text",
             "text": str(err_dict['error']).replace('\\n', '\n')
+        },{
+            "type": "plain_text",
+            "text": 'payload'
+        },{
+            "type": "plain_text",
+            "text": str(err_dict['payload']).replace('\\n', '\n')
         }]
         blocks.append({"type": "section",
                 "text": {
