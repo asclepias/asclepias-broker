@@ -130,7 +130,7 @@ def sendEventReport(client, channel:str):
         })
     blocks = [{"type": "section",
         "text": {
-            "text": "*Number of harvests done during the last 7 days*",
+            "text": "*Number of events done during the last 7 days*",
             "type": "mrkdwn"
         },
         "fields":fields
