@@ -25,7 +25,7 @@ def sendMonitoringReport():
         sendEventReport(client, channel)
 
 def sendErrorReport(client, channel:str):
-    errors = ErrorMonitoring.getLastWeeksErrors().to_dict()
+    errors = ErrorMonitoring.getLastWeeksErrors()
     blocks = []
     blocks.append({"type": "section",
                 "text": {
@@ -34,26 +34,27 @@ def sendErrorReport(client, channel:str):
                 },
         })
     for i, error in enumerate(errors):
+        err_dict = error.to_dict()
         fields = [{
             "type": "plain_text",
             "text": 'origin'
         },
         {
             "type": "plain_text",
-            "text": str(error['origin'])
+            "text": str(err_dict['origin'])
         },
         {
             "type": "plain_text",
             "text": 'created'
         },{
             "type": "plain_text",
-            "text": str(error['created'])
+            "text": str(err_dict['created'])
         },{
             "type": "plain_text",
             "text": 'error'
         },{
             "type": "plain_text",
-            "text": str(error['error']).replace('\\n', '\n')
+            "text": str(err_dict['error']).replace('\\n', '\n')
         }]
         blocks.append({"type": "section",
                 "text": {
