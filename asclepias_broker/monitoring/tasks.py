@@ -64,7 +64,11 @@ def sendErrorReport(client, channel:str):
                 "fields":fields
         })
 
+        if i % 40 == 0:
+            client.chat_postMessage(channel=channel, blocks=blocks)
+            blocks = []
     client.chat_postMessage(channel=channel, blocks=blocks)
+
 
 def sendHarvestReport(client, channel:str):
     list = HarvestMonitoring.getStatsFromLastWeek()
