@@ -174,7 +174,7 @@ class GitHubHarvester(MetadataHarvester):
         # github.com/user/repo/tree/tag_we_want
         # or 
         # github.com/user/repo/releases/tag/tag_we_want
-        if len(parts) - github_index > 3:
+        if len(parts) - github_index > 4:
             resp['sub_type'] = parts[github_index + 3]
             if resp['sub_type'] == 'tree': 
                 resp['tag'] = parts[github_index + 4]
