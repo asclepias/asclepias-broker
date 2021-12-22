@@ -53,7 +53,7 @@ def load(jsondir_or_file: str, no_index: bool = False, eager: bool = False):
 @click.option('-p', '--processing', default=False, is_flag=True)
 @click.option('--no-index', default=False, is_flag=True)
 @click.option('-e', '--eager', default=False, is_flag=True)
-@with_appcontexts
+@with_appcontext
 def rerun(id: str = None, all: bool = False, errors: bool = True, processing: bool = False, no_index: bool = False, eager: bool = False):
     """Rerun failed or stuck events."""
     if id:
