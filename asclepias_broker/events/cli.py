@@ -8,14 +8,19 @@
 """Events CLI."""
 
 from __future__ import absolute_import, print_function
+import datetime
 
 import json
 
 import click
+from flask.app import _Status
 from flask.cli import with_appcontext
+from flask import current_app
 
 from ..utils import find_ext
 from .api import EventAPI
+from ..graph.tasks import process_event
+from .models import Event, EventStatus
 
 
 @click.group()
@@ -41,3 +46,50 @@ def load(jsondir_or_file: str, no_index: bool = False, eager: bool = False):
                 EventAPI.handle_event(data, no_index=no_index, eager=eager)
             except ValueError:
                 pass
+
+@events.command('rerun')
+@click.option('--no-index', default=False, is_flag=True)
+@click.option('-e', '--eager', default=False, is_flag=True)
+@click.option('-a', '--all', default=False, is_flag=True)
+@click.option('-e', '--errors', default=False, is_flag=True)
+@click.option('-p', '--processing', default=False, is_flag=True)
+@with_appcontext
+def rerun(no_index: bool = False, eager: bool = False, all: bool = False, errors: bool = True, processing: bool = False):
+    """Rerun failed or stuck events."""
+    if all:
+        errors = True
+        processing = True
+    if processing:
+        rerun_processing(no_index, eager)
+        rerun_new(no_index, eager)
+    if errors:
+        rerun_errors(no_index, eager)
+
+def rerun_processing(no_index: bool, eager:bool = False):
+        yesterday = datetime.datetime.now() - datetime.timedelta(days = 1)
+        resp = Event.query.filter(Event.status == EventStatus.Processing, Event.created > str(yesterday)).all()
+        for event in resp:
+            rerun_event(event, no_index=no_index, eager=eager)
+
+def rerun_new(no_index: bool, eager:bool = False):
+        yesterday = datetime.datetime.now() - datetime.timedelta(days = 1)
+        resp = Event.query.filter(Event.status == EventStatus.New, Event.created > str(yesterday)).all()
+        for event in resp:
+            rerun_event(event, no_index=no_index, eager=eager)
+
+def rerun_errors(no_index: bool, eager:bool = False):
+        resp = Event.query.filter(Event.status == EventStatus.Error).all()
+        for event in resp:
+            rerun_event(event, no_index=no_index, eager=eager)
+
+def rerun_event(event: Event, no_index: bool, eager:bool = False):
+        event_uuid = str(event.id)
+        idx_enabled = current_app.config['ASCLEPIAS_SEARCH_INDEXING_ENABLED'] \
+            and (not no_index)
+        task = process_event.s(
+            event_uuid=event_uuid, indexing_enabled=idx_enabled)
+        if eager:
+            task.apply(throw=True)
+        else:
+            task.apply_async()
+        return event
