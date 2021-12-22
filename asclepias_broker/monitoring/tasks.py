@@ -73,7 +73,8 @@ def sendErrorReport(client, channel:str):
         if i % 40 == 0:
             client.chat_postMessage(channel=channel, blocks=blocks)
             blocks = []
-    client.chat_postMessage(channel=channel, blocks=blocks)
+    if len(blocks) > 0:
+        client.chat_postMessage(channel=channel, blocks=blocks)
 
 
 def sendHarvestReport(client, channel:str):
