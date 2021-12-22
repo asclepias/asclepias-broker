@@ -148,7 +148,7 @@ def process_event(self, event_uuid: str, indexing_enabled: bool = True):
         _set_event_status(event_uuid, EventStatus.Done)
         event_processed.send(current_app._get_current_object(), event=event)
     except Exception as exc:
-        db.sesstion.rollback()
+        db.session.rollback()
         _set_event_status(event_uuid, EventStatus.Error)
         payload = Event.get(id=event_uuid).payload
         error_obj = ErrorMonitoring(origin=self.__class__.__name__, error=repr(exc), n_retries=self.request.retries, payload=payload)
