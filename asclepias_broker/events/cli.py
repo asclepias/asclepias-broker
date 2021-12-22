@@ -48,14 +48,18 @@ def load(jsondir_or_file: str, no_index: bool = False, eager: bool = False):
                 pass
 
 @events.command('rerun')
-@click.option('--no-index', default=False, is_flag=True)
-@click.option('-e', '--eager', default=False, is_flag=True)
+@click.argument('id')
 @click.option('-a', '--all', default=False, is_flag=True)
 @click.option('-e', '--errors', default=False, is_flag=True)
 @click.option('-p', '--processing', default=False, is_flag=True)
+@click.option('--no-index', default=False, is_flag=True)
+@click.option('-e', '--eager', default=False, is_flag=True)
 @with_appcontext
-def rerun(no_index: bool = False, eager: bool = False, all: bool = False, errors: bool = True, processing: bool = False):
+def rerun(id: str = None, all: bool = False, errors: bool = True, processing: bool = False, no_index: bool = False, eager: bool = False):
     """Rerun failed or stuck events."""
+    if id:
+        rerun_id(id)
+        return
     if all:
         errors = True
         processing = True
@@ -65,6 +69,11 @@ def rerun(no_index: bool = False, eager: bool = False, all: bool = False, errors
     if errors:
         rerun_errors(no_index, eager)
 
+def rerun_id(no_index: bool, eager:bool = False):
+        resp = Event.query.filter(Event.id == id).all()
+        for event in resp:
+            rerun_event(event, no_index=no_index, eager=eager)
+            
 def rerun_processing(no_index: bool, eager:bool = False):
         yesterday = datetime.datetime.now() - datetime.timedelta(days = 1)
         resp = Event.query.filter(Event.status == EventStatus.Processing, Event.created > str(yesterday)).all()
