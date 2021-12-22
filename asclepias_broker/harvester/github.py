@@ -223,7 +223,7 @@ def add_version_identifiers(parsed_info, providers)  -> List[dict]:
         if version_meta is not None and version_meta['html_url'] != parsed_info['identifier']:
             add_old_name = True
     else:
-        version_meta = client.get_repo_release_from_id(user=parsed_info['id'])
+        version_meta = client.get_repo_release_from_id(id=parsed_info['id'], tag = parsed_info['release_id'])
 
     payloads = []
 
