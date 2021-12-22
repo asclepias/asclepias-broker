@@ -47,7 +47,7 @@ def load(jsondir_or_file: str, no_index: bool = False, eager: bool = False):
                 pass
 
 @events.command('rerun')
-@click.argument('id')
+@click.option('-i','--id', default=None)
 @click.option('-a', '--all', default=False, is_flag=True)
 @click.option('-e', '--errors', default=False, is_flag=True)
 @click.option('-p', '--processing', default=False, is_flag=True)
@@ -68,9 +68,9 @@ def rerun(id: str = None, all: bool = False, errors: bool = True, processing: bo
     if errors:
         rerun_errors(no_index, eager)
 
-def rerun_id(no_index: bool, eager:bool = False):
-        resp = Event.query.filter(Event.id == id).all()
-        for event in resp:
+def rerun_id(id:str, no_index: bool, eager:bool = False):
+        event = Event.get(id)
+        if event:
             rerun_event(event, no_index=no_index, eager=eager)
 
 def rerun_processing(no_index: bool, eager:bool = False):
