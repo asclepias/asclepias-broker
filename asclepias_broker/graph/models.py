@@ -163,7 +163,6 @@ class GroupM2M(db.Model, Timestamp):
     __tablename__ = 'groupm2m'
     __table_args__ = (
         PrimaryKeyConstraint('group_id', 'subgroup_id', name='pk_groupm2m'),
-        UniqueConstraint('subgroup_id', name='uq_groupm2m_subgroup_id'),
     )
     group_id = db.Column(
         UUIDType,
