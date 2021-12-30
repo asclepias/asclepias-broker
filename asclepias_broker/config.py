@@ -130,7 +130,7 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': timedelta(hours=24)
     },
     'notify': {
-        'task': 'asclepias_broker.monitoring.tasks.test',
+        'task': 'asclepias_broker.monitoring.tasks.sendMonitoringReport',
         'schedule':  crontab(hour=0, minute=0, day_of_week=0)
     },
 }
@@ -290,6 +290,7 @@ RECORDS_REST_DEFAULT_SORT = {
     }
 }
 RATELIMIT_STORAGE_URL = f'{REDIS_BASE_URL}/3'
+RATELIMIT_AUTHENTICATED_USER = '20000 per hour;500 per minute'
 
 APP_DEFAULT_SECURE_HEADERS['force_https'] = True
 APP_DEFAULT_SECURE_HEADERS['session_cookie_secure'] = True

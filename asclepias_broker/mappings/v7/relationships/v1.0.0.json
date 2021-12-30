@@ -1,0 +1,278 @@
+{
+  "settings": {
+    "analysis": {
+      "normalizer": {
+        "lowercase_normalizer": {
+          "type": "custom",
+          "char_filter": [],
+          "filter": ["lowercase", "asciifolding"]
+        }
+      }
+    }
+  },
+  "mappings": {
+      "properties": {
+        "_search_all": {
+          "type": "text"
+        },
+        "ID": {
+          "type": "keyword"
+        },
+        "Grouping": {
+          "type": "keyword"
+        },
+        "RelationshipType": {
+          "type": "keyword"
+        },
+        "History": {
+          "properties": {
+            "LinkPublicationDate": {
+              "type": "date"
+            },
+            "LinkProvider": {
+              "properties": {
+                "Name": {
+                  "type": "text",
+                  "copy_to": "_search_all"
+                },
+                "Identifier": {
+                  "properties": {
+                    "IDURL": {
+                      "type": "keyword"
+                    },
+                    "ID": {
+                      "type": "keyword"
+                    },
+                    "IDScheme": {
+                      "type": "keyword"
+                    }
+                  },
+                  "type": "nested"
+                }
+              },
+              "type": "nested"
+            },
+            "LicenseURL": {
+              "type": "keyword"
+            }
+          },
+          "type": "nested"
+        },
+        "Source": {
+          "properties": {
+            "ID": {
+              "type": "keyword"
+            },
+            "Type": {
+              "properties": {
+                "Name": {
+                  "type": "keyword"
+                },
+                "SubType": {
+                  "type": "keyword"
+                },
+                "SubTypeSchema": {
+                  "type": "keyword"
+                }
+              },
+              "type": "object"
+            },
+            "Title": {
+              "type": "text",
+              "copy_to": "_search_all"
+            },
+            "SearchIdentifier": {
+              "properties": {
+                "IDURL": {
+                  "type": "keyword"
+                },
+                "ID": {
+                  "type": "keyword",
+                  "copy_to": "_search_all"
+                },
+                "IDScheme": {
+                  "type": "keyword"
+                }
+              },
+              "type": "nested"
+            },
+            "Identifier": {
+              "properties": {
+                "IDURL": {
+                  "type": "keyword"
+                },
+                "ID": {
+                  "type": "keyword"
+                },
+                "IDScheme": {
+                  "type": "keyword"
+                }
+              },
+              "type": "nested"
+            },
+            "Creator": {
+              "properties": {
+                "Name": {
+                  "type": "text",
+                  "copy_to": "_search_all"
+                },
+                "Identifier": {
+                  "properties": {
+                    "IDURL": {
+                      "type": "keyword"
+                    },
+                    "ID": {
+                      "type": "keyword"
+                    },
+                    "IDScheme": {
+                      "type": "keyword"
+                    }
+                  },
+                  "type": "nested"
+                }
+              },
+              "type": "nested"
+            },
+            "Keywords": {
+              "properties": {
+                "Keyword": {
+                  "type": "text",
+                  "copy_to": "Source.Keywords_all"
+                }
+              },
+              "type": "nested"
+            },
+            "Keywords_all": {
+              "type": "text"
+            },
+            "Publisher": {
+              "properties": {
+                "Name": {
+                  "type": "keyword",
+                  "normalizer": "lowercase_normalizer"
+                },
+                "Identifier": {
+                  "properties": {
+                    "IDURL": {
+                      "type": "keyword"
+                    },
+                    "ID": {
+                      "type": "keyword"
+                    },
+                    "IDScheme": {
+                      "type": "keyword"
+                    }
+                  },
+                  "type": "nested"
+                }
+              },
+              "type": "nested"
+            },
+            "PublicationDate": {
+              "type": "date"
+            }
+          }
+        },
+        "Target": {
+          "properties": {
+            "ID": {
+              "type": "keyword"
+            },
+            "Type": {
+              "properties": {
+                "Name": {
+                  "type": "keyword"
+                },
+                "SubType": {
+                  "type": "keyword"
+                },
+                "SubTypeSchema": {
+                  "type": "keyword"
+                }
+              },
+              "type": "object"
+            },
+            "Title": {
+              "type": "text"
+            },
+            "SearchIdentifier": {
+              "properties": {
+                "IDURL": {
+                  "type": "keyword"
+                },
+                "ID": {
+                  "type": "keyword"
+                },
+                "IDScheme": {
+                  "type": "keyword"
+                }
+              },
+              "type": "nested"
+            },
+            "Identifier": {
+              "properties": {
+                "IDURL": {
+                  "type": "keyword"
+                },
+                "ID": {
+                  "type": "keyword"
+                },
+                "IDScheme": {
+                  "type": "keyword"
+                }
+              },
+              "type": "nested"
+            },
+            "Creator": {
+              "properties": {
+                "Name": {
+                  "type": "text"
+                },
+                "Identifier": {
+                  "properties": {
+                    "IDURL": {
+                      "type": "keyword"
+                    },
+                    "ID": {
+                      "type": "keyword"
+                    },
+                    "IDScheme": {
+                      "type": "keyword"
+                    }
+                  },
+                  "type": "nested"
+                }
+              },
+              "type": "nested"
+            },
+            "Publisher": {
+              "properties": {
+                "Name": {
+                  "type": "text"
+                },
+                "Identifier": {
+                  "properties": {
+                    "IDURL": {
+                      "type": "keyword"
+                    },
+                    "ID": {
+                      "type": "keyword"
+                    },
+                    "IDScheme": {
+                      "type": "keyword"
+                    }
+                  },
+                  "type": "nested"
+                }
+              },
+              "type": "nested"
+            },
+            "PublicationDate": {
+              "type": "date"
+            }
+          }
+        }
+      },
+      "dynamic": false
+    }
+}
