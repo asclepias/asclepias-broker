@@ -43,10 +43,10 @@ ASCLEPIAS_HARVESTER_EVENT_HARVESTERS = {
 }
 
 ASCLEPIAS_HARVESTER_METADATA_HARVESTERS = {
-    'doi': (DOIMetadataHarvester, {}),
-    'ads': (ADSMetadataHarvester, {}),
-    'zenodo': (ZenodoVersioningHarvester, {}),
-    'github': (GitHubHarvester, {})
+    'DOIMetadataHarvester': (DOIMetadataHarvester, {}),
+    'ADSMetadataHarvester': (ADSMetadataHarvester, {}),
+    'ZenodoVersioningHarvester': (ZenodoVersioningHarvester, {}),
+    'GitHubHarvester': (GitHubHarvester, {})
 }
 """Metadata harvesters configuration."""
 
