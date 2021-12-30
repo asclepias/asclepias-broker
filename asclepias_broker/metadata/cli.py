@@ -43,7 +43,8 @@ def load_metadata(jsondir):
                 update_metadata(
                     identifier, scheme, data['Object'], provider=provider)
             except Exception as exc:
-                error_obj = ErrorMonitoring(origin="cli_load_metadata", error=repr(exc), n_retries = 99,  payload={'fileName':fn})
+                payload = {'identifier':identifier, 'scheme': scheme, 'providers': provider, 'fileName':fn}
+                error_obj = ErrorMonitoring(origin="cli_load_metadata", error=repr(exc), n_retries = 99,  payload=payload)
                 db.session.add(error_obj)
                 db.session.commit()
                 current_app.logger.exception('Error in cli load metadata using file:' + fn)
