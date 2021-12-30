@@ -12,19 +12,19 @@ services:
     extends:
       file: docker-services.yml
       service: lb
-    build: ./docker/haproxy-dev-ssl/
-    image: asclepias-broker-lb-ssl
+    build: ./docker/haproxy-production/
+    image: asclepias-broker-lb-production
     links:
       - frontend
     volumes:
-      - /etc/letsencrypt/:/etc/certbot/conf
+      - /etc/letsencrypt/:/etc/letsencrypt
   # Frontend
   frontend:
     extends:
       file: docker-services.yml
       service: frontend
-    build: ./docker/nginx-dev-ssl/
-    image: asclepias-broker-frontend-ssl
+    build: ./docker/nginx-production/
+    image: asclepias-broker-frontend-production
     volumes:
       - static_data:/opt/invenio/var/instance/static
       - /etc/letsencrypt/:/etc/certbot/conf
