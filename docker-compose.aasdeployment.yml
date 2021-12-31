@@ -151,7 +151,7 @@ services:
       - es03_data:/usr/share/elasticsearch/data
     links:
       - es
-      - es03  
+      - es02  
 volumes:
   static_data:
   pg_data:
