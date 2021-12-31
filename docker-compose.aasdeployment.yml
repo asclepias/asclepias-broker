@@ -14,8 +14,8 @@ services:
       service: lb
     build: ./docker/haproxy-production/
     image: asclepias-broker-lb-production
-    links:
-      - frontend
+    networks:
+      - main
     volumes:
       - /etc/letsencrypt/:/etc/letsencrypt
   # Frontend
@@ -28,8 +28,8 @@ services:
     volumes:
       - static_data:/opt/invenio/var/instance/static
       - /etc/letsencrypt/:/etc/certbot/conf
-    links:
-      - web
+    networks:
+      - main
   # Web application
   web:
     extends:
@@ -41,11 +41,8 @@ services:
       - "5000"
     volumes:
       - static_data:/opt/invenio/var/instance/static
-    links:
-      - cache
-      - es
-      - mq
-      - db
+    networks:
+      - main
   # Worker
   worker:
     extends:
@@ -54,37 +51,42 @@ services:
     restart: "always"
     command: "pipenv run celery -A invenio_app.celery worker --beat --loglevel=INFO"
     image: asclepias-broker-worker
-    links:
-      - cache
-      - es
-      - mq
-      - db
+    networks:
+      - main
   # Monitoring
   kibana:
     extends:
       file: docker-services.yml
       service: kibana
+    networks:
+      - main
   flower:
     extends:
       file: docker-services.yml
       service: flower
-    links:
-      - mq
+    networks:
+      - main
   # Base services
   cache:
     extends:
       file: docker-services.yml
       service: cache
+    networks:
+      - main
   db:
     extends:
       file: docker-services.yml
       service: db
     volumes:
       - pg_data:/var/lib/postgresql/data
+    networks:
+      - main
   mq:
     extends:
       file: docker-services.yml
       service: mq
+    networks:
+      - main
   # Three Node Elasticsearch Cluster
   es:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
@@ -107,9 +109,9 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
-    links:
-      - es02
-      - es03
+    networks:
+      - elastic
+      - main
   es02:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
     restart: "always"
@@ -128,9 +130,8 @@ services:
     mem_limit: 2g
     volumes:
       - es02_data:/usr/share/elasticsearch/data
-    links:
-      - es
-      - es03  
+    networks:
+      - elastic
   es03:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
     restart: "always"
@@ -149,12 +150,15 @@ services:
     mem_limit: 2g
     volumes:
       - es03_data:/usr/share/elasticsearch/data
-    links:
-      - es
-      - es02  
+    networks:
+      - elastic
 volumes:
   static_data:
   pg_data:
   es_data:
   es02_data:
   es03_data:
+networks:
+  main:
+  elastic:
+    driver: bridge
