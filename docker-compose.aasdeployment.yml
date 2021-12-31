@@ -98,7 +98,7 @@ services:
       - discovery.seed_hosts=es02,es03
       - cluster.initial_master_nodes=es,es02,es03
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
     ulimits:
       memlock:
         soft: -1
@@ -122,7 +122,7 @@ services:
       - discovery.seed_hosts=es,es03
       - cluster.initial_master_nodes=es,es02,es03
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
     ulimits:
       memlock:
         soft: -1
@@ -142,7 +142,7 @@ services:
       - discovery.seed_hosts=es,es02
       - cluster.initial_master_nodes=es,es02,es03
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
     ulimits:
       memlock:
         soft: -1
