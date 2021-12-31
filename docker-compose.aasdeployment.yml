@@ -96,7 +96,7 @@ services:
       - node.name=es
       - cluster.name=es-docker-cluster
       - discovery.seed_hosts=es02,es03
-      - cluster.initial_master_nodes=es
+      - cluster.initial_master_nodes=es,es02,es03
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
     ulimits:
@@ -120,7 +120,7 @@ services:
       - node.name=es02
       - cluster.name=es-docker-cluster
       - discovery.seed_hosts=es,es03
-      - cluster.initial_master_nodes=es
+      - cluster.initial_master_nodes=es,es02,es03
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
     ulimits:
@@ -140,7 +140,7 @@ services:
       - node.name=es03
       - cluster.name=es-docker-cluster
       - discovery.seed_hosts=es,es02
-      - cluster.initial_master_nodes=es
+      - cluster.initial_master_nodes=es,es02,es03
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
     ulimits:
