@@ -79,13 +79,83 @@ services:
     extends:
       file: docker-services.yml
       service: db
+    volumes:
+      - pg_data:/var/lib/postgresql/data
   mq:
     extends:
       file: docker-services.yml
       service: mq
+  # Three Node Elasticsearch Cluster
   es:
-    extends:
-      file: docker-services.yml
-      service: es
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
+    restart: "always"
+    container_name: es
+    environment:
+      - node.name=es
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es02,es03
+      - cluster.initial_master_nodes=es,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 2g
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - elastic
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
+    restart: "always"
+    container_name: es02
+    environment:
+      - node.name=es02
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es,es03
+      - cluster.initial_master_nodes=es,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 2g
+    volumes:
+      - es02_data:/usr/share/elasticsearch/data
+    networks:
+      - elastic  
+  es03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
+    restart: "always"
+    container_name: es03
+    environment:
+      - node.name=es03
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es,es02
+      - cluster.initial_master_nodes=es,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 2g
+    volumes:
+      - es03_data:/usr/share/elasticsearch/data
+    networks:
+      - elastic  
 volumes:
   static_data:
+  pg_data:
+  es_data:
+  es02_data:
+  es03_data:
+
+networks:
+  elastic:
+    driver: bridge
