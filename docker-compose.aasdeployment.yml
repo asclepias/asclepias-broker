@@ -156,8 +156,11 @@ volumes:
   static_data:
   pg_data:
   es_data:
+    driver: local
   es02_data:
+    driver: local
   es03_data:
+    driver: local
 networks:
   main:
   elastic:
