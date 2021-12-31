@@ -110,8 +110,7 @@ services:
       - "9200:9200"
       - "9300:9300"
     networks:
-      - elastic
-      # - main
+      - main
   es02:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
     restart: "always"
@@ -131,7 +130,7 @@ services:
     volumes:
       - es02_data:/usr/share/elasticsearch/data
     networks:
-      - elastic
+      - main
   es03:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
     restart: "always"
@@ -151,7 +150,7 @@ services:
     volumes:
       - es03_data:/usr/share/elasticsearch/data
     networks:
-      - elastic
+      - main
 volumes:
   static_data:
   pg_data:
