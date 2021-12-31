@@ -162,5 +162,4 @@ volumes:
     driver: local
 networks:
   main:
-  elastic:
-    driver: bridge
+
