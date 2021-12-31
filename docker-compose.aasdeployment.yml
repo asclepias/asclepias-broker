@@ -111,7 +111,7 @@ services:
       - "9300:9300"
     networks:
       - elastic
-      - main
+      # - main
   es02:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
     restart: "always"
