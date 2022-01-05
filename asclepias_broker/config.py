@@ -240,6 +240,8 @@ RECORDS_REST_FACETS = dict(
                     'isRelatedTo': 'IsRelatedTo'
                 }
             ),
+            keyword=simple_query_string_filter('Source.Keywords_all'),
+            journal=nested_terms_filter('Source.Publisher.Name','Source.Publisher'),
         ),
         post_filters=dict(
             type=terms_filter('Source.Type.Name'),
