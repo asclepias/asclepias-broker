@@ -129,8 +129,7 @@ reindex everything you can run:
 
 .. code-block:: shell
 
-    # We pass the "--destroy" flag to clean the index state
-    $ pipenv run asclepias-broker search reindex --destroy
+    $ pipenv run asclepias-broker search reindex
 
 Querying
 --------

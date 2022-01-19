@@ -46,8 +46,6 @@ Tasks
 .. automodule:: asclepias_broker.search.tasks
    :members:
 
-.. autotask:: asclepias_broker.search.tasks.reindex_all_relationships
-
 Views
 ~~~~~
 
