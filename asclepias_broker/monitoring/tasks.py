@@ -5,7 +5,7 @@
 #
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
-"""Monitoring notifications"""
+"""Monitoring tasks"""
 
 from ..monitoring.models import ErrorMonitoring, HarvestMonitoring
 from ..events.models import Event
@@ -16,6 +16,11 @@ import os
 
 @shared_task()
 def sendMonitoringReport():
+    """Sends monitor report to the Slack bot defined with SLACK_API_TOKEN in the enviroment
+    
+    Sends a report of the number of events and harvester that have been done during the last 7 days 
+    and also adds a list of all errors that have taken place during the ingestions"""
+
     slack_token = os.environ.get("SLACK_API_TOKEN")
     if slack_token is not None and slack_token != "CHANGE_ME":
         client = slack.WebClient(token=slack_token)
