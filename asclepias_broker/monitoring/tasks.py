@@ -14,7 +14,7 @@ from sqlalchemy import and_
 import slack
 import os
 
-@shared_task()
+@shared_task(ignore_result=True))
 def sendMonitoringReport():
     """Sends monitor report to the Slack bot defined with SLACK_API_TOKEN in the enviroment
     
