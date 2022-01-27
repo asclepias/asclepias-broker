@@ -31,8 +31,12 @@ def harvest_metadata_identifier(self, harvester: str, identifier: str, scheme: s
         db.session.rollback()
         _set_event_status(event_uuid, HarvestStatus.Error)
         payload = {'identifier':identifier, 'scheme': scheme, 'providers': providers}
-        error_obj = ErrorMonitoring(origin=self.__class__.__name__, error=repr(exc), n_retries=self.request.retries, payload=payload)
-        db.session.add(error_obj)
+        error_obj = ErrorMonitoring.getFromEvent(event_uuid)
+        if not error_obj:
+            error_obj = ErrorMonitoring(event_id = event_uuid, origin=self.__class__.__name__, error=repr(exc), n_retries=self.request.retries, payload=payload)
+            db.session.add(error_obj)
+        else:
+            error_obj.n_retries += 1
         db.session.commit()
         self.retry(exc=exc)
 

@@ -153,8 +153,13 @@ def process_event(self, event_uuid: str, indexing_enabled: bool = True):
         db.session.rollback()
         _set_event_status(event_uuid, EventStatus.Error)
         payload = Event.get(id=event_uuid).payload
-        error_obj = ErrorMonitoring(origin=self.__class__.__name__, error=repr(exc), n_retries=self.request.retries, payload=payload)
-        db.session.add(error_obj)
+        error_obj = ErrorMonitoring.getFromEvent(event_uuid)
+        if not error_obj:
+            error_obj = ErrorMonitoring(event_id = event_uuid, origin=self.__class__.__name__, error=repr(exc), n_retries=self.request.retries, payload=payload)
+            db.session.add(error_obj)
+        else:
+            error_obj.n_retries += 1
+        
         db.session.commit()
         self.retry(exc=exc)
 
