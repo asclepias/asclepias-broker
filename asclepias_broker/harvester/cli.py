@@ -56,13 +56,16 @@ def events_command(harvester_ids: List[str], eager: bool = False):
 
 @harvester.command('rerun')
 @click.option('-i','--id', default=None)
+@click.option('--start-time', default=None)
+@click.option('--end-time', default=None)
 @click.option('-a', '--all', default=False, is_flag=True)
 @click.option('-e', '--errors', default=False, is_flag=True)
 @click.option('-p', '--processing', default=False, is_flag=True)
 @click.option('--no-index', default=False, is_flag=True)
 @click.option('--eager', default=False, is_flag=True)
 @with_appcontext
-def rerun(id: str = None, all: bool = False, errors: bool = True, processing: bool = False, no_index: bool = False, eager: bool = False):
+def rerun(id: str = None, all: bool = False, errors: bool = True, processing: bool = False,
+    start_time: str = None, end_time:str = None, no_index: bool = False, eager: bool = False):
     """Rerun failed or stuck events."""
     if id:
         rerun_id(id, no_index, eager)
@@ -74,7 +77,7 @@ def rerun(id: str = None, all: bool = False, errors: bool = True, processing: bo
         rerun_processing(no_index, eager)
         rerun_new(no_index, eager)
     if errors:
-        rerun_errors(no_index, eager)
+        rerun_errors(no_index, start_time, end_time, eager)
 
 def rerun_id(id:str, no_index: bool, eager:bool = False):
         event = HarvestMonitoring.get(id)
@@ -93,8 +96,15 @@ def rerun_new(no_index: bool, eager:bool = False):
         for event in resp:
             rerun_event(event, no_index=no_index, eager=eager)
 
-def rerun_errors(no_index: bool, eager:bool = False):
-        resp = HarvestMonitoring.query.filter(HarvestMonitoring.status == HarvestStatus.Error).all()
+def rerun_errors(no_index: bool, eager:bool = False,  start_time: str = None, end_time:str = None):
+        if start_time and end_time:
+            resp = HarvestMonitoring.query.filter(HarvestMonitoring.status == HarvestStatus.Error, HarvestMonitoring.created > start_time, HarvestMonitoring.created < end_time).all()
+        elif start_time:
+            resp = HarvestMonitoring.query.filter(HarvestMonitoring.status == HarvestStatus.Error, HarvestMonitoring.created > start_time).all()
+        elif end_time:
+            resp = HarvestMonitoring.query.filter(HarvestMonitoring.status == HarvestStatus.Error, HarvestMonitoring.created < end_time).all()
+        else:
+            resp = HarvestMonitoring.query.filter(HarvestMonitoring.status == HarvestStatus.Error).all()
         for event in resp:
             rerun_event(event, no_index=no_index, eager=eager)
 
