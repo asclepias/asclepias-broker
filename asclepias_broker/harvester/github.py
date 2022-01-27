@@ -103,6 +103,7 @@ class GitHubHarvester(MetadataHarvester):
 
         return (self._is_github_url(scheme, identifier) or\
             self._is_github_repo_id(scheme, identifier) or\
+            self._is_github_repo_id(scheme, identifier) or\
             self._is_github_release_id(scheme, identifier) )\
             and not is_provider
 
@@ -140,7 +141,7 @@ class GitHubHarvester(MetadataHarvester):
                     EventAPI.handle_event(list(event_chunk), no_index=True, eager=True)
                 except ValueError:
                     current_app.logger.exception(
-                        'Error while processing versioning event.')
+                        'Error while processing github harvesting event.')
         except Exception as exc:
             raise GitHubAPIException(exc)
 
@@ -154,8 +155,12 @@ class GitHubHarvester(MetadataHarvester):
             return True
         return False
         
-    def _is_github_url(self,  scheme: str, identifier: str) -> bool:
+    def _is_valid_github_url(self,  scheme: str, identifier: str) -> bool:
         if scheme.lower() == 'url' and 'github.com' in identifier.lower():
+            try:
+                self.parse_url_info(identifier)
+            except:
+                return False
             return True
         else:
             return False
@@ -165,7 +170,7 @@ class GitHubHarvester(MetadataHarvester):
         github_index = next(i for i,p in enumerate(parts) if 'github.com' in p)
         
         if len(parts) - github_index < 3:
-                raise GitHubAPIException('Not a valid github url: ', )
+                raise GitHubAPIException('Not a valid github repo url: ' + url, )
 
         resp = dict()
         resp['identifier'] = url
@@ -177,12 +182,16 @@ class GitHubHarvester(MetadataHarvester):
         # github.com/user/repo/tree/tag_we_want
         # or 
         # github.com/user/repo/releases/tag/tag_we_want
+        # or 
+        # github.com/user/repo/commit/tag_we_want
         if len(parts) - github_index > 4:
             resp['sub_type'] = parts[github_index + 3]
-            if resp['sub_type'] == 'tree': 
+            if resp['sub_type'] == 'tree' or resp['sub_type'] == 'commit':  
                 resp['tag'] = parts[github_index + 4]
             elif resp['sub_type'] == 'releases':
                 resp['tag'] = parts[github_index + 5]
+            else:
+                raise GitHubAPIException('Not a valid github repo url: ' + url, )
         return resp
 
 def add_parent_identifiers(parsed_info, providers, child = None) -> List[dict]:

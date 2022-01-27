@@ -14,6 +14,7 @@ import idutils
 from flask import current_app
 from marshmallow import Schema, fields, post_load, pre_load, validates_schema
 from marshmallow.exceptions import ValidationError
+from ..harvester.github import GitHubHarvester
 
 from ..core.models import Identifier, Relation, Relationship
 
@@ -124,6 +125,12 @@ class IdentifierSchema(Schema):
         # if schemes and scheme not in schemes:
         #     raise ValidationError("Invalid scheme '{}'".format(
         #         data['scheme']), 'IDScheme')
+        
+        #Check for valid github url
+        if scheme == 'url' and 'github' in value:
+            gitHubHarvester = GitHubHarvester()
+            if not gitHubHarvester.can_harvest(identifier=value, scheme=scheme):
+                raise ValidationError("Invalid github repo or release '{}'".format(value))
 
 
 @to_model(Relationship)
