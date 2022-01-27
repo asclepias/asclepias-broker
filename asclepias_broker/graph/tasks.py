@@ -9,12 +9,9 @@
 
 from typing import Dict, List, Set, Tuple
 
-import datetime
 from celery import shared_task
 from flask import current_app
 from invenio_db import db
-from marshmallow.exceptions import \
-    ValidationError as MarshmallowValidationError
 
 from ..core.models import Relationship
 from ..events.models import Event, EventStatus, ObjectEvent, PayloadType
@@ -23,7 +20,6 @@ from ..metadata.api import update_metadata_from_event
 from ..schemas.loaders import RelationshipSchema
 from ..search.indexer import update_indices
 from .api import update_groups
-from ..events.cli import rerun_event
 from ..monitoring.models import ErrorMonitoring
 
 
