@@ -14,8 +14,8 @@ import idutils
 from flask import current_app
 from marshmallow import Schema, fields, post_load, pre_load, validates_schema
 from marshmallow.exceptions import ValidationError
-from ..harvester.github import GitHubHarvester
 
+from ..harvester.utils import GithubUtility
 from ..core.models import Identifier, Relation, Relationship
 
 DATACITE_RELATION_MAP = {
@@ -128,8 +128,9 @@ class IdentifierSchema(Schema):
         
         #Check for valid github url
         if scheme == 'url' and 'github' in value:
-            gitHubHarvester = GitHubHarvester()
-            if not gitHubHarvester.can_harvest(identifier=value, scheme=scheme):
+            try:
+                GithubUtility.parse_url_info(value)
+            except:
                 raise ValidationError("Invalid github repo or release '{}'".format(value))
 
 

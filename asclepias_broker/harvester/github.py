@@ -18,16 +18,12 @@ import time
 import requests
 from flask import current_app
 from sqlalchemy.orm import relationship
-from werkzeug.utils import cached_property
+from .utils import GitHubAPIException, GithubUtility
 
 from asclepias_broker.core.models import Identifier
 
 from ..utils import chunks
 from .base import MetadataHarvester
-
-
-class GitHubAPIException(Exception):
-    """Github REST API exception."""
 
 
 class GitHubClient:
@@ -117,7 +113,7 @@ class GitHubHarvester(MetadataHarvester):
             providers.add(self.provider_name)
             payloads = []
             if self._is_github_url(scheme, identifier):
-                parsed_info = self.parse_url_info(identifier)
+                parsed_info = GithubUtility.parse_url_info(identifier)
             elif self._is_github_repo_id(scheme, identifier):
                 parsed_info = dict(id=identifier, identifier=identifier, scheme='github')
             elif self._is_github_release_id(scheme, identifier):
@@ -158,42 +154,13 @@ class GitHubHarvester(MetadataHarvester):
     def _is_valid_github_url(self,  scheme: str, identifier: str) -> bool:
         if scheme.lower() == 'url' and 'github.com' in identifier.lower():
             try:
-                self.parse_url_info(identifier)
+                GithubUtility.parse_url_info(identifier)
             except:
                 return False
             return True
         else:
             return False
     
-    def parse_url_info(self, url):
-        parts = url.split('/')
-        github_index = next(i for i,p in enumerate(parts) if 'github.com' in p)
-        
-        if len(parts) - github_index < 3:
-                raise GitHubAPIException('Not a valid github repo url: ' + url, )
-
-        resp = dict()
-        resp['identifier'] = url
-        resp['scheme'] = 'url'
-        resp['user'] = parts[github_index + 1]
-        resp['repo'] = parts[github_index + 2]
-
-        # Specific version urls shoudl be either on the form
-        # github.com/user/repo/tree/tag_we_want
-        # or 
-        # github.com/user/repo/releases/tag/tag_we_want
-        # or 
-        # github.com/user/repo/commit/tag_we_want
-        if len(parts) - github_index > 4:
-            resp['sub_type'] = parts[github_index + 3]
-            if resp['sub_type'] == 'tree' or resp['sub_type'] == 'commit':  
-                resp['tag'] = parts[github_index + 4]
-            elif resp['sub_type'] == 'releases':
-                resp['tag'] = parts[github_index + 5]
-            else:
-                raise GitHubAPIException('Not a valid github repo url: ' + url, )
-        return resp
-
 def add_parent_identifiers(parsed_info, providers, child = None) -> List[dict]:
     client = GitHubClient()
     add_old_name = False
