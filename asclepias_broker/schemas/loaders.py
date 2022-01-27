@@ -15,7 +15,7 @@ from flask import current_app
 from marshmallow import Schema, fields, post_load, pre_load, validates_schema
 from marshmallow.exceptions import ValidationError
 
-from ..harvester.utils import GithubUtility
+from ..utils import GithubUtility
 from ..core.models import Identifier, Relation, Relationship
 
 DATACITE_RELATION_MAP = {

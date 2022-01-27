@@ -7,7 +7,6 @@
 
 """Versioning metadata harvester."""
 
-from copy import deepcopy
 from datetime import datetime
 from typing import List
 
@@ -18,11 +17,7 @@ import time
 import requests
 from flask import current_app
 from sqlalchemy.orm import relationship
-from .utils import GitHubAPIException, GithubUtility
-
-from asclepias_broker.core.models import Identifier
-
-from ..utils import chunks
+from ..utils import chunks, GitHubAPIException, GithubUtility
 from .base import MetadataHarvester
 
 
