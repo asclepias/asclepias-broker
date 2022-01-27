@@ -9,14 +9,16 @@
 
 from typing import List, Optional
 from uuid import uuid4
+import datetime
 
 from celery import shared_task
 from invenio_db import db
 
 from .proxies import current_harvester
 from ..monitoring.models import ErrorMonitoring, HarvestMonitoring, HarvestStatus
+from .cli import rerun_event
 
-@shared_task(bind=True, ignore_result=True, max_retries=3, default_retry_delay=10 * 60)
+@shared_task(bind=True, ignore_result=True, max_retries=1, default_retry_delay=10 * 60)
 def harvest_metadata_identifier(self, harvester: str, identifier: str, scheme: str,
                                 event_uuid: str, providers: List[str] = None):
     """."""
@@ -32,9 +34,7 @@ def harvest_metadata_identifier(self, harvester: str, identifier: str, scheme: s
         error_obj = ErrorMonitoring(origin=self.__class__.__name__, error=repr(exc), n_retries=self.request.retries, payload=payload)
         db.session.add(error_obj)
         db.session.commit()
-        wait_time = [600, 3600, 24*3600] 
-        time_to_next_try = wait_time[self.request.retries]
-        self.retry(exc=exc, countdown=time_to_next_try)
+        self.retry(exc=exc)
 
 
 @shared_task(ignore_result=True)
@@ -81,3 +81,10 @@ def _set_event_status(event_uuid, status):
     event = HarvestMonitoring.get(event_uuid)
     event.status = status
     db.session.commit()
+
+@shared_task(ignore_result=True)
+def rerun_errors():
+    two_days_ago = datetime.datetime.now() - datetime.timedelta(days = 2)
+    resp = HarvestMonitoring.query.filter(HarvestMonitoring.status == HarvestStatus.Error, HarvestMonitoring.created > str(two_days_ago)).all()
+    for event in resp:
+        rerun_event(event, no_index=True, eager=False)

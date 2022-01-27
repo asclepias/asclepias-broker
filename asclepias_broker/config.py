@@ -127,11 +127,19 @@ CELERY_BEAT_SCHEDULE = {
     },
     'reindex': {
         'task': 'asclepias_broker.search.tasks.reindex_all_relationships',
-        'schedule': timedelta(hours=24)
+        'schedule':  crontab(hour=23, minute=0)
     },
     'notify': {
         'task': 'asclepias_broker.monitoring.tasks.sendMonitoringReport',
         'schedule':  crontab(hour=0, minute=0, day_of_week=0)
+    },
+    'rerun_harvester_errors': {
+        'task': 'asclepias_broker.harvester.tasks.rerun_errors',
+        'schedule':  crontab(hour=22, minute=0)
+    },
+    'rerun_event_errors': {
+        'task': 'asclepias_broker.events.tasks.rerun_errors',
+        'schedule':  crontab(hour=21, minute=0)
     },
 }
 

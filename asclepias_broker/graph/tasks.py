@@ -9,6 +9,7 @@
 
 from typing import Dict, List, Set, Tuple
 
+import datetime
 from celery import shared_task
 from flask import current_app
 from invenio_db import db
@@ -22,6 +23,7 @@ from ..metadata.api import update_metadata_from_event
 from ..schemas.loaders import RelationshipSchema
 from ..search.indexer import update_indices
 from .api import update_groups
+from ..events.cli import rerun_event
 from ..monitoring.models import ErrorMonitoring
 
 
@@ -108,7 +110,7 @@ def _set_event_status(event_uuid, status):
     db.session.commit()
 
 
-@shared_task(bind=True, ignore_result=True, max_retries=3, default_retry_delay=5 * 60)
+@shared_task(bind=True, ignore_result=True, max_retries=1, default_retry_delay=10 * 60)
 def process_event(self, event_uuid: str, indexing_enabled: bool = True):
     """Process the event."""
     # TODO: Should we detect and skip duplicated events?
@@ -154,6 +156,11 @@ def process_event(self, event_uuid: str, indexing_enabled: bool = True):
         error_obj = ErrorMonitoring(origin=self.__class__.__name__, error=repr(exc), n_retries=self.request.retries, payload=payload)
         db.session.add(error_obj)
         db.session.commit()
-        wait_time = [600, 3600, 24*3600] 
-        time_to_next_try = wait_time[self.request.retries]
-        self.retry(exc=exc, countdown=time_to_next_try)
+        self.retry(exc=exc)
+
+@shared_task(ignore_result=True)
+def rerun_errors():
+    two_days_ago = datetime.datetime.now() - datetime.timedelta(days = 2)
+    resp = Event.query.filter(Event.status == EventStatus.Error, Event.created > str(two_days_ago)).all()
+    for event in resp:
+        rerun_event(event, no_index=True, eager=False)
