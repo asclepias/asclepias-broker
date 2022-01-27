@@ -14,6 +14,7 @@ from typing import List
 from ..events.api import EventAPI
 
 import re
+import time
 import requests
 from flask import current_app
 from sqlalchemy.orm import relationship
@@ -109,6 +110,8 @@ class GitHubHarvester(MetadataHarvester):
                 providers: List[str] = None):
         """."""
         try:
+            #Added a sleeper timer to slow down the harvesters since during large ingestions they cause HTTP 403 errors when too many queries are sent
+            time.sleep(1)
             providers = set(providers) if providers else set()
             providers.add(self.provider_name)
             payloads = []

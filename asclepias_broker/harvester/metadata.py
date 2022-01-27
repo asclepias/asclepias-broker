@@ -10,7 +10,7 @@
 from copy import deepcopy
 from datetime import datetime
 from typing import Callable, List, Union
-
+import time
 import idutils
 import requests
 from flask import current_app
@@ -177,6 +177,8 @@ class DOIMetadataHarvester(MetadataHarvester):
                 providers: List[str] = None):
         """."""
         try:
+            #Added a sleeper timer to slow down the harvesters since during large ingestions they cause HTTP 403 errors when too many queries are sent
+            time.sleep(1)
             data = self.get_metadata(identifier)
             if data:
                 providers = set(providers) if providers else set()
@@ -262,6 +264,8 @@ class ADSMetadataHarvester(MetadataHarvester):
     def harvest(self, identifier: str, scheme: str,
                 providers: List[str] = None):
         """."""
+        #Added a sleeper timer to slow down the harvesters since during large ingestions they cause HTTP 403 errors when too many queries are sent
+        time.sleep(1)
         data = self.get_metadata(identifier)
         if data:
             providers = set(providers) if providers else set()
