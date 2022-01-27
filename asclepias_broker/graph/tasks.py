@@ -162,10 +162,3 @@ def process_event(self, event_uuid: str, indexing_enabled: bool = True):
         
         db.session.commit()
         self.retry(exc=exc)
-
-@shared_task(ignore_result=True)
-def rerun_errors():
-    two_days_ago = datetime.datetime.now() - datetime.timedelta(days = 2)
-    resp = Event.query.filter(Event.status == EventStatus.Error, Event.created > str(two_days_ago)).all()
-    for event in resp:
-        rerun_event(event, no_index=True, eager=False)

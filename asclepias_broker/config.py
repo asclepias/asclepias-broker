@@ -134,11 +134,11 @@ CELERY_BEAT_SCHEDULE = {
         'schedule':  crontab(hour=0, minute=0, day_of_week=0)
     },
     'rerun_harvester_errors': {
-        'task': 'asclepias_broker.harvester.tasks.rerun_errors',
+        'task': 'asclepias_broker.monitoring.tasks.rerun_harvest_errors',
         'schedule':  crontab(hour=22, minute=0)
     },
     'rerun_event_errors': {
-        'task': 'asclepias_broker.events.tasks.rerun_errors',
+        'task': 'asclepias_broker.monitoring.tasks.rerun_event_errors',
         'schedule':  crontab(hour=21, minute=0)
     },
 }
