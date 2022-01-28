@@ -92,7 +92,7 @@ class GitHubHarvester(MetadataHarvester):
         if providers:
             is_provider = self.provider_name in providers
 
-        return (self._is_github_url(scheme, identifier) or\
+        return (self._is_valid_github_url(scheme, identifier) or\
             self._is_github_repo_id(scheme, identifier) or\
             self._is_github_repo_id(scheme, identifier) or\
             self._is_github_release_id(scheme, identifier) )\
@@ -107,7 +107,7 @@ class GitHubHarvester(MetadataHarvester):
             providers = set(providers) if providers else set()
             providers.add(self.provider_name)
             payloads = []
-            if self._is_github_url(scheme, identifier):
+            if self._is_valid_github_url(scheme, identifier):
                 parsed_info = GithubUtility.parse_url_info(identifier)
             elif self._is_github_repo_id(scheme, identifier):
                 parsed_info = dict(id=identifier, identifier=identifier, scheme='github')
