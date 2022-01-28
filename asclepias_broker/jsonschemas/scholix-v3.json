@@ -232,7 +232,7 @@
       ]
     },
     "LicenseURL": {
-      "type": "string",
+      "type": ["string", "null"],
       "title": "License URL schema",
       "description": "URL to the license of this Link Information Package.",
       "default": "",

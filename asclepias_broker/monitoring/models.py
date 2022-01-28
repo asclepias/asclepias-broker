@@ -31,6 +31,7 @@ class ErrorMonitoring(db.Model, Timestamp):
     __tablename__ = 'error_monitoring'
 
     id = db.Column(UUIDType, default=uuid.uuid4, primary_key=True)
+    event_id = db.Column(UUIDType)
     origin = db.Column(db.String, nullable=False)
     error = db.Column(db.String)
     n_retries = db.Column(db.Integer)
@@ -44,14 +45,18 @@ class ErrorMonitoring(db.Model, Timestamp):
     @classmethod
     def getLastWeeksErrors(cls, **kwargs):
         """Gets all the errors from last week where it has been rerun for at least 2 times all ready"""
-        last_week = datetime.datetime.now() - datetime.timedelta(days = 7)
+        last_week = datetime.datetime.now() - datetime.timedelta(days = 8)
         resp = cls.query.filter(cls.created > str(last_week), cls.n_retries > 2).all()
         return resp
     
+    @classmethod
+    def getFromEvent(cls, event_id):
+        """Dictionary representation of the error."""
+        return cls.query.filter_by(event_id=event_id).one_or_none()
+
     def to_dict(self):
         """Dictionary representation of the error."""
         return dict(created=self.created, updated = self.updated, id = self.id, origin = self.origin, error = self.error, payload = self.payload)
-
 
     def __repr__(self):
         """String representation of the error."""

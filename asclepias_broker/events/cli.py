@@ -71,33 +71,21 @@ def rerun(id: str = None, all: bool = False, errors: bool = True, processing: bo
 def rerun_id(id:str, no_index: bool, eager:bool = False):
         event = Event.get(id)
         if event:
-            rerun_event(event, no_index=no_index, eager=eager)
+            EventAPI.rerun_event(event, no_index=no_index, eager=eager)
 
 def rerun_processing(no_index: bool, eager:bool = False):
         yesterday = datetime.datetime.now() - datetime.timedelta(days = 1)
         resp = Event.query.filter(Event.status == EventStatus.Processing, Event.created < str(yesterday)).all()
         for event in resp:
-            rerun_event(event, no_index=no_index, eager=eager)
+            EventAPI.rerun_event(event, no_index=no_index, eager=eager)
 
 def rerun_new(no_index: bool, eager:bool = False):
         yesterday = datetime.datetime.now() - datetime.timedelta(days = 1)
         resp = Event.query.filter(Event.status == EventStatus.New, Event.created < str(yesterday)).all()
         for event in resp:
-            rerun_event(event, no_index=no_index, eager=eager)
+            EventAPI.rerun_event(event, no_index=no_index, eager=eager)
 
 def rerun_errors(no_index: bool, eager:bool = False):
         resp = Event.query.filter(Event.status == EventStatus.Error).all()
         for event in resp:
-            rerun_event(event, no_index=no_index, eager=eager)
-
-def rerun_event(event: Event, no_index: bool, eager:bool = False):
-        event_uuid = str(event.id)
-        idx_enabled = current_app.config['ASCLEPIAS_SEARCH_INDEXING_ENABLED'] \
-            and (not no_index)
-        task = process_event.s(
-            event_uuid=event_uuid, indexing_enabled=idx_enabled)
-        if eager:
-            task.apply(throw=True)
-        else:
-            task.apply_async()
-        return event
+            EventAPI.rerun_event(event, no_index=no_index, eager=eager)

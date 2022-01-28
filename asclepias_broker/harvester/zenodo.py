@@ -14,7 +14,7 @@ from typing import Any, List
 import requests
 from flask import current_app
 
-from asclepias_broker.harvester.github import GitHubHarvester
+from ..harvester.github import GitHubHarvester
 
 from ..utils import chunks
 from .base import MetadataHarvester

@@ -16,8 +16,7 @@ from invenio_db import db
 from .proxies import current_harvester
 from ..monitoring.models import ErrorMonitoring, HarvestMonitoring, HarvestStatus
 
-
-@shared_task(bind=True, ignore_result=True, max_retries=4, default_retry_delay=10 * 60)
+@shared_task(bind=True, ignore_result=True, max_retries=1, default_retry_delay=10 * 60)
 def harvest_metadata_identifier(self, harvester: str, identifier: str, scheme: str,
                                 event_uuid: str, providers: List[str] = None):
     """."""
@@ -30,12 +29,14 @@ def harvest_metadata_identifier(self, harvester: str, identifier: str, scheme: s
         db.session.rollback()
         _set_event_status(event_uuid, HarvestStatus.Error)
         payload = {'identifier':identifier, 'scheme': scheme, 'providers': providers}
-        error_obj = ErrorMonitoring(origin=self.__class__.__name__, error=repr(exc), n_retries=self.request.retries, payload=payload)
-        db.session.add(error_obj)
+        error_obj = ErrorMonitoring.getFromEvent(event_uuid)
+        if not error_obj:
+            error_obj = ErrorMonitoring(event_id = event_uuid, origin=self.__class__.__name__, error=repr(exc), n_retries=self.request.retries, payload=payload)
+            db.session.add(error_obj)
+        else:
+            error_obj.n_retries += 1
         db.session.commit()
-        wait_time = [600, 3600, 24*3600, 7*24*3600] 
-        time_to_next_try = wait_time[self.request.retries]
-        self.retry(exc=exc, countdown=time_to_next_try)
+        self.retry(exc=exc)
 
 
 @shared_task(ignore_result=True)

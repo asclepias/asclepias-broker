@@ -7,26 +7,18 @@
 
 """Versioning metadata harvester."""
 
-from copy import deepcopy
 from datetime import datetime
 from typing import List
 
 from ..events.api import EventAPI
 
 import re
+import time
 import requests
 from flask import current_app
 from sqlalchemy.orm import relationship
-from werkzeug.utils import cached_property
-
-from asclepias_broker.core.models import Identifier
-
-from ..utils import chunks
+from ..utils import chunks, GitHubAPIException, GithubUtility
 from .base import MetadataHarvester
-
-
-class GitHubAPIException(Exception):
-    """Github REST API exception."""
 
 
 class GitHubClient:
@@ -100,7 +92,8 @@ class GitHubHarvester(MetadataHarvester):
         if providers:
             is_provider = self.provider_name in providers
 
-        return (self._is_github_url(scheme, identifier) or\
+        return (self._is_valid_github_url(scheme, identifier) or\
+            self._is_github_repo_id(scheme, identifier) or\
             self._is_github_repo_id(scheme, identifier) or\
             self._is_github_release_id(scheme, identifier) )\
             and not is_provider
@@ -109,11 +102,13 @@ class GitHubHarvester(MetadataHarvester):
                 providers: List[str] = None):
         """."""
         try:
+            #Added a sleeper timer to slow down the harvesters since during large ingestions they cause HTTP 403 errors when too many queries are sent
+            time.sleep(1)
             providers = set(providers) if providers else set()
             providers.add(self.provider_name)
             payloads = []
-            if self._is_github_url(scheme, identifier):
-                parsed_info = self.parse_url_info(identifier)
+            if self._is_valid_github_url(scheme, identifier):
+                parsed_info = GithubUtility.parse_url_info(identifier)
             elif self._is_github_repo_id(scheme, identifier):
                 parsed_info = dict(id=identifier, identifier=identifier, scheme='github')
             elif self._is_github_release_id(scheme, identifier):
@@ -137,7 +132,7 @@ class GitHubHarvester(MetadataHarvester):
                     EventAPI.handle_event(list(event_chunk), no_index=True, eager=True)
                 except ValueError:
                     current_app.logger.exception(
-                        'Error while processing versioning event.')
+                        'Error while processing github harvesting event.')
         except Exception as exc:
             raise GitHubAPIException(exc)
 
@@ -151,37 +146,16 @@ class GitHubHarvester(MetadataHarvester):
             return True
         return False
         
-    def _is_github_url(self,  scheme: str, identifier: str) -> bool:
+    def _is_valid_github_url(self,  scheme: str, identifier: str) -> bool:
         if scheme.lower() == 'url' and 'github.com' in identifier.lower():
+            try:
+                GithubUtility.parse_url_info(identifier)
+            except:
+                return False
             return True
         else:
             return False
     
-    def parse_url_info(self, url):
-        parts = url.split('/')
-        github_index = next(i for i,p in enumerate(parts) if 'github.com' in p)
-        
-        if len(parts) - github_index < 3:
-                raise GitHubAPIException('Not a valid github url: ', )
-
-        resp = dict()
-        resp['identifier'] = url
-        resp['scheme'] = 'url'
-        resp['user'] = parts[github_index + 1]
-        resp['repo'] = parts[github_index + 2]
-
-        # Specific version urls shoudl be either on the form
-        # github.com/user/repo/tree/tag_we_want
-        # or 
-        # github.com/user/repo/releases/tag/tag_we_want
-        if len(parts) - github_index > 4:
-            resp['sub_type'] = parts[github_index + 3]
-            if resp['sub_type'] == 'tree': 
-                resp['tag'] = parts[github_index + 4]
-            elif resp['sub_type'] == 'releases':
-                resp['tag'] = parts[github_index + 5]
-        return resp
-
 def add_parent_identifiers(parsed_info, providers, child = None) -> List[dict]:
     client = GitHubClient()
     add_old_name = False
