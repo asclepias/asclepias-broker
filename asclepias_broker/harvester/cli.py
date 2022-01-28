@@ -18,7 +18,6 @@ from ..harvester.tasks import harvest_metadata_identifier
 import idutils
 from flask.cli import with_appcontext
 
-from ..events.api import EventAPI
 from .tasks import harvest_events, harvest_metadata
 
 
@@ -78,24 +77,24 @@ def rerun(id: str = None, all: bool = False, errors: bool = True, processing: bo
         rerun_processing(no_index, eager)
         rerun_new(no_index, eager)
     if errors:
-        rerun_errors(no_index, start_time, end_time, eager)
+        rerun_errors(no_index, eager, start_time, end_time)
 
 def rerun_id(id:str, no_index: bool, eager:bool = False):
         event = HarvestMonitoring.get(id)
         if event:
-            EventAPI.rerun_event(event, no_index=no_index, eager=eager)
+            rerun_event(event, no_index=no_index, eager=eager)
 
 def rerun_processing(no_index: bool, eager:bool = False):
         yesterday = datetime.datetime.now() - datetime.timedelta(days = 1)
         resp = HarvestMonitoring.query.filter(HarvestMonitoring.status == HarvestStatus.Processing, HarvestMonitoring.created < str(yesterday)).all()
         for event in resp:
-            EventAPI.rerun_event(event, no_index=no_index, eager=eager)
+            rerun_event(event, no_index=no_index, eager=eager)
 
 def rerun_new(no_index: bool, eager:bool = False):
         yesterday = datetime.datetime.now() - datetime.timedelta(days = 1)
         resp = HarvestMonitoring.query.filter(HarvestMonitoring.status == HarvestStatus.New, HarvestMonitoring.created < str(yesterday)).all()
         for event in resp:
-            EventAPI.rerun_event(event, no_index=no_index, eager=eager)
+            rerun_event(event, no_index=no_index, eager=eager)
 
 def rerun_errors(no_index: bool, eager:bool = False,  start_time: str = None, end_time:str = None):
         if start_time and end_time:
@@ -107,4 +106,14 @@ def rerun_errors(no_index: bool, eager:bool = False,  start_time: str = None, en
         else:
             resp = HarvestMonitoring.query.filter(HarvestMonitoring.status == HarvestStatus.Error).all()
         for event in resp:
-            EventAPI.rerun_event(event, no_index=no_index, eager=eager)
+            rerun_event(event, no_index=no_index, eager=eager)
+
+def rerun_event(event: HarvestMonitoring, no_index: bool, eager:bool = False):
+        event_uuid = str(event.id)
+        task = harvest_metadata_identifier.s(str(event.harvester), event.identifier, event.scheme,
+                        event_uuid, None)
+        if eager:
+            task.apply(throw=True)
+        else:
+            task.apply_async()
+        return event
