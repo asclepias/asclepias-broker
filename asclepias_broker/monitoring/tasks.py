@@ -8,21 +8,25 @@
 """Monitoring tasks"""
 
 import datetime
+
+from sqlalchemy.orm.util import join
 from celery import  shared_task
 from sqlalchemy import and_
+from invenio_db import db
 import slack
 import os
 
 from ..monitoring.models import ErrorMonitoring, HarvestMonitoring, HarvestStatus
 from ..events.models import Event, EventStatus
 from ..events.api import EventAPI
+from ..harvester.cli import rerun_event
 
 @shared_task(ignore_result=True)
 def rerun_harvest_errors():
     two_days_ago = datetime.datetime.now() - datetime.timedelta(days = 2)
     resp = HarvestMonitoring.query.filter(HarvestMonitoring.status == HarvestStatus.Error, HarvestMonitoring.created > str(two_days_ago)).all()
     for event in resp:
-        EventAPI.rerun_event(event, no_index=True, eager=False)
+        rerun_event(event, no_index=True, eager=False)
 
 @shared_task(ignore_result=True)
 def rerun_event_errors():
@@ -42,12 +46,24 @@ def sendMonitoringReport():
     if slack_token is not None and slack_token != "CHANGE_ME":
         client = slack.WebClient(token=slack_token)
         channel = 'broker-alerts'
-        sendErrorReport(client, channel)
+        sendHarvestErrors(client, channel)
+        sendEventErrors(client, channel)
         sendHarvestReport(client, channel)
         sendEventReport(client, channel)
 
-def sendErrorReport(client, channel:str):
-    errors = ErrorMonitoring.getLastWeeksErrors()
+def sendHarvestErrors(client, channel):
+    errors = (db.session.query(ErrorMonitoring)
+    .join(HarvestMonitoring, ErrorMonitoring.event_id == HarvestMonitoring.id)
+    .filter(HarvestMonitoring.status == HarvestStatus.Error))
+    sendErrorReport(errors, client, channel)
+
+def sendEventErrors(client, channel):
+    errors = (db.session.query(ErrorMonitoring)
+    .join(Event, ErrorMonitoring.event_id == Event.id)
+    .filter(Event.status == EventStatus.Error))
+    sendErrorReport(errors, client, channel)
+
+def sendErrorReport(errors, client, channel:str):
     blocks = []
     blocks.append({"type": "section",
                 "text": {
