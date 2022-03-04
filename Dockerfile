@@ -12,7 +12,7 @@ WORKDIR /app
 COPY Pipfile Pipfile
 COPY Pipfile.lock Pipfile.lock
 RUN pip install pipenv
-RUN pipenv install --deploy --system
+RUN pipenv install --deploy --system --ignore-pipfile
 ADD . /app
 RUN pipenv install .
 
