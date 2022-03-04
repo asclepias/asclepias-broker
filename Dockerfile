@@ -14,6 +14,6 @@ COPY Pipfile.lock Pipfile.lock
 RUN pip install pipenv
 RUN pipenv install --deploy --system --ignore-pipfile
 ADD . /app
-RUN pipenv install .
+RUN pipenv install . --ignore-pipfile
 
 CMD ["asclepias-broker", "shell"]
