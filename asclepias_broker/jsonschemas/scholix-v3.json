@@ -157,6 +157,17 @@
           "items": {
             "$ref": "#/definitions/PersonOrOrgType"
           }
+        },
+        "Keywords": {
+          "type": "array",
+          "items": {
+            "keyword": {
+              "type": "string",
+              "title": "Objects article keyord",
+              "description": "An article keyword",
+              "default": ""
+            }
+          }
         }
       },
       "required": [
@@ -221,7 +232,7 @@
       ]
     },
     "LicenseURL": {
-      "type": "string",
+      "type": ["string", "null"],
       "title": "License URL schema",
       "description": "URL to the license of this Link Information Package.",
       "default": "",

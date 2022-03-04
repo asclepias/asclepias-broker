@@ -28,4 +28,3 @@ Tasks
 .. automodule:: asclepias_broker.graph.tasks
    :members:
 
-.. autotask:: asclepias_broker.graph.tasks.process_event

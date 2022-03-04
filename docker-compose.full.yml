@@ -28,7 +28,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    command: pipenv run uwsgi /opt/invenio/var/instance/uwsgi.ini
+    command: pipenv run uwsgi /app/docker/uwsgi/uwsgi.ini
     image: asclepias-broker-web
     ports:
       - "5000"
@@ -45,7 +45,7 @@ services:
       file: docker-services.yml
       service: app
     restart: "always"
-    command: "pipenv run celery worker -A invenio_app.celery --loglevel=INFO"
+    command: "pipenv run celery -A invenio_app.celery worker --beat --loglevel=INFO"
     image: asclepias-broker-worker
     links:
       - cache

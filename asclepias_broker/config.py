@@ -21,9 +21,10 @@ from invenio_app.config import APP_DEFAULT_SECURE_HEADERS
 from invenio_records_rest.facets import range_filter, terms_filter
 from invenio_records_rest.utils import deny_all
 from invenio_search.api import RecordsSearch
+from celery.schedules import crontab
 
 from .search.query import enum_term_filter, nested_range_filter, \
-    nested_terms_filter
+    nested_terms_filter, simple_query_string_filter
 
 
 def _parse_env_bool(var_name, default=None):
@@ -125,8 +126,20 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': timedelta(minutes=60),
     },
     'reindex': {
-        'task': 'asclepias_broker.tasks.reindex_all_relationships',
-        'schedule': timedelta(hours=24)
+        'task': 'asclepias_broker.search.tasks.reindex_all_relationships',
+        'schedule':  crontab(hour=23, minute=0)
+    },
+    'notify': {
+        'task': 'asclepias_broker.monitoring.tasks.sendMonitoringReport',
+        'schedule':  crontab(hour=0, minute=0, day_of_week=0)
+    },
+    'rerun_harvester_errors': {
+        'task': 'asclepias_broker.monitoring.tasks.rerun_harvest_errors',
+        'schedule':  crontab(hour=22, minute=0)
+    },
+    'rerun_event_errors': {
+        'task': 'asclepias_broker.monitoring.tasks.rerun_event_errors',
+        'schedule':  crontab(hour=21, minute=0)
     },
 }
 
@@ -163,6 +176,36 @@ RECORDS_REST_ENDPOINTS = dict(
         },
         list_route='/relationships',
         item_route='/relationships/<pid(relid):pid_value>',
+        default_media_type='application/json',
+        max_result_window=10000,
+        error_handlers=dict(),
+    ),
+    meta=dict(
+        pid_type='meta',
+        pid_minter='relid',
+        pid_fetcher='relid',
+        search_class=RecordsSearch,
+        indexer_class=None,
+        search_index='relationships',
+        search_type=None,
+        search_factory_imp='asclepias_broker.search.query.meta_search_factory',
+        # Only the List GET view is available
+        create_permission_factory_imp=deny_all,
+        delete_permission_factory_imp=deny_all,
+        update_permission_factory_imp=deny_all,
+        read_permission_factory_imp=deny_all,
+        links_factory_imp=lambda p, **_: None,
+        record_serializers={
+            'application/json': ('invenio_records_rest.serializers'
+                                 ':json_v1_response'),
+        },
+        # TODO: Implement marshmallow serializers
+        search_serializers={
+            'application/json': ('invenio_records_rest.serializers'
+                                 ':json_v1_search'),
+        },
+        list_route='/metadata',
+        item_route='/metadata/<pid(meta):pid_value>',
         default_media_type='application/json',
         max_result_window=10000,
         error_handlers=dict(),
@@ -205,12 +248,41 @@ RECORDS_REST_FACETS = dict(
                     'isRelatedTo': 'IsRelatedTo'
                 }
             ),
+            keyword=simple_query_string_filter('Source.Keywords_all'),
+            journal=nested_terms_filter('Source.Publisher.Name','Source.Publisher'),
         ),
         post_filters=dict(
             type=terms_filter('Source.Type.Name'),
             publication_year=range_filter(
-                'Source.PublicationDate', format='yyyy', end_date_math='/y'),
+                'Source.PublicationDate', format='yyyy', start_date_math='/y', end_date_math='/y'),
         )
+    ),
+    
+    # The topHits agg can't be addded here due to limitations in elasticsearch_dsl aggs function so that is added in query.py
+    metadata=dict(
+        aggs=dict(
+            NumberOfTargets=dict(
+                cardinality=dict(field='Target.ID')
+            ),
+            publication_year=dict(
+                date_histogram=dict(
+                    field='Source.PublicationDate',
+                    interval='year',
+                    format='yyyy',
+                ),
+            ),
+        ),
+        filters=dict(
+            group_by=enum_term_filter(
+                label='group_by',
+                field='Grouping',
+                choices={'identity': 'identity', 'version': 'version'}
+            ),
+            keyword=simple_query_string_filter('Source.Keywords_all'),
+            journal=nested_terms_filter('Source.Publisher.Name','Source.Publisher'),
+            publication_year=range_filter(
+                'Source.PublicationDate', format='yyyy', start_date_math='/y', end_date_math='/y'),
+        ),
     )
 )
 # TODO: See if this actually works
@@ -228,6 +300,7 @@ RECORDS_REST_DEFAULT_SORT = {
     }
 }
 RATELIMIT_STORAGE_URL = f'{REDIS_BASE_URL}/3'
+RATELIMIT_AUTHENTICATED_USER = '20000 per hour;500 per minute'
 
 APP_DEFAULT_SECURE_HEADERS['force_https'] = True
 APP_DEFAULT_SECURE_HEADERS['session_cookie_secure'] = True

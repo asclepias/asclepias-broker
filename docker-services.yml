@@ -26,6 +26,7 @@ services:
       - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://asclepias:asclepias@db/asclepias"
       - "INVENIO_WSGI_PROXIES=2"
       - "INVENIO_INSTANCE_PATH=/opt/invenio/var/instance/"
+      - "SLACK_API_TOKEN=CHANGE_ME"
   lb:
     build: ./docker/haproxy/
     image: asclepias-broker-lb
@@ -57,13 +58,15 @@ services:
     ports:
       - "5432:5432"
   mq:
-    image: rabbitmq:3-management
+    image: rabbitmq:3.9.12-management
+    volumes:
+      - "./docker/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf"
     restart: "always"
     ports:
       - "15672:15672"
       - "5672:5672"
   es:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.4
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
     restart: "always"
     environment:
       - bootstrap.memory_lock=true
@@ -79,13 +82,13 @@ services:
       - "9200:9200"
       - "9300:9300"
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:6.2.4
+    image: docker.elastic.co/kibana/kibana:7.14.1
     environment:
-      - ELASTICSEARCH_URL=http://es:9200
+      - ELASTICSEARCH_HOSTS=http://es:9200
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
     ports: ['5601:5601']
   flower:
     image: mher/flower
-    command: --broker=amqp://guest:guest@mq:5672/ --broker_api=http://guest:guest@mq:15672/api/
+    command: celery flower --broker=amqp://guest:guest@mq:5672/ --broker_api=http://guest:guest@mq:15672/api/
     ports:
       - "5555:5555"

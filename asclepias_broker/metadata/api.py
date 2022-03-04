@@ -19,7 +19,7 @@ from ..graph.api import get_group_from_id, get_or_create_groups
 from ..graph.models import GroupRelationship, GroupType
 from ..utils import chunks
 from .models import GroupMetadata, GroupRelationshipMetadata
-
+from ..monitoring.models import ErrorMonitoring 
 
 # TODO: When merging/splitting groups there is some merging/duplicating of
 # metadata as well
@@ -62,9 +62,9 @@ def update_metadata(id_value: str, scheme: str, data: dict,
 
     target_identifiers = set()
     for i in data.get('Identifier', []):
-        value, scheme = i['ID'], i['IDScheme'].lower()
-        value = idutils.normalize_pid(value, scheme)
-        target_identifiers.add((value, scheme))
+        value, target_scheme = i['ID'], i['IDScheme'].lower()
+        value = idutils.normalize_pid(value, target_scheme)
+        target_identifiers.add((value, target_scheme))
 
     # Check if there are identity links that can be created:
     if create_identity_events and len(target_identifiers) > 0:
@@ -99,18 +99,19 @@ def update_metadata(id_value: str, scheme: str, data: dict,
             try:
                 EventAPI.handle_event(
                     list(event_chunk), no_index=True, eager=True)
-            except ValueError:
+            except ValueError as exc:
+                error_obj = ErrorMonitoring(origin="update_metadata", error=repr(exc), n_retries = 99, payload=event_chunk)
+                db.session.add(error_obj)
+                db.session.commit()
                 current_app.logger.exception(
                     'Error while processing identity event')
-    try:
-        id_group = get_group_from_id(id_value, scheme)
-        if not id_group and create_missing_groups:
-            identifier = Identifier(
-                value=id_value, scheme=scheme).fetch_or_create_id()
-            db.session.commit()
-            id_group, _ = get_or_create_groups(identifier)
-            db.session.commit()
-        id_group.data.update(data)
+
+    id_group = get_group_from_id(id_value, scheme)
+    if not id_group and create_missing_groups:
+        identifier = Identifier(
+            value=id_value, scheme=scheme).fetch_or_create_id()
         db.session.commit()
-    except Exception:
-        current_app.logger.exception('Error while updating group metadata')
+        id_group, _ = get_or_create_groups(identifier)
+        db.session.commit()
+    id_group.data.update(data)
+    db.session.commit()

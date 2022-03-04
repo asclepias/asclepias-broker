@@ -12,8 +12,6 @@ from typing import Dict, List, Set, Tuple
 from celery import shared_task
 from flask import current_app
 from invenio_db import db
-from marshmallow.exceptions import \
-    ValidationError as MarshmallowValidationError
 
 from ..core.models import Relationship
 from ..events.models import Event, EventStatus, ObjectEvent, PayloadType
@@ -22,6 +20,7 @@ from ..metadata.api import update_metadata_from_event
 from ..schemas.loaders import RelationshipSchema
 from ..search.indexer import update_indices
 from .api import update_groups
+from ..monitoring.models import ErrorMonitoring
 
 
 def get_or_create(model, **kwargs):
@@ -107,8 +106,8 @@ def _set_event_status(event_uuid, status):
     db.session.commit()
 
 
-@shared_task(ignore_result=True, max_retries=3, default_retry_delay=5 * 60)
-def process_event(event_uuid: str, indexing_enabled: bool = True):
+@shared_task(bind=True, ignore_result=True, max_retries=1, default_retry_delay=10 * 60)
+def process_event(self, event_uuid: str, indexing_enabled: bool = True):
     """Process the event."""
     # TODO: Should we detect and skip duplicated events?
     _set_event_status(event_uuid, EventStatus.Processing)
@@ -119,12 +118,9 @@ def process_event(event_uuid: str, indexing_enabled: bool = True):
             for payload_idx, payload in enumerate(event.payload):
                 # TODO: marshmallow validation of all payloads
                 # should be done on first event ingestion (check)
-                relationship, errors = \
-                    RelationshipSchema(check_existing=True).load(payload)
+                relationship = RelationshipSchema(check_existing=True).load(payload)
                 # Errors should never happen as the payload is validated
                 # with RelationshipSchema on the event ingestion
-                if errors:
-                    raise MarshmallowValidationError(errors)
 
                 # Skip already known relationships
                 # NOTE: This skips any extra metadata!
@@ -150,5 +146,15 @@ def process_event(event_uuid: str, indexing_enabled: bool = True):
         _set_event_status(event_uuid, EventStatus.Done)
         event_processed.send(current_app._get_current_object(), event=event)
     except Exception as exc:
+        db.session.rollback()
         _set_event_status(event_uuid, EventStatus.Error)
-        process_event.retry(exc=exc)
+        payload = Event.get(id=event_uuid).payload
+        error_obj = ErrorMonitoring.getFromEvent(event_uuid)
+        if not error_obj:
+            error_obj = ErrorMonitoring(event_id = event_uuid, origin=self.__class__.__name__, error=repr(exc), n_retries=self.request.retries, payload=payload)
+            db.session.add(error_obj)
+        else:
+            error_obj.n_retries += 1
+        
+        db.session.commit()
+        self.retry(exc=exc)
