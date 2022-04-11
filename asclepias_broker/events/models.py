@@ -10,12 +10,14 @@
 import enum
 import uuid
 from typing import Union
+import datetime
 
 from invenio_accounts.models import User
 from invenio_db import db
 from sqlalchemy.schema import PrimaryKeyConstraint
 from sqlalchemy_utils.models import Timestamp
 from sqlalchemy_utils.types import JSONType, UUIDType
+from sqlalchemy import func
 
 from ..core.models import Identifier, Relationship
 
@@ -53,7 +55,14 @@ class Event(db.Model, Timestamp):
     def get(cls, id: str = None, **kwargs):
         """Get the event from the database."""
         return cls.query.filter_by(id=id).one_or_none()
-
+    
+    @classmethod
+    def getStatsFromLastWeek(cls):
+        """Gets the stats from the last 7 days"""
+        last_week = datetime.datetime.now() - datetime.timedelta(days = 7)
+        resp = db.session.query(cls.status, func.count('*')).filter(cls.updated > str(last_week)).group_by(cls.status).all()
+        return resp
+    
     def __repr__(self):
         """String representation of the event."""
         return f"<{self.id}: {self.created}>"

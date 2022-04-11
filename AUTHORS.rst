@@ -11,3 +11,6 @@ Authors
 - Chiara Bigarella
 - Krzysztof Nowak
 - Thomas P. Robitaille
+- Mattias Wångblad
+- Mubdi Rahman
+

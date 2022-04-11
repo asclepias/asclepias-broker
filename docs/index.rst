@@ -56,6 +56,8 @@ this part of the documentation is for you.
    api/graph
    api/metadata
    api/search
+   api/monitoring
+   api/harvester
 
 Additional Notes
 ----------------

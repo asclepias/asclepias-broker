@@ -1,0 +1,167 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2018 CERN.
+#
+# Asclepias Broker is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+version: '2.3'
+services:
+  # Load balancer
+  lb:
+    extends:
+      file: docker-services.yml
+      service: lb
+    build: ./docker/haproxy-production/
+    image: asclepias-broker-lb-production
+    networks:
+      - main
+    volumes:
+      - /etc/letsencrypt/:/etc/letsencrypt
+  # Frontend
+  frontend:
+    extends:
+      file: docker-services.yml
+      service: frontend
+    build: ./docker/nginx-production/
+    image: asclepias-broker-frontend-production
+    volumes:
+      - static_data:/opt/invenio/var/instance/static
+      - /etc/letsencrypt/:/etc/certbot/conf
+    networks:
+      - main
+  # Web application
+  web:
+    extends:
+      file: docker-services.yml
+      service: app
+    command: pipenv run uwsgi /app/docker/uwsgi/uwsgi.ini
+    image: asclepias-broker-web
+    ports:
+      - "5000"
+    volumes:
+      - static_data:/opt/invenio/var/instance/static
+    networks:
+      - main
+  # Worker
+  worker:
+    extends:
+      file: docker-services.yml
+      service: app
+    restart: "always"
+    command: "pipenv run celery -A invenio_app.celery worker --beat --loglevel=INFO"
+    image: asclepias-broker-worker
+    networks:
+      - main
+  # Monitoring
+  # Turning off Flower and Kibana in production
+  # kibana:
+  #   extends:
+  #     file: docker-services.yml
+  #     service: kibana
+  #   networks:
+  #     - main
+  # flower:
+  #   extends:
+  #     file: docker-services.yml
+  #     service: flower
+  #   networks:
+  #     - main
+  # Base services
+  cache:
+    extends:
+      file: docker-services.yml
+      service: cache
+    networks:
+      - main
+  db:
+    extends:
+      file: docker-services.yml
+      service: db
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - main
+  mq:
+    extends:
+      file: docker-services.yml
+      service: mq
+    mem_limit: 500M
+    networks:
+      - main
+  # Three Node Elasticsearch Cluster
+  es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
+    restart: "always"
+    container_name: es
+    environment:
+      - node.name=es
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es02,es03
+      - cluster.initial_master_nodes=es,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 2g
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - main
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
+    restart: "always"
+    container_name: es02
+    environment:
+      - node.name=es02
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es,es03
+      - cluster.initial_master_nodes=es,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 2g
+    volumes:
+      - es02_data:/usr/share/elasticsearch/data
+    networks:
+      - main
+  es03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
+    restart: "always"
+    container_name: es03
+    environment:
+      - node.name=es03
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es,es02
+      - cluster.initial_master_nodes=es,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 2g
+    volumes:
+      - es03_data:/usr/share/elasticsearch/data
+    networks:
+      - main
+volumes:
+  static_data:
+  pg_data:
+  es_data:
+    driver: local
+  es02_data:
+    driver: local
+  es03_data:
+    driver: local
+networks:
+  main:
+

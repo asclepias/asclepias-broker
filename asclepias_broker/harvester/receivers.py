@@ -8,7 +8,7 @@
 
 from ..events.models import Event, PayloadType
 from .proxies import current_harvester
-
+from .tasks import  harvest_metadata
 
 def harvest_metadata_after_event_process(app, event: Event = None):
     """."""
@@ -30,3 +30,6 @@ def harvest_metadata_after_event_process(app, event: Event = None):
             for identifier, scheme, providers in identifiers
         ]
         current_harvester.publish_metadata_harvest(payloads)
+    
+    task = harvest_metadata.s([], eager=False)
+    task.apply_async()

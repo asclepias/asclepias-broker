@@ -48,7 +48,7 @@ class EventAPI:
         for payload in event:
             errors = RelationshipSchema(check_existing=True).validate(payload)
             if errors:
-                raise MarshmallowValidationError(errors)
+                raise MarshmallowValidationError(str(errors) + "payload" +  str(payload))
 
     @classmethod
     def handle_event(cls, event: dict, no_index: bool = False,
@@ -69,3 +69,16 @@ class EventAPI:
         else:
             task.apply_async()
         return event_obj
+    
+    @classmethod
+    def rerun_event(cls, event: Event, no_index: bool, eager:bool = False):
+        event_uuid = str(event.id)
+        idx_enabled = current_app.config['ASCLEPIAS_SEARCH_INDEXING_ENABLED'] \
+            and (not no_index)
+        task = process_event.s(
+            event_uuid=event_uuid, indexing_enabled=idx_enabled)
+        if eager:
+            task.apply(throw=True)
+        else:
+            task.apply_async()
+        return event

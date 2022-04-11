@@ -11,14 +11,22 @@ import os
 
 import pytest
 from invenio_app.factory import create_api
-# TODO: fix this in ```pytest-invenio``
-from pytest_invenio.fixtures import celery_config_ext
+from invenio_search import current_search, current_search_client
 
 
 @pytest.fixture(scope='module')
 def create_app():
     """Application factory to be used by ``pytest-invenio``."""
     return create_api
+
+
+@pytest.fixture(scope='function')
+def es_clear(es_clear):
+    """Clear Elasticsearch indices and aliases."""
+    yield es_clear
+    for alias in current_search.active_aliases:
+        current_search_client.indices.delete(
+            index=f'{alias}*', ignore=[400, 404])
 
 
 #
