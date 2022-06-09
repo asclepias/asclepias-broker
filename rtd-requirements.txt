@@ -23,7 +23,7 @@ cffi==1.12.3
 chardet==3.0.4
 check-manifest==0.39
 Click==7.0
-cookiecutter==1.6.0
+cookiecutter==2.1.1
 coverage==4.5.3
 cryptography==2.7
 decorator==4.4.0
