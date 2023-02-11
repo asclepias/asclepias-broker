@@ -82,7 +82,7 @@ invenio-records-rest==1.4.2
 invenio-rest==1.0.0
 invenio-search==1.1.1
 ipaddress==1.0.22
-ipython==7.6.1
+ipython==8.10.0
 ipython-genutils==0.2.0
 isbnid-fork==0.5.2
 isort==4.3.21
