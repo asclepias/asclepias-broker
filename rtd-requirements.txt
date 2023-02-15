@@ -176,7 +176,7 @@ vine==1.3.0
 wcwidth==0.1.7
 webargs==5.3.2
 webencodings==0.5.1
-Werkzeug==0.15.4
+Werkzeug==2.2.3
 whichcraft==0.6.0
 WTForms==2.2.1
 WTForms-Alchemy==0.16.9
