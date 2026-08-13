@@ -14,6 +14,15 @@ from invenio_app.factory import create_api
 from invenio_search import current_search, current_search_client
 
 
+@pytest.fixture(scope="module")
+def app_config(app_config):
+    """Mimic an instance's configuration."""
+    # Disable the harvesters to not block the tests.
+    app_config["ASCLEPIAS_HARVESTER_METADATA_HARVESTERS"] = {}
+
+    return app_config
+
+
 @pytest.fixture(scope='module')
 def create_app():
     """Application factory to be used by ``pytest-invenio``."""
