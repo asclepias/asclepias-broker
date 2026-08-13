@@ -13,7 +13,11 @@ include *.sh
 include *.txt
 include *.yml
 include docker/haproxy/Dockerfile
+include docker/haproxy-dev-ssl/Dockerfile
+include docker/haproxy-production/Dockerfile
 include docker/nginx/Dockerfile
+include docker/nginx-dev-ssl/Dockerfile
+include docker/nginx-production/Dockerfile
 include docker/postgres/Dockerfile
 include Dockerfile
 include LICENSE
