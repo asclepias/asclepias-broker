@@ -51,36 +51,10 @@ setup(
             'asclepias_broker = asclepias_broker.config',
         ],
         'invenio_base.apps': [
-            # Not enabling flask-breadcrumbs to avoid the following error when starting uswgi:
-            # ERROR in app: Failed to initialize entry point: invenio_theme = invenio_theme:InvenioTheme
-            # Traceback (most recent call last):
-            #   File "/usr/local/lib/python3.8/site-packages/invenio_app/wsgi.py", line 13, in <module>
-            #     application = create_app()
-            #   File "/usr/local/lib/python3.8/site-packages/invenio_base/app.py", line 110, in _create_app
-            #     app_loader(
-            #   File "/usr/local/lib/python3.8/site-packages/invenio_base/app.py", line 173, in app_loader
-            #     _loader(app, lambda ext: ext(app), entry_points=entry_points,
-            #   File "/usr/local/lib/python3.8/site-packages/invenio_base/app.py", line 233, in _loader
-            #     init_func(ep.load())
-            #   File "/usr/local/lib/python3.8/site-packages/invenio_base/app.py", line 173, in <lambda>
-            #     _loader(app, lambda ext: ext(app), entry_points=entry_points,
-            #   File "/usr/local/lib/python3.8/site-packages/invenio_theme/ext.py", line 37, in __init__
-            #     self.init_app(app, **kwargs)
-            #   File "/usr/local/lib/python3.8/site-packages/invenio_theme/ext.py", line 47, in init_app
-            #     self.menu_ext.init_app(app)
-            #   File "/usr/local/lib/python3.8/site-packages/flask_menu/__init__.py", line 51, in init_app
-            #     raise RuntimeError("Flask application is already initialized.")
-            # RuntimeError: Flask application is already initialized.
-
-            # 'flask_breadcrumbs = flask_breadcrumbs:Breadcrumbs',
             ('asclepias_harvester = '
              'asclepias_broker.harvester.ext:AsclepiasHarvester'),
         ],
         'invenio_base.api_apps': [
-            # TODO: Fix this in Flask-Menu/Breadcrumbs (i.e. make it possible
-            # to skip menus/breadcrumbs registration if the extensions aare not
-            # loaded/enabled...)
-            'flask_breadcrumbs = flask_breadcrumbs:Breadcrumbs',
             ('asclepias_harvester = '
              'asclepias_broker.harvester.ext:AsclepiasHarvester'),
         ],
