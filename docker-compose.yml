@@ -5,7 +5,6 @@
 # Asclepias Broker is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-version: '2.3'
 services:
   app:
     extends:
@@ -23,14 +22,14 @@ services:
     extends:
       file: docker-services.yml
       service: mq
-  es:
+  search:
     extends:
       file: docker-services.yml
-      service: es
-  kibana:
+      service: search
+  opensearch-dashboards:
     extends:
       file: docker-services.yml
-      service: kibana
+      service: opensearch-dashboards
   flower:
     extends:
       file: docker-services.yml
