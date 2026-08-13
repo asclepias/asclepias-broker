@@ -96,9 +96,6 @@ def index_documents(docs: Iterable[dict], bulk: bool = False):
             client=current_search_client,
             actions=docs,
             index=index_name,
-            # Setting doc_type to None for OpenSearch v2 with Elasticsearch v7 compatibility mode,
-            # where the bulk URL should be `/_bulk` instead of `/_doc/_bulk`.
-            doc_type=None,
             raise_on_error=False,
             chunk_size=300,  # TODO: Make configurable
             max_chunk_bytes=(30 * 1024 * 1024),  # TODO: Make configurable
