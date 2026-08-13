@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  schedule:
+    - cron: "0 3 * * 6"
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Reason"
+        required: false
+        default: "Manual trigger"
+
+jobs:
+  Tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.14"]
+    env:
+      EXTRAS: tests
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install pipenv
+        run: pip install pipenv
+
+      - parallel:
+
+        - name: Install dependencies
+          run: pipenv install --system --dev
+          background: true
+
+        - name: Start Docker services
+          run: docker compose up --quiet-pull -d search db cache mq
+          background: true
+
+      - name: Wait for Docker services
+        run: ./docker/wait-for-services.sh
+
+      - name: Run tests
+        run: ./run-tests.sh
