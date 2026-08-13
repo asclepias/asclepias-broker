@@ -157,7 +157,6 @@ RECORDS_REST_ENDPOINTS = dict(
         search_class=RecordsSearch,
         indexer_class=None,
         search_index='relationships',
-        search_type=None,
         search_factory_imp='asclepias_broker.search.query.search_factory',
         # Only the List GET view is available
         create_permission_factory_imp=deny_all,
@@ -187,7 +186,6 @@ RECORDS_REST_ENDPOINTS = dict(
         search_class=RecordsSearch,
         indexer_class=None,
         search_index='relationships',
-        search_type=None,
         search_factory_imp='asclepias_broker.search.query.meta_search_factory',
         # Only the List GET view is available
         create_permission_factory_imp=deny_all,
