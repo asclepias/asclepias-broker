@@ -11,7 +11,7 @@ from copy import deepcopy
 
 import pytest
 from flask import url_for
-from helpers import assert_es_equals_db, reindex_all_relationships
+from tests.helpers import assert_es_equals_db, reindex_all_relationships
 from invenio_oauth2server.models import Token
 
 from asclepias_broker.jsonschemas import EVENT_SCHEMA

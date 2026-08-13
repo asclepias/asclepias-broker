@@ -6,7 +6,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Test broker model."""
-from helpers import assert_grouping, create_objects_from_relations, \
+from tests.helpers import assert_grouping, create_objects_from_relations, \
     generate_payload
 
 from asclepias_broker.core.models import Identifier, Relation, Relationship

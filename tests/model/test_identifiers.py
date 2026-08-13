@@ -7,7 +7,7 @@
 
 """Test broker model."""
 import pytest
-from helpers import generate_payload
+from tests.helpers import generate_payload
 
 from asclepias_broker.core.models import Identifier
 from asclepias_broker.events.api import EventAPI

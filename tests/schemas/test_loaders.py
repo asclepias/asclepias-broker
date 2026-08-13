@@ -8,7 +8,7 @@
 """Test marshmallow loaders."""
 
 import pytest
-from helpers import gen_identifier, gen_relation
+from tests.helpers import gen_identifier, gen_relation
 
 from asclepias_broker.core.models import Identifier, Relation, Relationship
 from asclepias_broker.schemas.loaders import IdentifierSchema, \

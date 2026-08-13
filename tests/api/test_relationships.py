@@ -8,7 +8,7 @@
 """Test search endpoint."""
 
 from flask import url_for
-from helpers import generate_payload, reindex_all_relationships
+from tests.helpers import generate_payload, reindex_all_relationships
 
 from asclepias_broker.events.api import EventAPI
 
