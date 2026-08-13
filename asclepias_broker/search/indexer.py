@@ -13,11 +13,10 @@ from typing import Dict, Iterable, Optional, Set, Tuple
 
 import idutils
 import sqlalchemy as sa
-from elasticsearch.helpers import bulk as bulk_index
-from elasticsearch_dsl import Q
 from invenio_db import db
 from invenio_search import current_search_client
 from invenio_search.api import RecordsSearch
+from invenio_search.engine import dsl, search
 from sqlalchemy.orm import aliased
 
 from ..core.models import Identifier, Relation
@@ -93,7 +92,7 @@ def index_documents(docs: Iterable[dict], bulk: bool = False):
     """Index a list of documents into ES."""
     index_name = get_write_index()
     if bulk:
-        bulk_index(
+        search.helpers.bulk(
             client=current_search_client,
             actions=docs,
             index=index_name,
@@ -253,8 +252,8 @@ def index_version_group_relationships(group_id: str,
 def delete_group_relations(group_ids: Iterable[str]):
     """Delete all relations for given group IDs from ES."""
     RecordsSearch(index='relationships').query('bool', should=[
-            Q('terms', Source__ID=list(group_ids)),
-            Q('terms', Target__ID=list(group_ids)),
+            dsl.Q('terms', Source__ID=list(group_ids)),
+            dsl.Q('terms', Target__ID=list(group_ids)),
     ]).params(conflicts='proceed').delete()  # ignore versioning conflicts
 
 

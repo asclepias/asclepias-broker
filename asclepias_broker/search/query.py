@@ -8,12 +8,12 @@
 
 from typing import Dict, Sized
 
-from elasticsearch_dsl import Q
-from elasticsearch_dsl.query import Range
 from flask import request
 from invenio_records_rest.errors import InvalidQueryRESTError
 from invenio_rest.errors import FieldError, RESTValidationError
 import json
+from invenio_search.engine import dsl
+
 
 def search_factory(self, search, query_parser=None):
     """Parse query using elasticsearch DSL query.
@@ -39,13 +39,13 @@ def search_factory(self, search, query_parser=None):
 
     # Apply 'identity' grouping by default
     if 'group_by' not in request.values:
-        search = search.filter(Q('term', Grouping='identity'))
+        search = search.filter(dsl.Q('term', Grouping='identity'))
         urlkwargs['group_by'] = 'identity'
 
     try:
         query_string = request.values.get('q')
         if query_string:
-            search = search.query(Q('query_string', query=query_string,
+            search = search.query(dsl.Q('query_string', query=query_string,
                                     default_field='_search_all'))
             urlkwargs['q'] = query_string
     except SyntaxError:
@@ -78,15 +78,15 @@ def meta_search_factory(self, search, query_parser=None):
     search = search.extra(size=0)
 
     # Apply 'identity' grouping by default
-    search = search.filter(Q('term', RelationshipType='Cites'))
+    search = search.filter(dsl.Q('term', RelationshipType='Cites'))
     if 'group_by' not in request.values:
-        search = search.filter(Q('term', Grouping='identity'))
+        search = search.filter(dsl.Q('term', Grouping='identity'))
         urlkwargs['group_by'] = 'identity'
 
     try:
         query_string = request.values.get('q')
         if query_string:
-            search = search.query(Q('query_string', query=query_string,
+            search = search.query(dsl.Q('query_string', query=query_string,
                                     default_field='_search_all'))
             urlkwargs['q'] = query_string
     except SyntaxError:
@@ -117,7 +117,7 @@ def enum_term_filter(label: str, field: str, choices: Dict[str, str]):
             raise RESTValidationError(
                 errors=[FieldError(
                     label, 'Allowed values: [{}]'.format(', '.join(choices)))])
-        return Q('term', **{field: term_value})
+        return dsl.Q('term', **{field: term_value})
     return inner
 
 
@@ -125,20 +125,20 @@ def nested_match_filter(field: str, path: str = None):
     """Nested match filter."""
     path = path or field.rsplit('.', 1)[0]
     def inner(values):
-        return Q('nested', path=path, query=dict(match={field: values}))
+        return dsl.Q('nested', path=path, query=dict(match={field: values}))
     return inner
 
 def simple_query_string_filter(field: str):
     """Simple query string filter."""
     def inner(values):
-        return Q('simple_query_string',query=values[0], fields=[field], default_operator='AND')
+        return dsl.Q('simple_query_string',query=values[0], fields=[field], default_operator='AND')
     return inner
 
 def nested_terms_filter(field: str, path: str = None):
     """Nested terms filter."""
     path = path or field.rsplit('.', 1)[0]
     def inner(values):
-        return Q('nested', path=path, query=dict(terms={field: values}))
+        return dsl.Q('nested', path=path, query=dict(terms={field: values}))
     return inner
 
 def nested_range_filter(
@@ -151,5 +151,5 @@ def nested_range_filter(
         if len(values) != 1:
             raise RESTValidationError(
                 errors=[FieldError(label, 'Multiple values specified.')])
-        return Q('nested', path=path, query=Range(**{field: {op: values[0]}}))
+        return dsl.Q('nested', path=path, query=dsl.query.Range(**{field: {op: values[0]}}))
     return inner
