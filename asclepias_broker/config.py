@@ -297,7 +297,7 @@ RECORDS_REST_DEFAULT_SORT = {
         'noquery': '-mostrecent'
     }
 }
-RATELIMIT_STORAGE_URL = f'{REDIS_BASE_URL}/3'
+RATELIMIT_STORAGE_URI = f'{REDIS_BASE_URL}/3'
 RATELIMIT_AUTHENTICATED_USER = '20000 per hour;500 per minute'
 
 APP_DEFAULT_SECURE_HEADERS['force_https'] = True
