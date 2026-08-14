@@ -74,7 +74,7 @@ from asclepias_broker.events.api import EventAPI
          [{'A', 'B', 'C', 'X', 'Y', 'Z'}]),
     ]
     )
-def test_identities(events, result_sets, db, es):
+def test_identities(events, result_sets, db, search):
     # NOTE: We assume that only on identifier scheme being used so just using
     # identifier values is enough when comparing sets.
     for ev in events:

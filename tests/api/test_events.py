@@ -55,7 +55,7 @@ def test_example_events(client, example_events, db, search_clear, auth_headers):
     assert_es_equals_db()
 
 
-def test_invalid_payload(client, db, es, auth_headers):
+def test_invalid_payload(client, db, search, auth_headers):
     """Test error handling for ingestion."""
     event_url = url_for('asclepias_events.event', _external=True)
     # Completely invalid JSON structure

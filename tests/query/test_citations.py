@@ -120,11 +120,11 @@ TEST_CASES = [
 
 
 @pytest.mark.parametrize(('test_case_name', 'events', 'results'), TEST_CASES)
-def test_simple_citations(test_case_name, events, results, db, es):
+def test_simple_citations(test_case_name, events, results, db, search):
     """Test simple citation queries."""
     for ev in events:
         EventAPI.handle_event(generate_payload(ev))
-    es.indices.refresh()
+    search.indices.refresh()
     for cited_id_value, (citation_result, relation_result) in results.items():
         cited_id = (Identifier.query
                     .filter_by(value=cited_id_value).one())
@@ -152,7 +152,7 @@ TEST_CASES = [
 
 
 @pytest.mark.parametrize(('test_case_name', 'events', 'results'), TEST_CASES)
-def test_grouping_query(test_case_name, events, results, db, es):
+def test_grouping_query(test_case_name, events, results, db, search):
     for ev in events:
         EventAPI.handle_event(generate_payload(ev))
     for cited_id_value, _ in results.items():
