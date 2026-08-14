@@ -15,6 +15,12 @@ from invenio_search import current_search, current_search_client
 
 
 @pytest.fixture(scope="module")
+def db_uri():
+    """Database URI of the locally running PostgreSQL instance."""
+    return "postgresql+psycopg2://asclepias:asclepias@localhost/asclepias"
+
+
+@pytest.fixture(scope="module")
 def app_config(app_config):
     """Mimic an instance's configuration."""
     # Disable the harvesters to not block the tests.
