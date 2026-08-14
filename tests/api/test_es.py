@@ -48,7 +48,7 @@ def _run_events_and_compare(events):
         assert_es_equals_db()
 
 
-def test_simple_groups(db, es_clear):
+def test_simple_groups(db, search_clear):
     """Test simple grouping events."""
     events = [
         _rel_with_metadata('A', 'Cites', 'X'),

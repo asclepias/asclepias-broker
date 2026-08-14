@@ -57,7 +57,7 @@ def rel_obj(source, relation, target):
     (('http://id.com/123', 'URL'), ('http://id.com/123', 'url'), {}),
 ])
 @pytest.mark.skip(reason="IDScheme validation temporarily disabled.")
-def test_identifier_schema(in_id, out_id, out_error, db, es_clear):
+def test_identifier_schema(in_id, out_id, out_error, db, search_clear):
     """Test the schema for identifier."""
     try:
         identifier = IdentifierSchema().load(gen_identifier(*in_id))
@@ -87,7 +87,7 @@ def test_identifier_schema(in_id, out_id, out_error, db, es_clear):
     #     {'Source': {'IDScheme': ["Invalid scheme 'invalid_scheme'"]}},
     # ),
 ])
-def test_relationship_schema(in_rel, out_rel, out_error, db, es_clear):
+def test_relationship_schema(in_rel, out_rel, out_error, db, search_clear):
     """Test the schema for relationship."""
     try:
         relationship = RelationshipSchema().load(rel_dict(*in_rel))

@@ -64,7 +64,7 @@ def _process_events(events):
     reindex_all_relationships()
 
 
-def test_simple_citations(client, db, es_clear):
+def test_simple_citations(client, db, search_clear):
     search_url = url_for('invenio_records_rest.relid_list')
     params = {'id': 'X', 'scheme': 'doi', 'relation': 'isCitedBy'}
 

@@ -44,7 +44,7 @@ def test_endpoint_auth(client):
     assert resp.status_code == 401
 
 
-def test_example_events(client, example_events, db, es_clear, auth_headers):
+def test_example_events(client, example_events, db, search_clear, auth_headers):
     """Load the example events from asclepias_broker/examples."""
     event_url = url_for('asclepias_events.event', _external=True)
     for data in example_events:

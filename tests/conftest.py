@@ -36,9 +36,9 @@ def create_app():
 
 
 @pytest.fixture(scope='function')
-def es_clear(es_clear):
-    """Clear Elasticsearch indices and aliases."""
-    yield es_clear
+def search_clear(search_clear):
+    """Clear OpenSearch indices and aliases."""
+    yield search_clear
     for alias in current_search.active_aliases:
         current_search_client.indices.delete(
             index=f'{alias}*', ignore=[400, 404])
