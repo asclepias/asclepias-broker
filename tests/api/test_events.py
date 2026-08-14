@@ -100,7 +100,7 @@ def test_invalid_payload(client, db, es, auth_headers):
     resp = client.post(event_url, data=json.dumps(data), headers=auth_headers,
                        content_type='application/json')
     assert resp.status_code == 422
-    assert 'is too short' in resp.json['message']
+    assert 'should be non-empty' in resp.json['message']
 
     data = deepcopy(data_valid)
     # Fetch the maxItems constraint from schema

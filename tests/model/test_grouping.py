@@ -127,9 +127,11 @@ def test_update_groups(db):
               {"Name": "{author.1}"},
               {"Name": "{author.2}"}
         ],
+        # The `mergeKey` method in `asclepias_broker.metadata,models`
+        # assumes that there should only be one item per dictionary in mergeable keys,
+        # so only the first key `Name` is picked, and the other key `Identifier` is lost.
         "Publisher": [
-            {"Name": "{pub}",
-             "Identifier": [{"ID": "{orcid_pub}", "IDScheme": "orcid"}]}
+            {"Name": "{pub}"}
         ],
         "PublicationDate": "2018"
     }
