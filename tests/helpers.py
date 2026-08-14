@@ -167,6 +167,7 @@ def create_objects_from_relations(relationships: List[Tuple],
         id_gr_rel = GroupRelationship(
             source=s_id_gr, target=t_id_gr, relation=rel,
             type=GroupType.Identity, id=uuid.uuid4())
+        db.session.add(id_gr_rel)
         s_id_gr.data.update(src_m, validate=False)
         t_id_gr.data.update(tar_m, validate=False)
 
@@ -175,7 +176,6 @@ def create_objects_from_relations(relationships: List[Tuple],
         grm.update(rel_m, validate=False)
         db.session.add(Relationship2GroupRelationship(
             relationship=r, group_relationship=id_gr_rel))
-        db.session.add(id_gr_rel)
         ver_gr_rel = GroupRelationship(
             source=s_ver_gr, target=t_ver_gr, relation=rel,
             type=GroupType.Version)
