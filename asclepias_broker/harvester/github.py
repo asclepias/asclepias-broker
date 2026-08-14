@@ -137,12 +137,12 @@ class GitHubHarvester(MetadataHarvester):
             raise GitHubAPIException(exc)
 
     def _is_github_repo_id(self,  scheme: str, identifier: str) -> bool:
-        if scheme.lower() == 'github' and re.match('^\d+$',identifier):
+        if scheme.lower() == 'github' and re.match(r'^\d+$',identifier):
             return True
         return False
 
     def _is_github_release_id(self,  scheme: str, identifier: str) -> bool:
-        if scheme.lower() == 'github' and re.match('^\d+/releases/\d+$',identifier):
+        if scheme.lower() == 'github' and re.match(r'^\d+/releases/\d+$',identifier):
             return True
         return False
         
