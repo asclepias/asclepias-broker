@@ -22,14 +22,14 @@ from ..harvester.cli import rerun_event
 
 @shared_task(ignore_result=True)
 def rerun_harvest_errors():
-    two_days_ago = datetime.datetime.now() - datetime.timedelta(days = 2)
+    two_days_ago = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days = 2)
     resp = HarvestMonitoring.query.filter(HarvestMonitoring.status == HarvestStatus.Error, HarvestMonitoring.created > str(two_days_ago)).all()
     for event in resp:
         rerun_event(event, no_index=True, eager=False)
 
 @shared_task(ignore_result=True)
 def rerun_event_errors():
-    two_days_ago = datetime.datetime.now() - datetime.timedelta(days = 2)
+    two_days_ago = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days = 2)
     resp = Event.query.filter(Event.status == EventStatus.Error, Event.created > str(two_days_ago)).all()
     for event in resp:
         EventAPI.rerun_event(event, no_index=True, eager=False)

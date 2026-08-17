@@ -7,7 +7,7 @@
 
 """Europe PMC harvester."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 import requests
 from flask import current_app
@@ -248,7 +248,7 @@ class EuropePMCHarvester:
     def harvest(self, eager: bool = False, no_index: bool = True):
         """Harvest links."""
         last_run = current_harvester.history.get(self.id)
-        current_datetime = datetime.now()
+        current_datetime = datetime.now(timezone.utc)
         if last_run:
             daterange = 'UPDATE_DATE:[{0} TO {1}]'.format(
                 last_run.date().isoformat(),

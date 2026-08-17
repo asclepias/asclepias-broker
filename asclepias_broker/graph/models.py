@@ -11,7 +11,6 @@ import uuid
 
 from invenio_db import db
 from sqlalchemy.schema import Index, PrimaryKeyConstraint, UniqueConstraint
-from sqlalchemy_utils.models import Timestamp
 from sqlalchemy_utils.types import UUIDType
 
 from ..core.models import Identifier, Relation, Relationship
@@ -24,7 +23,7 @@ class GroupType(enum.Enum):
     Version = 2
 
 
-class Group(db.Model, Timestamp):
+class Group(db.Model, db.Timestamp):
     """Group model."""
 
     __tablename__ = 'group'
@@ -49,7 +48,7 @@ class Group(db.Model, Timestamp):
         return f"<{self.id}: {self.type.name}>"
 
 
-class GroupRelationship(db.Model, Timestamp):
+class GroupRelationship(db.Model, db.Timestamp):
     """Group relationship model."""
 
     __tablename__ = 'grouprelationship'
@@ -99,7 +98,7 @@ class GroupRelationship(db.Model, Timestamp):
         return f'<{self.source} {self.relation.name} {self.target}>'
 
 
-class Identifier2Group(db.Model, Timestamp):
+class Identifier2Group(db.Model, db.Timestamp):
     """Many-to-many model for Identifier and Group."""
 
     __tablename__ = 'identifier2group'
@@ -125,7 +124,7 @@ class Identifier2Group(db.Model, Timestamp):
         Group, foreign_keys=[group_id], backref='id2groups')
 
 
-class Relationship2GroupRelationship(db.Model, Timestamp):
+class Relationship2GroupRelationship(db.Model, db.Timestamp):
     """Many-to-many model for Relationship to GroupRelationship."""
 
     __tablename__ = 'relationship2grouprelationship'
@@ -157,7 +156,7 @@ class Relationship2GroupRelationship(db.Model, Timestamp):
         return f'<{self.group_relationship}: {self.relationship}>'
 
 
-class GroupM2M(db.Model, Timestamp):
+class GroupM2M(db.Model, db.Timestamp):
     """Many-to-many model for Groups."""
 
     __tablename__ = 'groupm2m'
@@ -185,7 +184,7 @@ class GroupM2M(db.Model, Timestamp):
         return f'<{self.group}: {self.subgroup}>'
 
 
-class GroupRelationshipM2M(db.Model, Timestamp):
+class GroupRelationshipM2M(db.Model, db.Timestamp):
     """Many-to-many model for Group Relationships."""
 
     __tablename__ = 'grouprelationshipm2m'

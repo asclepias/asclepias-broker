@@ -7,7 +7,7 @@
 
 """Versioning metadata harvester."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 
 from ..events.api import EventAPI
@@ -222,7 +222,7 @@ def add_version_identifiers(parsed_info, providers)  -> List[dict]:
     return payloads
 
 def create_relationship_event(src, target, relationship, providers) -> dict:
-    link_publication_date = datetime.now().isoformat()
+    link_publication_date = datetime.now(timezone.utc).isoformat()
     link_providers = providers or ['unknown']
     link_providers = [{'Name': provider} for provider in link_providers]
     payload = {

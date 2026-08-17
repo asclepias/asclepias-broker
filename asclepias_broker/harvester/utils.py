@@ -7,7 +7,7 @@
 
 """Harvester utilities."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from invenio_cache import current_cache
 
@@ -26,4 +26,4 @@ class HarvesterHistory:
     def set(self, key: str, value: datetime = None):
         """."""
         return current_cache.set(
-            f'{self.prefix}:{key}', value or datetime.now(), timeout=-1)
+            f'{self.prefix}:{key}', value or datetime.now(timezone.utc), timeout=-1)

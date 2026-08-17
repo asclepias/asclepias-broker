@@ -85,13 +85,13 @@ def rerun_id(id:str, no_index: bool, eager:bool = False):
             rerun_event(event, no_index=no_index, eager=eager)
 
 def rerun_processing(no_index: bool, eager:bool = False):
-        yesterday = datetime.datetime.now() - datetime.timedelta(days = 1)
+        yesterday = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days = 1)
         resp = HarvestMonitoring.query.filter(HarvestMonitoring.status == HarvestStatus.Processing, HarvestMonitoring.created < str(yesterday)).all()
         for event in resp:
             rerun_event(event, no_index=no_index, eager=eager)
 
 def rerun_new(no_index: bool, eager:bool = False):
-        yesterday = datetime.datetime.now() - datetime.timedelta(days = 1)
+        yesterday = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days = 1)
         resp = HarvestMonitoring.query.filter(HarvestMonitoring.status == HarvestStatus.New, HarvestMonitoring.created < str(yesterday)).all()
         for event in resp:
             rerun_event(event, no_index=no_index, eager=eager)

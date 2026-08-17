@@ -8,7 +8,7 @@
 """Versioning metadata harvester."""
 
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, List
 
 import requests
@@ -172,7 +172,7 @@ def update_versioning(parent_identifier: str, children: List[Any],
     providers = providers or ['unknown']
     providers = [{'Name': provider} for provider in providers]
     link_publication_date = link_publication_date or \
-        datetime.now().isoformat()
+        datetime.now(timezone.utc).isoformat()
     source_identifier = {
                     "ID": parent_identifier,
                     "IDScheme": scheme

@@ -8,7 +8,7 @@
 """Crossref client."""
 
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Iterator
 
 import idutils
@@ -148,7 +148,7 @@ class CrossrefHarvester:
                 scholix: bool = True):
         """Harvest events from the Crossref Event Data API."""
         last_run = current_harvester.history.get(self.id)
-        current_datetime = datetime.now()
+        current_datetime = datetime.now(timezone.utc)
         if last_run:
             self.params.setdefault(
                 'from-occurred-date', last_run.date().isoformat())

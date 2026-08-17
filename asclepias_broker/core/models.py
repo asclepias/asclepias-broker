@@ -12,7 +12,6 @@ import uuid
 
 from invenio_db import db
 from sqlalchemy.schema import Index, UniqueConstraint
-from sqlalchemy_utils.models import Timestamp
 from sqlalchemy_utils.types import UUIDType
 
 
@@ -26,7 +25,7 @@ class Relation(enum.Enum):
     IsRelatedTo = 5
 
 
-class Identifier(db.Model, Timestamp):
+class Identifier(db.Model, db.Timestamp):
     """Identifier model."""
 
     __tablename__ = 'identifier'
@@ -118,7 +117,7 @@ class Identifier(db.Model, Timestamp):
             return self.identity_group.data.json
 
 
-class Relationship(db.Model, Timestamp):
+class Relationship(db.Model, db.Timestamp):
     """Relationship between two identifiers."""
 
     __tablename__ = 'relationship'

@@ -13,7 +13,6 @@ from invenio_db import db
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import backref
 from sqlalchemy.orm.attributes import flag_modified
-from sqlalchemy_utils.models import Timestamp
 from sqlalchemy_utils.types import JSONType, UUIDType
 
 from ..graph.models import Group, GroupRelationship
@@ -25,7 +24,7 @@ OVERRIDABLE_KEYS = {'Type', 'Title', 'Creator', 'PublicationDate'}
 MERGEABLE_KEYS = {'Publisher', 'Keywords'}
 
 
-class GroupMetadata(db.Model, Timestamp):
+class GroupMetadata(db.Model, db.Timestamp):
     """Metadata for a group."""
 
     __tablename__ = 'groupmetadata'
@@ -92,7 +91,7 @@ def mergeKey(new_json: dict, payload: dict, key: str):
                 item_key = list(item.keys())[0]
                 new_json[key].append({item_key : val})
 
-class GroupRelationshipMetadata(db.Model, Timestamp):
+class GroupRelationshipMetadata(db.Model, db.Timestamp):
     """Metadata for a group relationship."""
 
     __tablename__ = 'grouprelationshipmetadata'

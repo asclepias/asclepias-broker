@@ -7,7 +7,7 @@
 
 """Metadata functions."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 
 import idutils
@@ -72,7 +72,7 @@ def update_metadata(id_value: str, scheme: str, data: dict,
         providers = providers or ['unknown']
         providers = [{'Name': provider} for provider in providers]
         link_publication_date = link_publication_date or \
-            datetime.now().isoformat()
+            datetime.now(timezone.utc).isoformat()
         source_id_obj = {'ID': id_value, 'IDScheme': scheme}
         for target_value, target_scheme in target_identifiers:
             if not ((id_value, scheme) == (target_value, target_scheme)):

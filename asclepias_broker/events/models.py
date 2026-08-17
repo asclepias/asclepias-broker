@@ -15,7 +15,6 @@ import datetime
 from invenio_accounts.models import User
 from invenio_db import db
 from sqlalchemy.schema import PrimaryKeyConstraint
-from sqlalchemy_utils.models import Timestamp
 from sqlalchemy_utils.types import JSONType, UUIDType
 from sqlalchemy import func
 
@@ -38,7 +37,7 @@ class PayloadType(enum.Enum):
     Identifier = 2
 
 
-class Event(db.Model, Timestamp):
+class Event(db.Model, db.Timestamp):
     """Event model."""
 
     __tablename__ = 'event'
@@ -59,7 +58,7 @@ class Event(db.Model, Timestamp):
     @classmethod
     def getStatsFromLastWeek(cls):
         """Gets the stats from the last 7 days"""
-        last_week = datetime.datetime.now() - datetime.timedelta(days = 7)
+        last_week = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days = 7)
         resp = db.session.query(cls.status, func.count('*')).filter(cls.updated > str(last_week)).group_by(cls.status).all()
         return resp
     
@@ -68,7 +67,7 @@ class Event(db.Model, Timestamp):
         return f"<{self.id}: {self.created}>"
 
 
-class ObjectEvent(db.Model, Timestamp):
+class ObjectEvent(db.Model, db.Timestamp):
     """Event related to an Identifier or Relationship."""
 
     __tablename__ = 'objectevent'

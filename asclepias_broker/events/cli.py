@@ -74,13 +74,13 @@ def rerun_id(id:str, no_index: bool, eager:bool = False):
             EventAPI.rerun_event(event, no_index=no_index, eager=eager)
 
 def rerun_processing(no_index: bool, eager:bool = False):
-        yesterday = datetime.datetime.now() - datetime.timedelta(days = 1)
+        yesterday = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days = 1)
         resp = Event.query.filter(Event.status == EventStatus.Processing, Event.created < str(yesterday)).all()
         for event in resp:
             EventAPI.rerun_event(event, no_index=no_index, eager=eager)
 
 def rerun_new(no_index: bool, eager:bool = False):
-        yesterday = datetime.datetime.now() - datetime.timedelta(days = 1)
+        yesterday = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days = 1)
         resp = Event.query.filter(Event.status == EventStatus.New, Event.created < str(yesterday)).all()
         for event in resp:
             EventAPI.rerun_event(event, no_index=no_index, eager=eager)
