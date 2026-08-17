@@ -59,40 +59,40 @@ See also SQLAlchemy's :ref:`sqlalchemy:database_urls` docs.
 
 # Search
 # ======
-ELASTICSEARCH_HOST = os.environ.get('ELASTICSEARCH_HOST', 'localhost')
-ELASTICSEARCH_PORT = int(os.environ.get('ELASTICSEARCH_PORT', '9200'))
-ELASTICSEARCH_USER = os.environ.get('ELASTICSEARCH_USER')
-ELASTICSEARCH_PASSWORD = os.environ.get('ELASTICSEARCH_PASSWORD')
-ELASTICSEARCH_URL_PREFIX = os.environ.get('ELASTICSEARCH_URL_PREFIX', '')
-ELASTICSEARCH_USE_SSL = _parse_env_bool('ELASTICSEARCH_USE_SSL')
-ELASTICSEARCH_VERIFY_CERTS = _parse_env_bool('ELASTICSEARCH_VERIFY_CERTS')
+SEARCH_HOST = os.environ.get('SEARCH_HOST', 'localhost')
+SEARCH_PORT = int(os.environ.get('SEARCH_PORT', '9200'))
+SEARCH_USER = os.environ.get('SEARCH_USER')
+SEARCH_PASSWORD = os.environ.get('SEARCH_PASSWORD')
+SEARCH_URL_PREFIX = os.environ.get('SEARCH_URL_PREFIX', '')
+SEARCH_USE_SSL = _parse_env_bool('SEARCH_USE_SSL')
+SEARCH_VERIFY_CERTS = _parse_env_bool('SEARCH_VERIFY_CERTS')
 
-es_host_params = {
-    'host': ELASTICSEARCH_HOST,
-    'port': ELASTICSEARCH_PORT,
+search_host_params = {
+    'host': SEARCH_HOST,
+    'port': SEARCH_PORT,
 }
-if ELASTICSEARCH_USER and ELASTICSEARCH_PASSWORD:
-    es_host_params['http_auth'] = (ELASTICSEARCH_USER, ELASTICSEARCH_PASSWORD)
-if ELASTICSEARCH_URL_PREFIX:
-    es_host_params['url_prefix'] = ELASTICSEARCH_URL_PREFIX
-if ELASTICSEARCH_USE_SSL is not None:
-    es_host_params['use_ssl'] = ELASTICSEARCH_USE_SSL
-if ELASTICSEARCH_VERIFY_CERTS is not None:
-    es_host_params['verify_certs'] = ELASTICSEARCH_VERIFY_CERTS
+if SEARCH_USER and SEARCH_PASSWORD:
+    search_host_params['http_auth'] = (SEARCH_USER, SEARCH_PASSWORD)
+if SEARCH_URL_PREFIX:
+    search_host_params['url_prefix'] = SEARCH_URL_PREFIX
+if SEARCH_USE_SSL is not None:
+    search_host_params['use_ssl'] = SEARCH_USE_SSL
+if SEARCH_VERIFY_CERTS is not None:
+    search_host_params['verify_certs'] = SEARCH_VERIFY_CERTS
 
-SEARCH_ELASTIC_HOSTS = [es_host_params]
-"""Elasticsearch hosts configuration.
+SEARCH_HOSTS = [search_host_params]
+"""Search cluster hosts configuration.
 
 For a single-node cluster you can configure the connection via the following
 environment variables:
 
-* ``ELASTICSEARCH_HOST`` and ``ELASTICSEARCH_PORT``. ``localhost`` and ``9200``
+* ``SEARCH_HOST`` and ``SEARCH_PORT``. ``localhost`` and ``9200``
   by default respectively
-* ``ELASTICSEARCH_URL_PREFIX``. URL prefix for the Elasticsearch host, e.g.
+* ``SEARCH_URL_PREFIX``. URL prefix for the search host, e.g.
   ``es`` would result in using ``http://localhost:9200/es``
-* ``ELASTICSEARCH_USER`` and ``ELASTICSEARCH_PASSWORD``. Used for Basic HTTP
+* ``SEARCH_USER`` and ``SEARCH_PASSWORD``. Used for Basic HTTP
   authentication. By default not set
-* ``ELASTICSEARCH_USE_SSL`` and ``ELASTICSEARCH_VERIFY_CERTS``
+* ``SEARCH_USE_SSL`` and ``SEARCH_VERIFY_CERTS``
 
 For more complex multi-node cluster setups see `Invenio-Search
 <https://invenio-search.readthedocs.io/en/latest/configuration.html>`_
