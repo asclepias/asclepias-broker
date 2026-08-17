@@ -8,6 +8,7 @@
 include .dockerignore
 include .editorconfig
 include .tx/config
+include *.md
 include *.rst
 include *.sh
 include *.txt
