@@ -15,7 +15,7 @@ import idutils
 import requests
 from flask import current_app
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
+from urllib3.util import Retry
 
 from ..events.api import EventAPI
 from ..utils import chunks
