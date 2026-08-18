@@ -9,6 +9,7 @@
 import jsonschema
 from flask import current_app
 from invenio_db import db
+from jsonresolver.contrib.jsonschema import RefResolverBase
 from marshmallow.exceptions import \
     ValidationError as MarshmallowValidationError
 from werkzeug.local import LocalProxy
@@ -25,7 +26,7 @@ def _jsonschema_validator_func():
         f'{schema_host}/scholix-v3.json': SCHOLIX_SCHEMA,
         f'{schema_host}/event.json': EVENT_SCHEMA,
     }
-    resolver = jsonschema.RefResolver(
+    resolver = RefResolverBase(
         schema_host, EVENT_SCHEMA, schema_store)
     return jsonschema.Draft4Validator(EVENT_SCHEMA, resolver=resolver)
 
