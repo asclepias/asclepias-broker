@@ -174,7 +174,7 @@ uwsgitop==0.11
 validators==0.13.0
 vine==1.3.0
 wcwidth==0.1.7
-webargs==5.3.2
+webargs==5.5.3
 webencodings==0.5.1
 Werkzeug==0.15.4
 whichcraft==0.6.0
